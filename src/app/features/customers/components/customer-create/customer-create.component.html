@@ -1,0 +1,53 @@
+<p-stepper orientation="vertical">
+    <p-stepperPanel header="Customer Personal Information">
+        <ng-template pTemplate="content" let-index="index">
+            <p-card>
+                <app-personal-information-form />
+            </p-card>
+
+        </ng-template>
+    </p-stepperPanel>
+
+    <!-- Show this when the 1st step or Personal Information is already uploaded -->
+    <p-stepperPanel header="Customer Address">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Add Collaterals">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Add Source of Income">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Upload Profile Picture">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Upload Promissory Note">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Add Customer Co-Maker">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+
+    <p-stepperPanel header="Upload Files/Archives">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel header="Delinquent Status">
+        <ng-template pTemplate="content" let-index="index">
+
+        </ng-template>
+    </p-stepperPanel>
+</p-stepper>

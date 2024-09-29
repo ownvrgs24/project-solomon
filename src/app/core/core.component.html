@@ -1,0 +1,20 @@
+<div class="card container mx-auto my-4">
+    <p-toolbar>
+        <div class="p-toolbar-group-start">
+            <img title="logo" src="logo-32.png" />
+        </div>
+        <div class="p-toolbar-group-center">
+            <p-menubar [model]="items"></p-menubar>
+        </div>
+        <div class="p-toolbar-group-end">
+            <div class="flex align-items-center gap-2">
+                <p-button [outlined]="true"  (onClick)="invokeLogout()" class="text-white" [text]="true" [severity]="'danger'"
+                    label="Logout" icon="pi pi-sign-out" />
+            </div>
+        </div>
+    </p-toolbar>
+</div>
+
+<div class="container mx-auto">
+    <router-outlet />
+</div>
