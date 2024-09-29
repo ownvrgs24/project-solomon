@@ -1,0 +1,118 @@
+<div class="grid grid-cols-4 gap-4 items-baseline">
+    <div class="grid grid-flow-row gap-2">
+        <label for="lastname" toUppercase>LAST NAME</label>
+        <input required pInputText id="lastname" placeholder="Ex. DELA CRUZ" aria-describedby="lastname-help"
+            toUppercase />
+        <!-- <small id="lastname-help">
+            Enter your username to reset your password.
+        </small> -->
+    </div>
+    <div class="grid grid-flow-row gap-2">
+        <label for="firstname">FIRST NAME</label>
+        <input required pInputText id="firstname" placeholder="Ex. JUAN" aria-describedby="firstname-help"
+            toUppercase />
+        <!-- <small id="firstname-help">
+            Enter your username to reset your password.
+        </small> -->
+    </div>
+    <div class="grid grid-flow-row gap-2">
+        <label for="middlename">MIDDLE NAME</label>
+        <input pInputText id="middlename" placeholder="Ex. MALAKAS" aria-describedby="middlename-help" toUppercase />
+        <small id="middlename-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="suffix">SUFFIX</label>
+        <p-dropdown [style]="{ width: '100%' }" [options]="[
+            {name: 'None', code: null},
+            {name: 'Jr.', code: 'JR'},
+            {name: 'Sr.', code: 'SR'},
+            {name: 'I', code: 'I'},
+            {name: 'II', code: 'II'},
+            {name: 'III', code: 'III'},
+            {name: 'IV', code: 'IV'},
+            {name: 'V', code: 'V'},
+            {name: 'VI', code: 'VI'},
+            {name: 'VII', code: 'VII'},
+            {name: 'VIII', code: 'VIII'},
+            {name: 'IX', code: 'IX'},
+            {name: 'X', code: 'X'},
+        ]" optionLabel="name" placeholder="Select Suffix" />
+        <small id="suffix-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="contact-no">CONTACT NO.</label>
+        <p-inputMask [style]="{ width: '100%' }" mask="0999 999 9999" placeholder="0912 345 6789" />
+        <small id="contact-no-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="date-of-birth">DATE OF BIRTH</label>
+        <p-calendar [style]="{ width: '100%' }" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" />
+        <small id="date-of-birth-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="age">AGE</label>
+        <input pInputText id="age" readonly aria-describedby="age-help" toUppercase />
+        <small id="age-help">
+            Automatically calculated from <strong>DATE OF BIRTH</strong>.
+        </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="suffix">GENDER</label>
+        <p-dropdown [style]="{ width: '100%' }" [options]="[
+        {name: 'Male', code: 'MALE'},
+        {name: 'Female', code: 'FEMALE'},
+        {name: 'Others', code: 'OTHERS'},
+        ]" optionLabel="name" placeholder="Select gender" />
+        <!-- <small id="gender-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small> -->
+    </div>
+
+    <!-- Civil Status -->
+    <div class="grid grid-flow-row gap-2">
+        <label for="civil-status">CIVIL STATUS</label>
+        <p-dropdown [style]="{ width: '100%' }" [options]="[
+        {name: 'Single', code: 'SINGLE'},
+        {name: 'Married', code: 'MARRIED'},
+        {name: 'Widowed', code: 'WIDOWED'},
+        {name: 'Separated', code: 'SEPARATED'},
+        {name: 'Divorced', code: 'DIVORCED'},
+        ]" optionLabel="name" placeholder="Select Civil Status" />
+        <!-- <small id="civil-status-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small> -->
+    </div>
+
+    <!-- Telephone  -->
+    <div class="grid grid-flow-row gap-2">
+        <label for="telephone">TELEPHONE</label>
+        <input pInputText id="telephone" type="tel" placeholder="047 1234" aria-describedby="telephone-help" />
+        <!-- <small id="telephone-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small> -->
+    </div>
+
+    <!-- Email Address -->
+    <div class="grid grid-flow-row gap-2">
+        <label for="email">EMAIL ADDRESS</label>
+        <input pInputText id="email" type="email" placeholder="Ex. juandelacruz@email.com"
+            aria-describedby="email-help" />
+        <small id="email-help">
+            Leave this field blank if data is <strong>NOT available</strong>.
+        </small>
+    </div>
+
+</div>
