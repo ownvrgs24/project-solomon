@@ -11,7 +11,9 @@
     <!-- Show this when the 1st step or Personal Information is already uploaded -->
     <p-stepperPanel header="Customer Address">
         <ng-template pTemplate="content" let-index="index">
-
+            <p-card>
+                <app-address-form />
+            </p-card>
         </ng-template>
     </p-stepperPanel>
     <p-stepperPanel header="Add Collaterals">

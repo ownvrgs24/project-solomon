@@ -1,0 +1,122 @@
+<form [formGroup]="addressForm">
+    <ng-container formArrayName="address">
+        <ng-container *ngFor="let form of addressForm.controls.address.controls; let index = index">
+            <ng-container [formGroupName]="index">
+                <p-fieldset [legend]="'Form #'+index" styleClass="my-4">
+
+                    <div class="flex justify-end">
+                        <p-button (onClick)="removeFormAddress(index)" type="button" icon="pi pi-trash"
+                            [outlined]="true" severity="danger" pTooltip="Delete this form" />
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-4 items-start my-4">
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="region">REGION</label>
+                            <p-dropdown required styleClass="w-full" [options]="regionList" optionLabel="regionName"
+                                optionValue="code" [filter]="true" filterBy="regionName" [showClear]="true"
+                                placeholder="Select Region" formControlName="region"
+                                (onChange)="onRegionChange(getFormFieldValue(index, 'region'), index)">
+                            </p-dropdown>
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('region')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('region')?.touched) {
+                            <small class="p-error block">
+                                Region is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="province">PROVINCE</label>
+                            <p-dropdown required styleClass="w-full" [options]="getListOfProvinces(index)"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="provinceName"
+                                formControlName="province" [showClear]="true" placeholder="Select Province"
+                                (onChange)="onProvinceChange(getFormFieldValue(index, 'province'), index)">
+                            </p-dropdown>
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('province')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('province')?.touched) {
+                            <small class="p-error block">
+                                Province is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="city">CITY</label>
+                            <p-dropdown required styleClass="w-full" [options]="getListOfCities(index)"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="cityName"
+                                [showClear]="true" placeholder="Select City"
+                                (onChange)="onCityChange(getFormFieldValue(index, 'city'), index)"
+                                formControlName="city">
+                            </p-dropdown>
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('city')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('city')?.touched) {
+                            <small class="p-error block">
+                                City is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="barangay">BARANGAY</label>
+                            <p-dropdown required styleClass="w-full" [options]="getListOfBarangays(index)"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="barangayName"
+                                [showClear]="true" placeholder="Select Barangay" formControlName="barangay">
+                            </p-dropdown>
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('barangay')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('barangay')?.touched) {
+                            <small class="p-error block">
+                                Barangay is required
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2 col-span-2">
+                            <label for="street">STREET</label>
+                            <input pInputText required formControlName="street" id="street"
+                                placeholder="Ex. 1234 Sample St." aria-describedby="street-help" toUppercase />
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('street')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('street')?.touched) {
+                            <small class="p-error block">
+                                Street is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="zip-code">ZIP CODE</label>
+                            <p-inputNumber styleClass="w-full" placeholder="Ex. 1234" formControlName="zip_code"
+                                mode="decimal" inputId="withoutgrouping" [useGrouping]="false" id="zip-code"
+                                aria-describedby="zip-code-help" required />
+                            @if (
+                            addressForm.get('address')?.get(index.toString())?.get('zip_code')?.hasError('required') &&
+                            addressForm.get('address')?.get(index.toString())?.get('zip_code')?.touched) {
+                            <small class="p-error block">
+                                Zip code is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="landmark">LANDMARK</label>
+                            <input pInputText formControlName="landmark" id="landmark" placeholder="Ex. Near the church"
+                                aria-describedby="landmark-help" toUppercase />
+                            <small id="landmark-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="addressForm.invalid" (onClick)="addAddressForm()" styleClass="me-2" type="button"
+            icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="addressForm.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </ng-container>
+</form>

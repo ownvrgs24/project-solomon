@@ -87,7 +87,7 @@ export class CoreComponent {
     },
   ];
 
-  invokeLogout() {
+  handleLogout() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to logout?',
       header: 'Confirmation',
