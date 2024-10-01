@@ -1,0 +1,90 @@
+<form [formGroup]="bankCheckFormGroup">
+    <ng-container formArrayName="check">
+        <ng-container *ngFor="let item of bankCheckFormGroup.controls.check.controls; let i=index">
+            <ng-container [formGroupName]="i">
+                <p-fieldset [legend]="'Form #'+i" styleClass="my-4">
+                    <div *ngIf="i !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeBankCheckForm(i)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 items-start my-4">
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="amount">AMOUNT</label>
+                            <p-inputNumber styleClass="w-full" mode="currency" currency="PHP" formControlName="amount"
+                                required id="amount" placeholder="Ex. ₱10,00.00" aria-describedby="amount-help" />
+                            @if (bankCheckFormGroup.get('check')?.get(i.toString())?.get('amount')?.hasError('required')
+                            && bankCheckFormGroup.get('check')?.get(i.toString())?.get('amount')?.touched) {
+                            <small class="p-error block">
+                                Amount is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="payee">PAYEE</label>
+                            <input name="payee" formControlName="payee" required pInputText id="payee"
+                                placeholder="Ex. JUAN MASIPAG DELA CRUZ" aria-describedby="payee-help" toUppercase />
+                            @if (bankCheckFormGroup.get('check')?.get(i.toString())?.get('payee')?.hasError('required')
+                            && bankCheckFormGroup.get('check')?.get(i.toString())?.get('payee')?.touched) {
+                            <small class="p-error block">
+                                Payee is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="check_number">CHECK NUMBER</label>
+                            <p-inputNumber [useGrouping]="false" styleClass="w-full" formControlName="check_number"
+                                id="check_number" placeholder="Ex. 123456" aria-describedby="check_number-help" />
+                            <small id="check_number-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="check_date">CHECK DATE</label>
+                            <p-calendar styleClass="w-full" formControlName="check_date" name="check_date"
+                                id="check_date" placeholder="Ex. 01/01/2023" aria-describedby="check_date-help" />
+                            <small id="account_type-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="issuing_bank">ISSUING BANK</label>
+                            <input formControlName="issuing_bank" pInputText id="issuing_bank"
+                                placeholder="Ex. BANK OF AMERICA" aria-describedby="issuing_bank-help" />
+                            <small id="issuing_bank-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="date_acquired">DATE ACQUIRED</label>
+                            <p-calendar styleClass="w-full" formControlName="date_acquired" id="date_acquired"
+                                placeholder="Ex. 01/01/2023" aria-describedby="date_acquired-help" />
+                            <small id="date_acquired-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2 col-span-2">
+                            <label for="remarks">REMARKS</label>
+                            <textarea formControlName="remarks" styleClass="w-full" pInputTextarea id="remarks"
+                                placeholder="Enter any remarks here" aria-describedby="remarks-help"></textarea>
+                            <small id="remarks-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="bankCheckFormGroup.invalid" (onClick)="initializeBankCheckForm()"
+            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="bankCheckFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </ng-container>
+</form>

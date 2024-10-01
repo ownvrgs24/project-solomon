@@ -1,0 +1,129 @@
+<form [formGroup]="atmCardFormGroup">
+    <ng-container formArrayName="card">
+        <ng-container *ngFor="let form of atmCardFormGroup.controls.card.controls; let index = index">
+            <ng-container [formGroupName]="index">
+
+                <p-fieldset [legend]="'Form #'+index" styleClass="my-4">
+                    <div *ngIf="index !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeCardForm(index)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+
+                    <div class="grid grid-cols-5 gap-4 items-start my-4">
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="account_name">ACCOUNT NAME</label>
+                            <input formControlName="account_name" required pInputText id="account_name"
+                                placeholder="Ex. JUAN" aria-describedby="account_name-help" toUppercase />
+                            @if
+                            (atmCardFormGroup.get('card')?.get(index.toString())?.get('account_name')?.hasError('required')
+                            && atmCardFormGroup.get('card')?.get(index.toString())?.get('account_name')?.touched) {
+                            <small class="p-error block">
+                                Account name is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="account_number">ACCOUNT NUMBER</label>
+                            <p-inputNumber styleClass="w-full" formControlName="account_number" [useGrouping]="false" required id="account_number"
+                                placeholder="Ex. 1234567890" aria-describedby="account_number-help" />
+                            @if
+                            (atmCardFormGroup.get('card')?.get(index.toString())?.get('account_number')?.hasError('required')
+                            && atmCardFormGroup.get('card')?.get(index.toString())?.get('account_number')?.touched) {
+                            <small class="p-error block">
+                                Account number is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="card_number">CARD NUMBER</label>
+                            <p-inputNumber styleClass="w-full" [useGrouping]="false" formControlName="card_number"
+                                required id="card_number" placeholder="Ex. 1234567890123456"
+                                aria-describedby="card_number-help" />
+                            @if
+                            (atmCardFormGroup.get('card')?.get(index.toString())?.get('card_number')?.hasError('required')
+                            && atmCardFormGroup.get('card')?.get(index.toString())?.get('card_number')?.touched) {
+                            <small class="p-error block">
+                                Card number is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="pin">PIN</label>
+                            <p-inputNumber styleClass="w-full" [useGrouping]="false" formControlName="pin" required
+                                id="pin" type="password" placeholder="Ex. 1234" aria-describedby="pin-help" />
+                            @if (atmCardFormGroup.get('card')?.get(index.toString())?.get('pin')?.hasError('required')
+                            && atmCardFormGroup.get('card')?.get(index.toString())?.get('pin')?.touched) {
+                            <small class="p-error block">
+                                Pin is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="issuing_bank">ISSUING BANK</label>
+                            <input formControlName="issuing_bank" required pInputText id="issuing_bank"
+                                placeholder="Ex. Bank Name" aria-describedby="issuing_bank-help" toUppercase />
+                            @if
+                            (atmCardFormGroup.get('card')?.get(index.toString())?.get('issuing_bank')?.hasError('required')
+                            && atmCardFormGroup.get('card')?.get(index.toString())?.get('issuing_bank')?.touched) {
+                            <small class="p-error block">
+                                Issuing bank is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="account_type">ACCOUNT TYPE</label>
+                            <input formControlName="account_type" pInputText id="account_type" placeholder="Ex. Savings"
+                                aria-describedby="account_type-help" toUppercase />
+                            <small id="account_type-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2 col-span-2">
+                            <label for="remarks">REMARKS</label>
+                            <input formControlName="remarks" pInputText id="remarks" placeholder="Ex. Remarks"
+                                aria-describedby="remarks-help" toUppercase />
+                            <small id="remarks-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+                    </div>
+
+
+                    <p-fieldset legend="Other Banking Details" [collapsed]="true" [toggleable]="true">
+                        <div class="grid grid-cols-5 gap-4 items-start my-4">
+                            <div class="grid grid-flow-row gap-2">
+                                <label for="username">USERNAME</label>
+                                <input formControlName="username" pInputText id="username"
+                                    placeholder="Ex. juandelacruz" aria-describedby="username-help" />
+                                <small id="username-help">
+                                    This is a <strong>OPTIONAL</strong> field.
+                                </small>
+                            </div>
+
+                            <div class="grid grid-flow-row gap-2">
+                                <label for="password">PASSWORD</label>
+                                <input formControlName="password" pInputText id="password" type="password"
+                                    placeholder="Ex. password" aria-describedby="password-help" />
+                                <small id="password-help">
+                                    This is a <strong>OPTIONAL</strong> field.
+                                </small>
+                            </div>
+                        </div>
+                    </p-fieldset>
+                </p-fieldset>
+
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="atmCardFormGroup.invalid" (onClick)="initializeCardForm()"
+            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="atmCardFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </ng-container>
+</form>

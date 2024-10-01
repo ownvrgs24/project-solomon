@@ -56,7 +56,7 @@ export class AddressFormComponent implements OnInit {
         complete_address: new FormControl<string | null>(null),
         landmark: new FormControl<string | null>(null),
       })
-    ])
+    ], [Validators.required])
   });
 
   ngOnInit(): void {

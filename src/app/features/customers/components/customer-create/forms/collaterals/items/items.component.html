@@ -1,0 +1,97 @@
+<form [formGroup]="itemsFormGroup">
+    <ng-container formArrayName="items">
+        <ng-container *ngFor="let item of itemsFormGroup.controls.items.controls; let i = index">
+            <ng-container [formGroupName]="i">
+                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+                    <div *ngIf="i !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeItem(i)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 items-start my-4">
+                        <!-- item_description isrequired
+                        item_serial_number
+                        item_quantity
+                        item_monetary_value
+                        date_acquired
+                        remarks -->
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="item_description">ITEM DESCRIPTION</label>
+                            <input name="item_description" formControlName="item_description" required pInputText
+                                id="item_description" placeholder="Ex. 1234 Sample St., Sample City"
+                                aria-describedby="item_description-help" toUppercase />
+                            @if
+                            (itemsFormGroup.get('items')?.get(i.toString())?.get('item_description')?.hasError('required')
+                            &&
+                            itemsFormGroup.get('items')?.get(i.toString())?.get('item_description')?.touched)
+                            {
+                            <small class="p-error block">
+                                Item description is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="item_monetary_value">ITEM MONETARY VALUE</label>
+                            <p-inputNumber styleClass="w-full" mode="currency" currency="PHP"
+                                formControlName="item_monetary_value" id="item_monetary_value"
+                                placeholder="Ex. ₱10,00.00" aria-describedby="item_monetary_value-help" />
+                            @if
+                            (itemsFormGroup.get('items')?.get(i.toString())?.get('item_monetary_value')?.hasError('required')
+                            &&
+                            itemsFormGroup.get('items')?.get(i.toString())?.get('item_monetary_value')?.touched)
+                            {
+                            <small class="p-error block">
+                                Item monetary value is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="item_serial_number">ITEM SERIAL NUMBER</label>
+                            <input name="item_serial_number" formControlName="item_serial_number" pInputText
+                                id="item_serial_number" placeholder="Ex. 1234 Sample St., Sample City"
+                                aria-describedby="item_serial_number-help" toUppercase />
+                            <small id="item_serial_number-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="item_quantity">ITEM QUANTITY</label>
+                            <p-inputNumber [useGrouping]="false" styleClass="w-full" formControlName="item_quantity"
+                                id="item_quantity" placeholder="Ex. 10" aria-describedby="item_quantity-help" />
+                            <small id="item_quantity-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="date_acquired">DATE ACQUIRED</label>
+                            <p-calendar styleClass="w-full" formControlName="date_acquired" id="date_acquired"
+                                placeholder="Ex. 01/01/2023" aria-describedby="date_acquired-help" />
+                            <small id="date_acquired-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2 col-span-2">
+                            <label for="remarks">REMARKS</label>
+                            <textarea formControlName="remarks" styleClass="w-full" pInputTextarea id="remarks"
+                                placeholder="Enter any remarks here" aria-describedby="remarks-help"></textarea>
+                            <small id="remarks-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="itemsFormGroup.invalid" (onClick)="addItem()" styleClass="me-2"
+            type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="itemsFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+    </ng-container>
+
+</form>

@@ -1,0 +1,16 @@
+<p-tabView>
+    <p-tabPanel *ngFor="let tab of tabs; let i = index" [header]="tab.title" [selected]="i === 0">
+        <ng-template pTemplate="content">
+            @switch (tab.value) {
+                @case ('atm_card') { <app-atm-card /> }
+                @case ('bank_check') { <app-bank-check /> }
+                @case ('house_and_lot') { <app-house-and-lot /> }
+                @case ('lot') { <app-lot /> }
+                @case ('item') { <app-items /> }
+                @case ('vehicle') { <app-vehicle />  }
+                @case ('others') { <app-others /> }
+                @default { <app-atm-card /> } 
+            }
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>
