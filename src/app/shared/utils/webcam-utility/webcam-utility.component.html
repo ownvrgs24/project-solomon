@@ -1,0 +1,23 @@
+<div class="webcam-container">
+    <!-- Video element for displaying the camera feed -->
+    <video #video [width]="WIDTH" [height]="HEIGHT" [hidden]="isCaptured">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Canvas element for capturing and displaying the image -->
+    <canvas #canvas [width]="WIDTH" [height]="HEIGHT" [hidden]="!isCaptured"></canvas>
+
+    <!-- Controls -->
+    <div class="py-4">
+        <div *ngIf="!isCaptured" class="flex items-center gap-x-2">
+            <p-button icon="pi pi-camera" (click)="takeSnapshot()" label="Capture" [disabled]="!video"></p-button>
+        </div>
+        <div *ngIf="isCaptured" class="flex items-center gap-x-2">
+            <p-button severity="secondary" [outlined]="true" icon="pi pi-refresh" (click)="retakeImage()" label="Retake"></p-button>
+            <p-button icon="pi pi-upload" severity="success" (click)="confirmCapturedImage()" label="Confirm & Upload"></p-button>
+        </div>
+    </div>
+
+    <!-- Error messages -->
+    <p-messages *ngIf="error" [value]="[{severity:'error', summary:'Error', detail: error}]"></p-messages>
+</div>

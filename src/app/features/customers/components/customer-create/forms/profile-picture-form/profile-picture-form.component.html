@@ -1,0 +1,35 @@
+<p-tabView [activeIndex]="0">
+    <p-tabPanel header="Camera" leftIcon="pi pi-camera">
+        <ng-template pTemplate="content">
+            <p-fieldset legend="Camera Feed">
+                <app-webcam-utility></app-webcam-utility>
+            </p-fieldset>
+        </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="Desktop" leftIcon="pi pi-desktop">
+        <ng-template pTemplate="content">
+            <p-fieldset legend="Picture Preview">
+                <div class="flex items-center gap-x-4">
+                    <p-fileUpload #fileUpload [multiple]="false" (onSelect)="onSelectedFiles($event)" mode="basic"
+                        chooseLabel="Choose" chooseIcon="pi pi-upload" name="demo[]"
+                        url="https://www.primefaces.org/cdn/api/upload.php" accept="image/*" [maxFileSize]="1000000"
+                        (onUpload)="onUpload($event)">
+                    </p-fileUpload>
+
+                    <p-button pTooltip="Remove selected" [disabled]="files.length === 0" type="button"
+                        icon="pi pi-times" (click)="clearFileUpload()" [outlined]="true" severity="danger" />
+                </div>
+
+                @if (files.length !== 0) {
+                <p-card>
+                    @for (file of files; track file.id) {
+                    <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100px"
+                        class="object-cover object-top h-28 w-28" height="100px" />
+                    }
+                </p-card>
+                }
+            </p-fieldset>
+        </ng-template>
+    </p-tabPanel>
+
+</p-tabView>
