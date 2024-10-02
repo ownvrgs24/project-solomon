@@ -1,1 +1,109 @@
-<form></form>
+<form [formGroup]="lotFormGroup">
+    <ng-container formArrayName="lot">
+        <ng-container *ngFor="let item of lotFormGroup.controls.lot.controls; let i=index">
+            <ng-container [formGroupName]="i">
+                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+                    <div *ngIf="i !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeLot(i)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 items-start my-4">
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_property_address">PROPERTY ADDRESS</label>
+                            <input name="l_property_address" formControlName="l_property_address" required pInputText
+                                id="l_property_address" placeholder="Ex. 1234 Sample St., Sample City"
+                                aria-describedby="l_property_address-help" toUppercase />
+                            @if
+                            (lotFormGroup.get('lot')?.get(i.toString())?.get('l_property_address')?.hasError('required')
+                            &&
+                            lotFormGroup.get('lot')?.get(i.toString())?.get('l_property_address')?.touched)
+                            {
+                            <small class="p-error block">
+                                Property address is required!
+                            </small>
+                            }
+                        </div>
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_property_value">PROPERTY VALUE</label>
+                            <p-inputNumber styleClass="w-full" mode="currency" currency="PHP"
+                                formControlName="l_property_value" required id="l_property_value"
+                                placeholder="Ex. ₱10,00.00" aria-describedby="l_property_value-help" />
+                            @if
+                            (lotFormGroup.get('lot')?.get(i.toString())?.get('l_property_value')?.hasError('required')
+                            &&
+                            lotFormGroup.get('lot')?.get(i.toString())?.get('l_property_value')?.touched)
+                            {
+                            <small class="p-error block">
+                                Property value is required!
+                            </small>
+                            }
+                        </div>
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_property_type">PROPERTY TYPE</label>
+                            <input name="l_property_type" formControlName="l_property_type" pInputText
+                                id="l_property_type" placeholder="Ex. Residential"
+                                aria-describedby="l_property_type-help" toUppercase />
+                            <small id="l_property_type-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_tax_deed_number">TAX DEED NUMBER</label>
+                            <p-inputNumber formControlName="l_tax_deed_number" id="l_tax_deed_number"
+                                placeholder="Ex. 123456" aria-describedby="l_tax_deed_number-help" [useGrouping]="false"
+                                styleClass="w-full" />
+                            <small id="l_tax_deed_number-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_tax_declaration_number">TAX DECLARATION NUMBER</label>
+                            <p-inputNumber formControlName="l_tax_declaration_number" id="l_tax_declaration_number"
+                                placeholder="Ex. 123456" aria-describedby="l_tax_declaration_number-help"
+                                [useGrouping]="false" styleClass="w-full" />
+                            <small id="l_tax_declaration_number-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_sqm_area">SQM AREA</label>
+                            <p-inputNumber formControlName="l_sqm_area" id="l_sqm_area" placeholder="Ex. 123456"
+                                aria-describedby="l_sqm_area-help" [useGrouping]="false" styleClass="w-full" />
+                            <small id="l_sqm_area-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="l_title_number">TITLE NUMBER</label>
+                            <p-inputNumber formControlName="l_title_number" id="l_title_number" placeholder="Ex. 123456"
+                                aria-describedby="l_title_number-help" [useGrouping]="false" styleClass="w-full" />
+                            <small id="l_title_number-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="remarks">REMARKS</label>
+                            <input name="remarks" formControlName="remarks" pInputText id="remarks"
+                                placeholder="Ex. This is a sample remarks." aria-describedby="remarks-help"
+                                toUppercase />
+                            <small id="remarks-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="lotFormGroup.invalid" (onClick)="addLot()" styleClass="me-2"
+            type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="lotFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </ng-container>
+</form>

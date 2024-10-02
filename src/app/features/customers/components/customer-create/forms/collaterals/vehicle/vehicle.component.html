@@ -1,1 +1,65 @@
-<p>vehicle works!</p>
+<form [formGroup]="vehicleFormGroup">
+    <ng-container formArrayName="vehicle">
+        <ng-container *ngFor="let item of vehicleFormGroup.controls.vehicle.controls; let i=index">
+            <ng-container [formGroupName]="i">
+                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+                    <div *ngIf="i !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeVehicle(i)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 items-start my-4">
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="vehicle_details">VEHICLE DETAILS</label>
+                            <input name="vehicle_details" formControlName="vehicle_details" required pInputText
+                                id="vehicle_details" placeholder="Ex. Toyota Vios 2019"
+                                aria-describedby="vehicle_details-help" toUppercase />
+                            @if
+                            (vehicleFormGroup.get('vehicle')?.get(i.toString())?.get('vehicle_details')?.hasError('required')
+                            &&
+                            vehicleFormGroup.get('vehicle')?.get(i.toString())?.get('vehicle_details')?.touched)
+                            {
+                            <small class="p-error block">
+                                Vehicle details is required!
+                            </small>
+                            }
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="official_receipt">OFFICIAL RECEIPT</label>
+                            <p-inputNumber styleClass="w-full" [useGrouping]="false" name="official_receipt"
+                                formControlName="official_receipt" id="official_receipt" placeholder="Ex. 1234567890"
+                                aria-describedby="official_receipt-help" />
+                            <small id="official_receipt-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="certificate_of_registration">CERTIFICATE OF REGISTRATION</label>
+                            <p-inputNumber styleClass="w-full" [useGrouping]="false" name="certificate_of_registration"
+                                formControlName="certificate_of_registration" id="certificate_of_registration"
+                                placeholder="Ex. 1234567890" aria-describedby="certificate_of_registration-help" />
+                            <small id="certificate_of_registration-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                        <div class="grid grid-flow-row gap-2 cop">
+                            <label for="remarks">REMARKS</label>
+                            <textarea toUppercase [rows]="3" name="remarks" formControlName="remarks" pInputTextarea
+                                id="remarks" placeholder="Ex. This is a sample remarks."
+                                aria-describedby="remarks-help"></textarea>
+                            <small id="remarks-help">
+                                This is a <strong>OPTIONAL</strong> field.
+                            </small>
+                        </div>
+
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+
+
+
+</form>
