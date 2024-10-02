@@ -1,0 +1,64 @@
+<form [formGroup]="pensionFormGroup">
+    <p-fieldset legend="Please fill up the form" styleClass="my-4">
+
+        <div class="grid grid-cols-4 gap-4 items-start my-4">
+
+            <div class="grid grid-flow-row gap-2">
+                <label for="source">SOURCE</label>
+
+                <input name="source" formControlName="source" required pInputText id="source" placeholder="Ex. Pension"
+                    aria-describedby="source-help" toUppercase />
+                @if (pensionFormGroup.get('source')?.hasError('required') &&
+                pensionFormGroup.get('source')?.touched) {
+
+                <small class="p-error block">
+                    Source is required!
+                </small>
+                }
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+                <label for="amount">AMOUNT</label>
+
+                <p-inputNumber styleClass="w-full" mode="currency" currency="PHP" formControlName="amount" required
+                    id="amount" placeholder="Ex. ₱10,00.00" aria-describedby="amount-help" />
+                @if (pensionFormGroup.get('amount')?.hasError('required') &&
+                pensionFormGroup.get('amount')?.touched) {
+
+                <small class="p-error block">
+                    Amount is required!
+                </small>
+                }
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+                <label for="pay_frequency">PAY FREQUENCY</label>
+
+                <input name="pay_frequency" formControlName="pay_frequency" pInputText id="pay_frequency"
+                    placeholder="Ex. Monthly" aria-describedby="pay_frequency-help" toUppercase />
+
+                <small id="pay_frequency-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="remarks">REMARKS</label>
+
+                <textarea toUppercase formControlName="remarks" styleClass="w-full" pInputTextarea id="remarks"
+                    [cols]="3" placeholder="Enter any remarks here" aria-describedby="remarks-help"></textarea>
+
+                <small id="remarks-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+        </div>
+
+        <p-button type="submit" [disabled]="pensionFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </p-fieldset>
+
+
+</form>

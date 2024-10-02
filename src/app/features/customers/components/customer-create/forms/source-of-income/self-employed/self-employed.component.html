@@ -1,0 +1,68 @@
+<!-- net_income: new FormControl<string | null>(null),
+    source: new FormControl<string | null>(null),
+    remarks: new FormControl<string | null>(null) -->
+
+<form [formGroup]="selfEmployedFormGroup">
+    <p-fieldset legend="Please fill up the form" styleClass="my-4">
+
+        <div class="grid grid-cols-4 gap-4 items-start my-4">
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="net_income">NET INCOME</label>
+
+                <p-inputNumber styleClass="w-full" mode="currency" currency="PHP" formControlName="net_income" required
+                    id="net_income" placeholder="Ex. ₱10,00.00" aria-describedby="net_income-help" />
+
+                @if (selfEmployedFormGroup.get('net_income')?.hasError('required') &&
+                selfEmployedFormGroup.get('net_income')?.touched) {
+
+                <small class="p-error block">
+
+                    Net income is required!
+
+                </small>
+
+                }
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="source">SOURCE</label>
+
+                <input name="source" formControlName="source" required pInputText id="source"
+                    placeholder="Ex. Self-Employed" aria-describedby="source-help" toUppercase />
+
+                @if (selfEmployedFormGroup.get('source')?.hasError('required') &&
+                selfEmployedFormGroup.get('source')?.touched) {
+
+                <small class="p-error block">
+
+                    Source is required!
+
+                </small>
+
+                }
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2 col-span-2">
+
+                <label for="remarks">REMARKS</label>
+
+                <textarea toUppercase formControlName="remarks" styleClass="w-full" pInputTextarea id="remarks"
+                    [cols]="3" placeholder="Enter any remarks here" aria-describedby="remarks-help"></textarea>
+
+                <small id="remarks-help">
+
+                    This is a <strong>OPTIONAL</strong> field.
+
+                </small>
+
+            </div>
+
+        </div>
+        <p-button type="submit" styleClass="my-4" [disabled]="selfEmployedFormGroup.invalid" icon="pi pi-save"
+            label="Save"></p-button>
+    </p-fieldset>
+</form>

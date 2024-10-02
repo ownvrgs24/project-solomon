@@ -5,11 +5,12 @@ import { PersonalInformationFormComponent } from "./forms/personal-information-f
 import { CardModule } from 'primeng/card';
 import { AddressFormComponent } from "./forms/address-form/address-form.component";
 import { ShellCollateralsFormComponent } from "./forms/collaterals/shell-collaterals-form.component";
+import { ShellSourceOfIncomeComponent } from "./forms/source-of-income/shell-source-of-income.component";
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [ButtonModule, StepperModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent],
+  imports: [ButtonModule, StepperModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss'
 })

@@ -26,6 +26,4 @@ export class ShellCollateralsFormComponent {
     { title: 'Vehicle', value: 'vehicle' },
     { title: 'Others', value: 'others' }
   ];
-
-
 }

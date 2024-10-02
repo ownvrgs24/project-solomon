@@ -30,7 +30,6 @@ interface CardDetails {
     ReactiveFormsModule,
     DropdownModule,
     TooltipModule,
-    InputNumberModule,
     AsyncPipe,
     CommonModule,
     ButtonModule,

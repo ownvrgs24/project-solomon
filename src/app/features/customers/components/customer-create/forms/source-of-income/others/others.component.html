@@ -1,0 +1,21 @@
+<form [formGroup]="othersFormGroup">
+
+    <div class="grid grid-flow-row gap-2">
+        <label for="remarks">REMARKS</label>
+        <textarea required [rows]="3" name="remarks" formControlName="remarks" pInputTextarea id="remarks"
+            placeholder="Ex. This is a sample remarks." aria-describedby="remarks-help" toUppercase></textarea>
+
+        @if (
+        othersFormGroup.get('remarks')?.hasError('required') &&
+        othersFormGroup.get('remarks')?.touched) {
+        <small class="p-error block">
+            Remarks is required!
+        </small>
+        }
+
+    </div>
+
+    <p-button type="submit" styleClass="my-4" [disabled]="othersFormGroup.invalid" icon="pi pi-save"
+        label="Save"></p-button>
+
+</form>

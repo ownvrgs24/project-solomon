@@ -1,0 +1,14 @@
+<p-tabView>
+    <p-tabPanel *ngFor="let tab of tabs; let i = index" [header]="tab.title" [selected]="i === 0">
+        <ng-template pTemplate="content">
+            @switch (tab.value) {
+                @case ('employment') { <app-employment /> }
+                @case ('business_owner') { <app-business /> }
+                @case ('self_employed') { <app-self-employed/> }
+                @case ('pension_fund') { <app-pension /> }
+                @case ('others') { <app-others /> }
+                @default { <app-employment /> } 
+            }
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>

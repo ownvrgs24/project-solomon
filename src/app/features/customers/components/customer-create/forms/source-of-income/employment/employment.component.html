@@ -1,0 +1,161 @@
+<form [formGroup]="employmentFormGroup">
+
+    <p-fieldset legend="Please fill up the form" styleClass="my-4">
+        <div class="grid grid-cols-4 gap-4 items-start my-4">
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="designation">DESIGNATION</label>
+
+                <input name="designation" formControlName="designation" required pInputText id="designation"
+                    placeholder="Ex. Store Clerk" aria-describedby="designation-help" toUppercase />
+
+                @if (employmentFormGroup.get('designation')?.hasError('required') &&
+                employmentFormGroup.get('designation')?.touched) {
+
+                <small class="p-error block">
+
+                    Designation is required!
+
+                </small>
+
+                }
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="net_salary">NET SALARY</label>
+
+                <p-inputNumber styleClass="w-full" mode="currency" currency="PHP" formControlName="net_salary" required
+                    id="net_salary" placeholder="Ex. ₱10,00.00" aria-describedby="net_salary-help" />
+
+                @if (employmentFormGroup.get('net_salary')?.hasError('required') &&
+                employmentFormGroup.get('net_salary')?.touched) {
+
+                <small class="p-error block">
+
+                    Net salary is required!
+
+                </small>
+
+                }
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="company">COMPANY</label>
+
+                <input name="company" formControlName="company" required pInputText id="company"
+                    placeholder="Ex. Example Inc." aria-describedby="company-help" toUppercase />
+
+                @if (employmentFormGroup.get('company')?.hasError('required') &&
+                employmentFormGroup.get('company')?.touched) {
+
+                <small class="p-error block">
+
+                    Company is required!
+
+                </small>
+
+                }
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="company_address">COMPANY ADDRESS</label>
+
+                <input name="company_address" formControlName="company_address" pInputText id="company_address"
+                    placeholder="Ex. 1234 Sample St., Sample City" aria-describedby="company_address-help"
+                    toUppercase />
+
+                <small id="company_address-help">
+
+                    This is a <strong>OPTIONAL</strong> field.
+
+                </small>
+
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="company_contact">COMPANY CONTACT</label>
+
+                <input name="company_contact" formControlName="company_contact" pInputText id="company_contact"
+                    placeholder="Ex. Juan Dela Cruz" aria-describedby="company_contact-help" toUppercase />
+
+                <small id="company_contact-help">
+
+                    This is a <strong>OPTIONAL</strong> field.
+
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="company_email">COMPANY EMAIL</label>
+
+                <input name="company_email" formControlName="company_email" pInputText id="company_email"
+                    placeholder="Ex. example@example.com" aria-describedby="company_email-help" />
+
+                <small id="company_email-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="date_of_employment">DATE OF EMPLOYMENT</label>
+
+                <p-calendar styleClass="w-full" formControlName="date_of_employment" id="date_of_employment"
+                    placeholder="Ex. 01/01/2021" aria-describedby="date_of_employment-help"></p-calendar>
+
+                <small id="date_of_employment-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="pay_frequency">PAY FREQUENCY</label>
+
+                <input name="pay_frequency" formControlName="pay_frequency" pInputText id="pay_frequency"
+                    placeholder="Ex. Monthly" aria-describedby="pay_frequency-help" toUppercase />
+
+                <small id="pay_frequency-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2">
+
+                <label for="status">STATUS</label>
+
+                <input name="status" formControlName="status" pInputText id="status" placeholder="Ex. Regular"
+                    aria-describedby="status-help" toUppercase />
+
+                <small id="status-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2 col-span-2">
+
+                <label for="remarks">REMARKS</label>
+
+                <textarea toUppercase formControlName="remarks" styleClass="w-full" pInputTextarea id="remarks"
+                    placeholder="Enter any remarks here" aria-describedby="remarks-help"></textarea>
+
+                <small id="remarks-help">
+                    This is a <strong>OPTIONAL</strong> field.
+                </small>
+            </div>
+
+        </div>
+
+        <p-button type="submit" [disabled]="employmentFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </p-fieldset>
+</form>
