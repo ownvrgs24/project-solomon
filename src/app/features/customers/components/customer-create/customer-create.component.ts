@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { StepperModule } from 'primeng/stepper';
 import { PersonalInformationFormComponent } from "./forms/personal-information-form/personal-information-form.component";
 import { CardModule } from 'primeng/card';
 import { AddressFormComponent } from "./forms/address-form/address-form.component";
 import { ShellCollateralsFormComponent } from "./forms/collaterals/shell-collaterals-form.component";
 import { ShellSourceOfIncomeComponent } from "./forms/source-of-income/shell-source-of-income.component";
 import { ProfilePictureFormComponent } from "./forms/profile-picture-form/profile-picture-form.component";
+import { TabViewModule } from 'primeng/tabview';
+import { PromissoryNoteComponent } from "./forms/promissory-note/promissory-note.component";
+import { ArchivesComponent } from "./forms/archives/archives.component";
+import { ShellCoMakerComponent } from "./forms/co-maker/shell-co-maker.component";
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [ButtonModule, StepperModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ProfilePictureFormComponent],
+  imports: [ButtonModule, TabViewModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ProfilePictureFormComponent, PromissoryNoteComponent, ArchivesComponent, ShellCoMakerComponent],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss'
 })

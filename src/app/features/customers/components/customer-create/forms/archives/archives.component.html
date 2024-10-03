@@ -1,0 +1,10 @@
+<p-fileUpload name="file[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="onUpload($event)"
+    [multiple]="true" accept=".pdf,.doc,.docx,image/*" maxFileSize="10000000">
+    <ng-template pTemplate="content">
+        <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">
+                {{ file.name }} - {{ file.size }} bytes
+            </li>
+        </ul>
+    </ng-template>
+</p-fileUpload>
