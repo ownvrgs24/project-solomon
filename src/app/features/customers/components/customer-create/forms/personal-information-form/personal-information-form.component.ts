@@ -9,6 +9,19 @@ import { UtilsService } from '../../../../../../shared/services/utils.service';
 import { CommonModule } from '@angular/common';
 import { DividerModule } from 'primeng/divider';
 
+interface PersonalInformation {
+  last_name: FormControl<string | null>;
+  first_name: FormControl<string | null>;
+  middle_name: FormControl<string | null>;
+  suffix: FormControl<string | null>;
+  gender: FormControl<string | null>;
+  civil_status: FormControl<string | null>;
+  contact_no: FormControl<string | null>;
+  telephone_number: FormControl<string | null>;
+  email_address: FormControl<string | null>;
+  date_of_birth: FormControl<Date | null>;
+}
+
 @Component({
   selector: 'app-personal-information-form',
   standalone: true,
@@ -35,8 +48,8 @@ export class PersonalInformationFormComponent {
     { label: 'Divorced', value: 'DIVORCED' },
   ];
 
-  suffixList: { label: string; value: string }[] = [
-    { label: 'None', value: '' },
+  suffixList: { label: string; value: string | null }[] = [
+    { label: 'None', value: null },
     { label: 'Jr.', value: 'JR' },
     { label: 'Sr.', value: 'SR' },
     { label: 'I', value: 'I' },
@@ -51,18 +64,7 @@ export class PersonalInformationFormComponent {
     { label: 'X', value: 'X' },
   ]
 
-  personalInformationForm: FormGroup<{
-    last_name: FormControl<string | null>;
-    first_name: FormControl<string | null>;
-    middle_name: FormControl<string | null>;
-    suffix: FormControl<string | null>;
-    gender: FormControl<string | null>;
-    civil_status: FormControl<string | null>;
-    contact_no: FormControl<string | null>;
-    telephone_number: FormControl<string | null>;
-    email_address: FormControl<string | null>;
-    date_of_birth: FormControl<Date | null>;
-  }> = new FormGroup({
+  personalInformationForm: FormGroup<PersonalInformation> = new FormGroup({
     first_name: new FormControl('', [Validators.required]),
     last_name: new FormControl('', [Validators.required]),
     middle_name: new FormControl(''),

@@ -1,0 +1,93 @@
+<form [formGroup]="securityInformationForm">
+    <!-- username
+password
+confirm_password
+role
+restrictions -->
+
+    <div class="grid grid-cols-4 gap-4 items-start my-4">
+
+        <div class="grid grid-flow-row gap-2">
+
+            <label for="username">USERNAME</label>
+
+            <input name="username" formControlName="username" required pInputText id="username"
+                placeholder="Ex. juandelacruz" aria-describedby="username-help" toUppercase pKeyFilter="alphanum" />
+
+            @if (securityInformationForm.get('username')?.hasError('required') &&
+            securityInformationForm.get('username')?.touched) {
+
+            <small class="p-error block">
+                Username is required!
+            </small>
+
+            }
+
+        </div>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+
+            <label for="password">PASSWORD</label>
+
+            <p-password [toggleMask]="true" type="password" name="password" formControlName="password" required
+                id="password" placeholder="Ex. ********" aria-describedby="password-help" styleClass="w-full" />
+
+            @if (securityInformationForm.get('password')?.hasError('required') &&
+            securityInformationForm.get('password')?.touched) {
+
+            <small class="p-error block">
+                Password is required!
+            </small>
+
+            }
+
+        </div>
+
+        <div class="grid grid-flow-row gap-2">
+
+            <label for="confirm_password">CONFIRM PASSWORD</label>
+
+            <p-password styleClass="w-full" [toggleMask]="true" type="password" name="confirm_password"
+                formControlName="confirm_password" required id="confirm_password" placeholder="Ex. ********"
+                aria-describedby="confirm_password-help" />
+
+            @if (securityInformationForm.get('confirm_password')?.hasError('required') &&
+            securityInformationForm.get('confirm_password')?.touched) {
+
+            <small class="p-error block">
+                Confirm password is required!
+            </small>
+
+            }
+
+        </div>
+
+        <div class="grid grid-flow-row gap-2">
+
+            <label for="role">ROLE</label>
+
+            <p-dropdown formControlName="role" styleClass="w-full" [options]="roleList" optionLabel="label"
+                optionValue="value" placeholder="Select Role" />
+
+            <small id="role-help">
+
+                Please select the role of the user.
+
+            </small>
+
+        </div>
+
+        <div class="grid grid-flow-row gap-2">
+
+            <label for="restrictions">RESTRICTIONS</label>
+
+            <p-multiSelect formControlName="restrictions" styleClass="w-full" [options]="restrictionList"
+                optionLabel="label" optionValue="value" placeholder="Select Restrictions"></p-multiSelect>
+
+            <small id="restrictions-help">
+                Please select any restrictions for the user.
+            </small>
+
+        </div>
+    </div>
+</form>
