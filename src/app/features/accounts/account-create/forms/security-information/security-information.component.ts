@@ -1,38 +1,23 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
 
-interface SecurityInformation {
-  username: FormControl<string | null>;
-  password: FormControl<string | null>;
-  confirm_password: FormControl<string | null>;
-  role: FormControl<string | null>;
-  restrictions: FormControl<string[] | null>;
-}
-
 @Component({
   selector: 'app-security-information',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, DropdownModule, ButtonModule, MultiSelectModule],
+  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, DropdownModule, ButtonModule, MultiSelectModule, CommonModule],
   templateUrl: './security-information.component.html',
   styleUrl: './security-information.component.scss'
 })
-export class SecurityInformationComponent {
+export class SecurityInformationComponent implements OnInit {
 
-  securityInformationForm: FormGroup<SecurityInformation> = new FormGroup<SecurityInformation>({
-    username: new FormControl<string | null>(null, [Validators.required]),
-    password: new FormControl<string | null>(null, [Validators.required]),
-    confirm_password: new FormControl<string | null>(null, [Validators.required]),
-    role: new FormControl<string | null>(null, [Validators.required]),
-    restrictions: new FormControl<string[] | null>(null, [Validators.required]),
-  });
+  securityInformationForm!: FormGroup;
 
-
-  // TODO: Fetch the data from the API and populate the restrictionList
   restrictionList: any[] | undefined;
 
   roleList: { label: string; value: string | null }[] = [
@@ -41,4 +26,28 @@ export class SecurityInformationComponent {
     { label: 'Cashier', value: 'cashier' },
   ];
 
+  constructor(private fb: FormBuilder) { }
+
+  ngOnInit() {
+    this.securityInformationForm = this.fb.group({
+      username: [null, Validators.required],
+      password: [null, Validators.required],
+      confirm_password: [null, Validators.required],
+      role: [null, Validators.required],
+      restrictions: [null, Validators.required]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(form: AbstractControl): { password_mismatch: boolean } | null {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirm_password');
+
+    if (password && confirmPassword && password.value !== confirmPassword.value) {
+      confirmPassword.setErrors({ password_mismatch: true });
+      return { password_mismatch: true };
+    } else {
+      confirmPassword?.setErrors(null);
+      return null;
+    }
+  }
 }

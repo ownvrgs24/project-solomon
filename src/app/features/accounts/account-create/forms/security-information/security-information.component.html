@@ -1,11 +1,6 @@
 <form [formGroup]="securityInformationForm">
-    <!-- username
-password
-confirm_password
-role
-restrictions -->
 
-    <div class="grid grid-cols-4 gap-4 items-start my-4">
+    <div class="grid grid-cols-2 gap-4 items-start my-4">
 
         <div class="grid grid-flow-row gap-2">
 
@@ -29,8 +24,9 @@ restrictions -->
 
             <label for="password">PASSWORD</label>
 
-            <p-password [toggleMask]="true" type="password" name="password" formControlName="password" required
-                id="password" placeholder="Ex. ********" aria-describedby="password-help" styleClass="w-full" />
+            <p-password [toggleMask]="true" [inputStyle]="{'width': '100%'}" name="password" formControlName="password"
+                required id="password" placeholder="Ex. ********" aria-describedby="password-help"
+                styleClass="w-full" />
 
             @if (securityInformationForm.get('password')?.hasError('required') &&
             securityInformationForm.get('password')?.touched) {
@@ -42,24 +38,25 @@ restrictions -->
             }
 
         </div>
-
         <div class="grid grid-flow-row gap-2">
-
             <label for="confirm_password">CONFIRM PASSWORD</label>
-
-            <p-password styleClass="w-full" [toggleMask]="true" type="password" name="confirm_password"
+            <p-password styleClass="w-full" [inputStyle]="{'width': '100%'}" [toggleMask]="true" name="confirm_password"
                 formControlName="confirm_password" required id="confirm_password" placeholder="Ex. ********"
                 aria-describedby="confirm_password-help" />
 
             @if (securityInformationForm.get('confirm_password')?.hasError('required') &&
             securityInformationForm.get('confirm_password')?.touched) {
-
             <small class="p-error block">
                 Confirm password is required!
             </small>
-
             }
 
+            @if (securityInformationForm.get('confirm_password')?.hasError('password_mismatch') &&
+            securityInformationForm.get('confirm_password')?.touched) {
+            <small class="p-error block">
+                Passwords do not match.
+            </small>
+            }
         </div>
 
         <div class="grid grid-flow-row gap-2">

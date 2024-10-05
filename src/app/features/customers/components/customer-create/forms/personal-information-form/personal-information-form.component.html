@@ -9,7 +9,7 @@
             <small class="p-error block">Last name is required!</small>
             }
         </div>
-        
+
         <div class="grid grid-flow-row gap-2">
             <label for="firstname">FIRST NAME</label>
             <input formControlName="first_name" required pInputText id="firstname" placeholder="Ex. JUAN"
@@ -31,8 +31,8 @@
 
         <div class="grid grid-flow-row gap-2">
             <label for="suffix">SUFFIX</label>
-            <p-dropdown formControlName="suffix" styleClass="w-full" [options]="suffixList" optionLabel="label" optionValue="value"
-                placeholder="Select Suffix" />
+            <p-dropdown formControlName="suffix" styleClass="w-full" [options]="suffixList" optionLabel="label"
+                optionValue="value" placeholder="Select Suffix" />
             <small id="suffix-help">
                 If theres no suffix, please select <strong>NONE</strong>.
             </small>
