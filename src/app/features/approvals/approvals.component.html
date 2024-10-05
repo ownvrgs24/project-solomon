@@ -1,1 +1,17 @@
-<p>approvals works!</p>
+<p-tabView>
+    <p-tabPanel header="Customers" leftIcon="pi pi-users">
+        <ng-template pTemplate="content">
+            <app-customer-approval></app-customer-approval>
+        </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="Loans" leftIcon="pi pi-money-bill">
+        <ng-template pTemplate="content">
+            <app-loan-approval></app-loan-approval>
+        </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="Transactions" leftIcon="pi pi-list">
+        <ng-template pTemplate="content">
+            <app-transaction-approval></app-transaction-approval>
+        </ng-template>
+    </p-tabPanel>
+</p-tabView>

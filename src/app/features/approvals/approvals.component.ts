@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
+import { TabViewModule } from 'primeng/tabview';
+import { CustomerApprovalComponent } from "./components/customer-approval/customer-approval.component";
+import { LoanApprovalComponent } from "./components/loan-approval/loan-approval.component";
+import { TransactionApprovalComponent } from "./components/transaction-approval/transaction-approval.component";
 
 @Component({
   selector: 'app-approvals',
   standalone: true,
-  imports: [],
+  imports: [TabViewModule, CustomerApprovalComponent, LoanApprovalComponent, TransactionApprovalComponent],
   templateUrl: './approvals.component.html',
   styleUrl: './approvals.component.scss'
 })

@@ -69,19 +69,18 @@ export class CoreComponent {
       routerLinkActiveOptions: { exact: true }
     },
     {
-      label: 'System Logs',
-      icon: 'pi pi-server',
-      command: () => {
-        this.router.navigate([`${this.rootRoute}/system-logs`]);
-      },
-      routerLinkActiveOptions: { exact: true }
-
-    },
-    {
       label: 'Reports',
       icon: 'pi pi-chart-line',
       command: () => {
         this.router.navigate([`${this.rootRoute}/reports`]);
+      },
+      routerLinkActiveOptions: { exact: true }
+    },
+    {
+      label: 'System Logs',
+      icon: 'pi pi-server',
+      command: () => {
+        this.router.navigate([`${this.rootRoute}/system-logs`]);
       },
       routerLinkActiveOptions: { exact: true }
     },
