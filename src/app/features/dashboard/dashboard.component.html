@@ -1,14 +1,18 @@
-<!-- TODO: Loop the data in the cards for optimization -->
-<div class="grid grid-cols-4">
-    <p-card>
-        <div class="grid grid-flow-row gap-y-4">
-            <div class="flex items-center justify-between">Overall Disbursed Loan
-                <i class="pi pi-arrow-up-right text-2xl text-red-500"></i>
+<div class="grid grid-cols-4 gap-4">
+    <ng-container *ngIf="dashboardItems$ | async as items">
+        <p-card *ngFor="let item of items">
+            <div class="grid grid-flow-row gap-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-lg">{{ item.label }}</span>
+                    <i [class]="item.icon + ' text-lg text-' + item.iconColor + '-500'"></i>
+                </div>
+                <div class="text-xl font-bold">
+                    {{ item.isCurrency ? (item.figure | currency : 'PHP') : item.figure }}
+                </div>
             </div>
-            <div class="text-xl font-bold">₱530,000.00</div>
-        </div>
-        <p-footer>
-            <small>As of 2021-09-01</small>
-        </p-footer>
-    </p-card>
+            <p-footer>
+                <small>As of {{ dateNow | date: 'MMMM dd, yyyy'}}</small>
+            </p-footer>
+        </p-card>
+    </ng-container>
 </div>
