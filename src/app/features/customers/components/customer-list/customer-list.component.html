@@ -11,13 +11,15 @@
     </div>
 
     <p-table [paginator]="true" [value]="customers" [filterDelay]="0"
-        [globalFilterFields]="['last_name', 'first_name', 'middle_name', 'client_status', 'address', 'mobile_number']"
+        [globalFilterFields]="['last_name', 'first_name', 'middle_name', 'client_status', 'address', 'mobile_number', 'comakers']"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" #dt [showCurrentPageReport]="true">
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" #dt [showCurrentPageReport]="true"
+        [loading]="loading">
         <ng-template pTemplate="header">
             <tr>
                 <th>Status</th>
                 <th>Name</th>
+                <th>Co Maker</th>
                 <th>Address</th>
                 <th>Contact No.</th>
                 <th>Registration Date</th>
@@ -30,6 +32,7 @@
                 </td>
                 <td>{{ customer.last_name }}, {{ customer.first_name }} {{ customer.middle_name }}
                     {{customer.extension_name}} </td>
+                <td>{{ customer.comakers || '-' }}</td>
                 <td>{{ customer.address || '-' }}</td>
                 <td>{{ customer.mobile_number || '-' }}</td>
                 <td>{{ customer.created_at | date: 'MMM dd, yyyy hh:mm a' || '-' }}</td>

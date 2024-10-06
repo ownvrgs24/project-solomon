@@ -10,6 +10,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { PromissoryNoteComponent } from "./forms/promissory-note/promissory-note.component";
 import { ArchivesComponent } from "./forms/archives/archives.component";
 import { ShellCoMakerComponent } from "./forms/co-maker/shell-co-maker.component";
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-customer-create',
@@ -20,4 +21,24 @@ import { ShellCoMakerComponent } from "./forms/co-maker/shell-co-maker.component
 })
 export class CustomerCreateComponent {
 
+
+  activeIndex: number = 0;
+  // customerId = signal<string | null>(null);
+  customerId = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.customerId.update(() => '4dab6c38-6e68-46c3-bc32-809c0ac5825f');
+  }
+
+  onCustomerCreated($event: string): void {
+    this.customerId.set($event);
+
+    setTimeout(() => {
+      this.activeIndex++;
+    }, 1500);
+  }
+
+  get isCustomerCreated(): boolean {
+    return !this.customerId();
+  }
 }

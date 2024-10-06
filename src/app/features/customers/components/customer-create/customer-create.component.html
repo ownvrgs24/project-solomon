@@ -1,21 +1,21 @@
-<p-tabView>
+<p-tabView [(activeIndex)]="activeIndex">
     <p-tabPanel header="Personal">
         <ng-template pTemplate="content">
             <p-card>
-                <app-personal-information-form />
+                <app-personal-information-form (customerRegistered)="onCustomerCreated($event)" />
             </p-card>
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Address">
+    <p-tabPanel [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''" [disabled]="isCustomerCreated" header="Address">
         <ng-template pTemplate="content">
             <p-card>
-                <app-address-form />
+                <app-address-form [customerId]="customerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Collateral">
+    <p-tabPanel header="Collateral" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''" [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-shell-collaterals-form />
@@ -23,7 +23,8 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Source of Income">
+    <p-tabPanel header="Source of Income" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''"
+        [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-shell-source-of-income />
@@ -31,7 +32,7 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Co-Maker">
+    <p-tabPanel header="Co-Maker" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''" [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-shell-co-maker />
@@ -39,7 +40,8 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Profile Picture">
+    <p-tabPanel header="Profile Picture" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''"
+        [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-profile-picture-form />
@@ -47,7 +49,8 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Promissory Note">
+    <p-tabPanel header="Promissory Note" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''"
+        [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-promissory-note />
@@ -55,7 +58,7 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Archives">
+    <p-tabPanel header="Archives" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''" [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
                 <app-archives />
@@ -63,7 +66,8 @@
         </ng-template>
     </p-tabPanel>
 
-    <p-tabPanel header="Delinquent Status">
+    <p-tabPanel header="Delinquent Status" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''"
+        [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
             </p-card>

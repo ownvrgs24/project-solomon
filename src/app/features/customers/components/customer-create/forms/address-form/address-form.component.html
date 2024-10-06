@@ -1,9 +1,9 @@
-<form [formGroup]="addressForm">
+<form [formGroup]="addressForm" (ngSubmit)="submitForm()">
     <ng-container formArrayName="address">
         <ng-container *ngFor="let form of addressForm.controls.address.controls; let index = index">
             <ng-container [formGroupName]="index">
                 <p-fieldset [legend]="'Form #'+index" styleClass="my-4">
-                    
+
                     @if (index !== 0) {
                     <div class="flex justify-end">
                         <p-button (onClick)="removeFormAddress(index)" type="button" icon="pi pi-trash"
@@ -31,7 +31,7 @@
                         <div class="grid grid-flow-row gap-2">
                             <label for="province">PROVINCE</label>
                             <p-dropdown required styleClass="w-full" [options]="getListOfProvinces(index)"
-                                optionLabel="name" optionValue="code" [filter]="true" filterBy="provinceName"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="name"
                                 formControlName="province" [showClear]="true" placeholder="Select Province"
                                 (onChange)="onProvinceChange(getFormFieldValue(index, 'province'), index)">
                             </p-dropdown>
@@ -47,7 +47,7 @@
                         <div class="grid grid-flow-row gap-2">
                             <label for="city">CITY</label>
                             <p-dropdown required styleClass="w-full" [options]="getListOfCities(index)"
-                                optionLabel="name" optionValue="code" [filter]="true" filterBy="cityName"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="name"
                                 [showClear]="true" placeholder="Select City"
                                 (onChange)="onCityChange(getFormFieldValue(index, 'city'), index)"
                                 formControlName="city">
@@ -64,7 +64,7 @@
                         <div class="grid grid-flow-row gap-2">
                             <label for="barangay">BARANGAY</label>
                             <p-dropdown required styleClass="w-full" [options]="getListOfBarangays(index)"
-                                optionLabel="name" optionValue="code" [filter]="true" filterBy="barangayName"
+                                optionLabel="name" optionValue="code" [filter]="true" filterBy="name"
                                 [showClear]="true" placeholder="Select Barangay" formControlName="barangay">
                             </p-dropdown>
                             @if (
@@ -91,8 +91,8 @@
 
                         <div class="grid grid-flow-row gap-2">
                             <label for="zip-code">ZIP CODE</label>
-                            <p-inputNumber styleClass="w-full" placeholder="Ex. 1234" formControlName="zip_code"
-                                mode="decimal" inputId="withoutgrouping" [useGrouping]="false" id="zip-code"
+                            <input [maxlength]="6" [minlength]="4" pInputText pKeyFilter="num" styleClass="w-full"
+                                placeholder="Ex. 1234" formControlName="zip_code" id="zip-code"
                                 aria-describedby="zip-code-help" required />
                             @if (
                             addressForm.get('address')?.get(index.toString())?.get('zip_code')?.hasError('required') &&

@@ -32,6 +32,13 @@ export interface Customer {
   cx_address: {
     complete_address: string;
   }[];
+  comakers_array?: {
+    first_name: string
+    middle_name: string
+    last_name: string
+    extension_name: string;
+  }[],
+  comakers?: string;
   address?: string;
 }
 
@@ -72,6 +79,7 @@ export class CustomerListComponent {
 
   fetchCustomers() {
     this.customerService.fetchCustomers().subscribe((data) => {
+      this.loading = true;
       this.customers = data as Customer[];
       this.customers = this.customers.map((customer) => {
         return {
@@ -79,8 +87,14 @@ export class CustomerListComponent {
           client_status: customer.client_status.replace(/_/g, ' ').toUpperCase(),
           client_status_severity: this.getSeverity(customer.client_status),
           address: customer.cx_address.map((address) => address.complete_address).join(', '),
+          comakers: customer.comakers_array?.map((comaker) => {
+            return `${comaker.first_name} ${comaker.middle_name} ${comaker.last_name} ${comaker.extension_name}`;
+          }).join(', ')
         };
       });
+
+
+      this.loading = false;
     });
   }
 }

@@ -1,15 +1,15 @@
-<p-button icon="pi pi-user-plus" routerLink="../create" label="Create an Account" />
-
 <div class="card">
-
     <div class="pb-4">
-        <p-iconField iconPosition="left">
-            <p-inputIcon>
-                <i class="pi pi-search"></i>
-            </p-inputIcon>
-            <input pInputText [(ngModel)]="searchValue" type="text" (input)="dt.filterGlobal(searchValue, 'contains')"
-                placeholder="Search keyword" toUppercase />
-        </p-iconField>
+        <div class="flex items-center justify-between">
+            <p-button icon="pi pi-user-plus" routerLink="../create" label="Create an Account" />
+            <p-iconField iconPosition="left">
+                <p-inputIcon>
+                    <i class="pi pi-search"></i>
+                </p-inputIcon>
+                <input pInputText [(ngModel)]="searchValue" type="text"
+                    (input)="dt.filterGlobal(searchValue, 'contains')" placeholder="Search keyword" toUppercase />
+            </p-iconField>
+        </div>
     </div>
 
     <p-table [paginator]="true" [value]="accounts" [filterDelay]="0"

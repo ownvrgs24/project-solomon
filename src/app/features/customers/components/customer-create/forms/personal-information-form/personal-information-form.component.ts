@@ -1,38 +1,48 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UtilsService } from '../../../../../../shared/services/utils.service';
 import { CommonModule } from '@angular/common';
 import { DividerModule } from 'primeng/divider';
+import { CustomersService } from '../../../../../../shared/services/customers.service';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { MessagesModule } from 'primeng/messages';
+import { Message } from 'primeng/api';
 
 interface PersonalInformation {
   last_name: FormControl<string | null>;
   first_name: FormControl<string | null>;
   middle_name: FormControl<string | null>;
-  suffix: FormControl<string | null>;
+  extension_name: FormControl<string | null>;
   gender: FormControl<string | null>;
   civil_status: FormControl<string | null>;
-  contact_no: FormControl<string | null>;
+  mobile_number: FormControl<string | null>;
   telephone_number: FormControl<string | null>;
   email_address: FormControl<string | null>;
   date_of_birth: FormControl<Date | null>;
 }
 
+
+
 @Component({
   selector: 'app-personal-information-form',
   standalone: true,
-  imports: [DividerModule, InputTextModule, InputMaskModule, UpperCaseInputDirective, DropdownModule, CalendarModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, MessagesModule, InputMaskModule, KeyFilterModule, DividerModule, InputTextModule, InputMaskModule, UpperCaseInputDirective, DropdownModule, CalendarModule, ReactiveFormsModule, CommonModule],
 
   templateUrl: './personal-information-form.component.html',
   styleUrl: './personal-information-form.component.scss'
 })
 export class PersonalInformationFormComponent {
+  formMessage: Message[] | undefined;
+
+  @Output() customerRegistered: EventEmitter<string> = new EventEmitter();
 
   private utils = inject(UtilsService);
+  private customerService = inject(CustomersService);
 
   genderList: { label: string; value: string }[] = [
     { label: 'Male', value: 'MALE' },
@@ -68,10 +78,10 @@ export class PersonalInformationFormComponent {
     first_name: new FormControl('', [Validators.required]),
     last_name: new FormControl('', [Validators.required]),
     middle_name: new FormControl(''),
-    suffix: new FormControl(''),
+    extension_name: new FormControl(''),
     gender: new FormControl('', [Validators.required]),
     civil_status: new FormControl('', [Validators.required]),
-    contact_no: new FormControl(''),
+    mobile_number: new FormControl(''),
     telephone_number: new FormControl(''),
     email_address: new FormControl(''),
     date_of_birth: new FormControl(),
@@ -86,7 +96,17 @@ export class PersonalInformationFormComponent {
   submitPersonalInformation(): void {
     console.log(this.personalInformationForm.value);
 
-    // TODO: Implement submit logic here
-    // After submitting the form, the form should be reset and send this generated customer id to the next form
+
+    const { value } = this.personalInformationForm;
+    this.customerService.registerCustomer(value).subscribe({
+      next: (data: any) => {
+        this.customerRegistered.emit(data.customer.customer_id);
+        this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
+        this.personalInformationForm.disable();
+      },
+      error: (error: TypeError) => {
+        this.formMessage = [{ severity: 'error', summary: 'Error', detail: error.message }];
+      }
+    });
   }
 }

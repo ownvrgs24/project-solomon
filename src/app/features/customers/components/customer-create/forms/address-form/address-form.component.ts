@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { GeolocationService } from '../../../../../../shared/services/geolocation.service';
@@ -10,6 +10,8 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { AddressService } from '../../../../../../shared/services/address.service';
 
 interface AddressForm {
   customer_id: FormControl<string | null>;
@@ -29,21 +31,24 @@ interface AddressForm {
 @Component({
   selector: 'app-address-form',
   standalone: true,
-  imports: [ReactiveFormsModule, DropdownModule, TooltipModule, InputNumberModule, AsyncPipe, CommonModule, ButtonModule, DividerModule, InputTextModule, FieldsetModule, UpperCaseInputDirective],
+  imports: [ReactiveFormsModule, DropdownModule, KeyFilterModule, TooltipModule, InputNumberModule, AsyncPipe, CommonModule, ButtonModule, DividerModule, InputTextModule, FieldsetModule, UpperCaseInputDirective],
   templateUrl: './address-form.component.html',
   styleUrls: ['./address-form.component.scss']
 })
 export class AddressFormComponent implements OnInit {
   // TODO: Remove the placeholder from the forms 
 
+  @Input({ required: true }) customerId!: string | null;
+
   private geolocationService = inject(GeolocationService);
+  private addressService = inject(AddressService);
 
   regionList: { code: string; regionName: string }[] = [];
 
   addressForm: FormGroup<{ address: FormArray<FormGroup<AddressForm>> }> = new FormGroup({
     address: new FormArray([
       new FormGroup<AddressForm>({
-        customer_id: new FormControl<string | null>('1', [Validators.required]),
+        customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
         region: new FormControl<string | null>(null, [Validators.required]),
         province: new FormControl<string | null>(null, [Validators.required]),
         province_list: new FormControl<string[]>([]),
@@ -61,6 +66,26 @@ export class AddressFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchRegions();
+
+    this.addressForm.get('address')?.setValue([
+      {
+        customer_id: this.customerId,
+        region: null,
+        province: null,
+        province_list: null,
+        city: null,
+        city_list: null,
+        barangay: null,
+        barangay_list: null,
+        street: null,
+        zip_code: null,
+        complete_address: null,
+        landmark: null
+      }
+    ]);
+
+    console.log(this.addressForm);
+
   }
 
   onRegionChange(code: string, index: number) {
@@ -150,7 +175,7 @@ export class AddressFormComponent implements OnInit {
 
   addAddressForm() {
     (this.addressForm.get('address') as FormArray).push(new FormGroup<AddressForm>({
-      customer_id: new FormControl<string | null>('1', [Validators.required]),
+      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
       region: new FormControl<string | null>(null, [Validators.required]),
       province: new FormControl<string | null>(null, [Validators.required]),
       province_list: new FormControl<string[]>([]),
@@ -169,4 +194,21 @@ export class AddressFormComponent implements OnInit {
     // TODO: Add a confirmation dialog before removing the form address
     (this.addressForm.get('address') as FormArray).removeAt(index);
   }
+
+  submitForm() {
+    // TODO: Add a confirmation dialog before submitting the form and find a way to prevent double submission of the form
+    let { address } = this.addressForm.value;
+
+    this.addressService.addCustomerAddress(this.addressService.formatAddress(address, this.regionList))
+      .subscribe({
+        next: (data: any) => {
+          console.log(data);
+        },
+        error: (error: TypeError) => {
+          console.log(error);
+        }
+      })
+
+  }
+
 }
