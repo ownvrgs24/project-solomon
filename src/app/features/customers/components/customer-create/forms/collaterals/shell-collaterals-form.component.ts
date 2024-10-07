@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import { AtmCardComponent } from "./atm-card/atm-card.component";
 import { BankCheckComponent } from "./bank-check/bank-check.component";
@@ -17,6 +17,9 @@ import { OthersComponent } from "./others/others.component";
   styleUrl: './shell-collaterals-form.component.scss'
 })
 export class ShellCollateralsFormComponent {
+
+  @Input({ required: true }) customerId!: string | null;
+
   tabs: { title: string, value: string }[] = [
     { title: 'Atm Card', value: 'atm_card' },
     { title: 'Bank Check', value: 'bank_check' },

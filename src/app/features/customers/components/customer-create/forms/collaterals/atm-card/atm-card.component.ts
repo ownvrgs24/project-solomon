@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -9,6 +9,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { AtmCardService } from '../../../../../../../shared/services/collaterals/atm-card.service';
 
 interface CardDetails {
   customer_id: FormControl<string | null>;
@@ -39,14 +41,19 @@ interface CardDetails {
     UpperCaseInputDirective,
     FieldsetModule,
     InputNumberModule,
+    KeyFilterModule
   ],
   templateUrl: './atm-card.component.html',
   styleUrl: './atm-card.component.scss'
 })
 export class AtmCardComponent {
 
+  @Input({ required: true }) customerId!: string | null;
+
   // TODO: Remove the placeholder from the forms
   // TODO: Add function to send the form data to the API
+
+  private atmCardService = inject(AtmCardService);
 
   atmCardFormGroup: FormGroup<{ card: FormArray<FormGroup<CardDetails>> }> = new FormGroup({
     card: new FormArray([this.buildAtmCardFormGroup()])
@@ -54,7 +61,7 @@ export class AtmCardComponent {
 
   private buildAtmCardFormGroup(): FormGroup<CardDetails> {
     return new FormGroup<CardDetails>({
-      customer_id: new FormControl<string | null>('1'),
+      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
       account_name: new FormControl<string | null>(null, [Validators.required]),
       account_number: new FormControl<string | null>(null, [Validators.required]),
       card_number: new FormControl<string | null>(null, [Validators.required]),
@@ -73,5 +80,34 @@ export class AtmCardComponent {
 
   removeCardForm(index: number) {
     (this.atmCardFormGroup.get('card') as FormArray)?.removeAt(index);
+  }
+
+  ngOnInit(): void {
+    this.atmCardFormGroup.get('card')?.setValue([
+      {
+        customer_id: this.customerId,
+        account_name: null,
+        account_number: null,
+        card_number: null,
+        pin: null,
+        issuing_bank: null,
+        account_type: null,
+        username: null,
+        password: null,
+        remarks: null,
+      }
+    ]);
+  }
+
+  submitForm() {
+    let { card } = this.atmCardFormGroup.value;
+    this.atmCardService.addAtmCard(card).subscribe({
+      next: () => {
+        console.log('Card added successfully');
+      },
+      error: (error) => {
+        console.error('Error adding card', error);
+      }
+    });
   }
 }

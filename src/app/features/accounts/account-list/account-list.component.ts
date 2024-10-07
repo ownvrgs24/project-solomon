@@ -61,6 +61,8 @@ export class AccountListComponent {
     this.loading = true;
     this.accountService.fetchAccounts().subscribe((accounts) => {
       this.accounts = accounts as Account[];
+      console.log(this.accounts);
+      
       this.loading = false;
     });
   }

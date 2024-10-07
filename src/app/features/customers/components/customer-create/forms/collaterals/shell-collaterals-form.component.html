@@ -1,46 +1,46 @@
 <p-tabView>
     <p-tabPanel *ngFor="let tab of tabs; let i = index" [header]="tab.title" [selected]="i === 0">
         @switch (tab.value) {
-            @case ('atm_card') {
-            <ng-template pTemplate="content">
-                <app-atm-card />
-            </ng-template>
-            }
-            @case ('bank_check') {
-            <ng-template pTemplate="content">
-                <app-bank-check />
-            </ng-template>
-            }
-            @case ('house_and_lot') {
-            <ng-template pTemplate="content">
-                <app-house-and-lot />
-            </ng-template>
-            }
-            @case ('lot') {
-            <ng-template pTemplate="content">
-                <app-lot />
-            </ng-template>
-            }
-            @case ('item') {
-            <ng-template pTemplate="content">
-                <app-items />
-            </ng-template>
-            }
-            @case ('vehicle') {
-            <ng-template pTemplate="content">
-                <app-vehicle />
-            </ng-template>
-            }
-            @case ('others') {
-            <ng-template pTemplate="content">
-                <app-others />
-            </ng-template>
-            }
-            @default {
-            <ng-template pTemplate="content">
-                <app-atm-card />
-            </ng-template>
-            }
+        @case ('atm_card') {
+        <ng-template pTemplate="content">
+            <app-atm-card [customerId]="customerId ? customerId : null" />
+        </ng-template>
+        }
+        @case ('bank_check') {
+        <ng-template pTemplate="content">
+            <app-bank-check />
+        </ng-template>
+        }
+        @case ('house_and_lot') {
+        <ng-template pTemplate="content">
+            <app-house-and-lot />
+        </ng-template>
+        }
+        @case ('lot') {
+        <ng-template pTemplate="content">
+            <app-lot />
+        </ng-template>
+        }
+        @case ('item') {
+        <ng-template pTemplate="content">
+            <app-items />
+        </ng-template>
+        }
+        @case ('vehicle') {
+        <ng-template pTemplate="content">
+            <app-vehicle />
+        </ng-template>
+        }
+        @case ('others') {
+        <ng-template pTemplate="content">
+            <app-others />
+        </ng-template>
+        }
+        @default {
+        <ng-template pTemplate="content">
+            <!-- <app-atm-card /> -->
+        </ng-template>
+        }
         }
     </p-tabPanel>
 </p-tabView>
