@@ -202,6 +202,8 @@ export class AddressFormComponent implements OnInit {
     this.addressService.addCustomerAddress(this.addressService.formatAddress(address, this.regionList))
       .subscribe({
         next: (data: any) => {
+          // TODO: Add a success message to the form
+          // this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
           console.log(data);
         },
         error: (error: TypeError) => {
