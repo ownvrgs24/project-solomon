@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -8,6 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { PensionService } from '../../../../../../../shared/services/source-of-income/pension.service';
+import { DropdownModule } from 'primeng/dropdown';
 
 
 interface PensionDetails {
@@ -32,12 +34,27 @@ interface PensionDetails {
     FieldsetModule,
     InputTextareaModule,
     InputNumberModule,
+    DropdownModule,
   ],
   templateUrl: './pension.component.html',
   styleUrl: './pension.component.scss'
 })
 
 export class PensionComponent {
+
+  @Input({ required: true }) customerId!: string | null;
+
+  private pensionService = inject(PensionService);
+
+  payfrequency: { label: string; value: string }[] = [
+    { label: 'Monthly', value: 'MONTHLY' },
+    { label: 'Bi-Monthly', value: 'BI_MONTHLY' },
+    { label: 'Semi-Monthly', value: 'SEMI_MONTHLY' },
+    { label: 'Weekly', value: 'WEEKLY' },
+    { label: 'Daily', value: 'DAILY' },
+    { label: 'Quarterly', value: 'QUARTERLY' },
+    { label: 'Annually', value: 'ANNUALLY' }
+  ];
 
   pensionFormGroup: FormGroup<PensionDetails> = new FormGroup({
     customer_id: new FormControl<string | null>('1'),
@@ -47,5 +64,19 @@ export class PensionComponent {
     remarks: new FormControl<string | null>(null)
   });
 
+  ngOnInit(): void {
+    this.pensionFormGroup.controls.customer_id.setValue(this.customerId);
+  }
+
+  submitForm(): void {
+    this.pensionService.addPension(this.pensionFormGroup.value).subscribe({
+      next: () => {
+        console.log('Pension form submitted successfully');
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
 
 }

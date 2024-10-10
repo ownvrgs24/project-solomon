@@ -1,8 +1,4 @@
-<!-- net_income: new FormControl<string | null>(null),
-    source: new FormControl<string | null>(null),
-    remarks: new FormControl<string | null>(null) -->
-
-<form [formGroup]="selfEmployedFormGroup">
+<form [formGroup]="selfEmployedFormGroup" (ngSubmit)="submitForm()">
     <p-fieldset legend="Please fill up the form" styleClass="my-4">
 
         <div class="grid grid-cols-4 gap-4 items-start my-4">

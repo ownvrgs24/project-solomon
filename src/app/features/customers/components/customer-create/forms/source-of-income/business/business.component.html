@@ -1,4 +1,4 @@
-<form [formGroup]="businessFormGroup">
+<form [formGroup]="businessFormGroup" (ngSubmit)="submitForm()">
 
     <p-fieldset legend="Please fill up the form" styleClass="my-4">
 
@@ -41,8 +41,9 @@
 
             <div class="grid grid-flow-row gap-2">
                 <label for="business_contact">BUSINESS CONTACT</label>
-                <input name="business_contact" formControlName="business_contact" pInputText id="business_contact"
-                    placeholder="Ex. Juan Dela Cruz" aria-describedby="business_contact-help" toUppercase />
+                <input pKeyFilter="pnum" name="business_contact" formControlName="business_contact" pInputText
+                    id="business_contact" placeholder="Ex. Juan Dela Cruz" aria-describedby="business_contact-help"
+                    toUppercase />
                 <small id="business_contact-help">
                     This is a <strong>OPTIONAL</strong> field.
                 </small>
@@ -50,8 +51,8 @@
 
             <div class="grid grid-flow-row gap-2">
                 <label for="business_telephone">BUSINESS TELEPHONE</label>
-                <input name="business_telephone" formControlName="business_telephone" pInputText id="business_telephone"
-                    placeholder="Ex. 1234567890" aria-describedby="business_telephone-help" />
+                <input pKeyFilter="num" name="business_telephone" formControlName="business_telephone" pInputText
+                    id="business_telephone" placeholder="Ex. 1234567890" aria-describedby="business_telephone-help" />
                 <small id="business_telephone-help">
                     This is a <strong>OPTIONAL</strong> field.
                 </small>
@@ -59,8 +60,8 @@
 
             <div class="grid grid-flow-row gap-2">
                 <label for="business_email">BUSINESS EMAIL</label>
-                <input toUppercase name="business_email" formControlName="business_email" pInputText id="business_email"
-                    placeholder="Ex. example@business.com" aria-describedby="business_email-help" />
+                <input pKeyFilter="email" name="business_email" formControlName="business_email" pInputText
+                    id="business_email" placeholder="Ex. example@business.com" aria-describedby="business_email-help" />
                 <small id="business_email-help">
                     This is a <strong>OPTIONAL</strong> field.
                 </small>

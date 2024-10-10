@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
@@ -31,17 +31,33 @@ interface PersonalInformation {
 @Component({
   selector: 'app-personal-information-form',
   standalone: true,
-  imports: [FormsModule, MessagesModule, InputMaskModule, KeyFilterModule, DividerModule, InputTextModule, InputMaskModule, UpperCaseInputDirective, DropdownModule, CalendarModule, ReactiveFormsModule, CommonModule],
-
+  imports: [
+    FormsModule,
+    MessagesModule,
+    InputMaskModule,
+    KeyFilterModule,
+    DividerModule,
+    InputTextModule,
+    InputMaskModule,
+    DropdownModule,
+    CalendarModule,
+    ReactiveFormsModule,
+    CommonModule,
+    UpperCaseInputDirective
+  ],
   templateUrl: './personal-information-form.component.html',
   styleUrl: './personal-information-form.component.scss'
 })
 export class PersonalInformationFormComponent {
+
   formMessage: Message[] | undefined;
 
   @Output() customerRegistered: EventEmitter<string> = new EventEmitter();
 
+  @Input({ required: false }) customerId!: string | null;
+
   private utils = inject(UtilsService);
+
   private customerService = inject(CustomersService);
 
   genderList: { label: string; value: string }[] = [
@@ -87,6 +103,9 @@ export class PersonalInformationFormComponent {
     date_of_birth: new FormControl(),
   });
 
+  ngOnInit(): void {
+    console.log(this.customerId);
+  }
 
   get computeAge(): number {
     const birthdate = this.personalInformationForm.get('date_of_birth')?.value;
@@ -94,15 +113,32 @@ export class PersonalInformationFormComponent {
   }
 
   submitPersonalInformation(): void {
-    console.log(this.personalInformationForm.value);
-
-
     const { value } = this.personalInformationForm;
     this.customerService.registerCustomer(value).subscribe({
       next: (data: any) => {
+
+        if (this.customerId) {
+          this.linkCustomerCoMaker(data.customer.customer_id);
+        }
+
         this.customerRegistered.emit(data.customer.customer_id);
+
         this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
         this.personalInformationForm.disable();
+      },
+      error: (error: TypeError) => {
+        this.formMessage = [{ severity: 'error', summary: 'Error', detail: error.message }];
+      }
+    });
+  }
+
+  linkCustomerCoMaker(customerId: string): void {
+    this.customerService.linkCustomerCoMaker({
+      customer_id: this.customerId,
+      comaker_id: customerId
+    }).subscribe({
+      next: (data: any) => {
+        this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
       },
       error: (error: TypeError) => {
         this.formMessage = [{ severity: 'error', summary: 'Error', detail: error.message }];

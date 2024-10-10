@@ -6,7 +6,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { UtilsService } from '../../../../../shared/services/utils.service';
 import { InputMaskModule } from 'primeng/inputmask';
-import { UpperCaseInputDirective } from '../../../../../shared/directives/to-uppercase.directive';
 
 interface AdditionalInformation {
   date_of_birth: FormControl<Date | null>
@@ -18,7 +17,7 @@ interface AdditionalInformation {
 @Component({
   selector: 'app-additional-information',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, CalendarModule, DropdownModule, ButtonModule, InputMaskModule, UpperCaseInputDirective],
+  imports: [ReactiveFormsModule, InputTextModule, CalendarModule, DropdownModule, ButtonModule, InputMaskModule],
   templateUrl: './additional-information.component.html',
   styleUrl: './additional-information.component.scss'
 })

@@ -8,6 +8,7 @@ import { Customer } from '../../features/customers/components/customer-list/cust
 export class CustomersService {
 
 
+
   readonly http = inject(HttpService);
 
   fetchCustomers() {
@@ -16,6 +17,10 @@ export class CustomersService {
 
   registerCustomer(data: any) {
     return this.http.postRequest('customers', data);
+  }
+
+  linkCustomerCoMaker(data: any) {
+    return this.http.postRequest(`customer/link`, data);
   }
 
 }

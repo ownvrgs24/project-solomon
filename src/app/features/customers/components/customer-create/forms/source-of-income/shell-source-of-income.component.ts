@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import { EmploymentComponent } from "./employment/employment.component";
 import { BusinessComponent } from "./business/business.component";
@@ -15,6 +15,9 @@ import { OthersComponent } from "../source-of-income/others/others.component";
   styleUrl: './shell-source-of-income.component.scss'
 })
 export class ShellSourceOfIncomeComponent {
+
+  @Input({ required: true }) customerId!: string | null;
+
   tabs: { title: string, value: string }[] = [
     { title: 'Employment', value: 'employment' },
     { title: 'Business Owner', value: 'business_owner' },

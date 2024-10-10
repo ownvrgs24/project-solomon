@@ -23,13 +23,8 @@ export class CustomerCreateComponent {
 
 
   activeIndex: number = 0;
-  // customerId = signal<string | null>(null);
   customerId = signal<string | null>(null);
-
-  ngOnInit(): void {
-    this.customerId.update(() => '4dab6c38-6e68-46c3-bc32-809c0ac5825f');
-  }
-
+  
   onCustomerCreated($event: string): void {
     this.customerId.set($event);
 

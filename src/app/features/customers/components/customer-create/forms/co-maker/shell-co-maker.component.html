@@ -1,7 +1,7 @@
 <p-tabView>
     <p-tabPanel header="Create Profile">
         <ng-template pTemplate="content">
-            <app-create-profile />
+            <app-create-profile [customerId]="customerId" />
         </ng-template>
     </p-tabPanel>
     <p-tabPanel header="Customer List">

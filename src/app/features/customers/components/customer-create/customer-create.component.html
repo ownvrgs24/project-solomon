@@ -27,7 +27,7 @@
         [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
-                <app-shell-source-of-income />
+                <app-shell-source-of-income [customerId]="customerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>
@@ -35,7 +35,7 @@
     <p-tabPanel header="Co-Maker" [leftIcon]="isCustomerCreated ? 'pi pi-lock' : ''" [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
-                <app-shell-co-maker />
+                <app-shell-co-maker [customerId]="customerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>
