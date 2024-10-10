@@ -18,7 +18,7 @@
         }
         @case ('lot') {
         <ng-template pTemplate="content">
-            <app-lot />
+            <app-lot [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @case ('item') {
@@ -28,12 +28,12 @@
         }
         @case ('vehicle') {
         <ng-template pTemplate="content">
-            <app-vehicle />
+            <app-vehicle [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @case ('others') {
         <ng-template pTemplate="content">
-            <app-others />
+            <app-others [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @default {

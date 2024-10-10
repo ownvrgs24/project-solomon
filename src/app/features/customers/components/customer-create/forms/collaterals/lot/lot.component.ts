@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { LotService } from '../../../../../../../shared/services/collaterals/lot.service';
 
 interface LotDetails {
   customer_id: FormControl<string | null>;
@@ -42,7 +44,8 @@ interface LotDetails {
     FieldsetModule,
     InputNumberModule,
     CalendarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    KeyFilterModule,
   ],
   templateUrl: './lot.component.html',
   styleUrl: './lot.component.scss'
@@ -52,13 +55,17 @@ export class LotComponent {
   // TODO: Remove the placeholder from the forms
   // TODO: Add function to send the form data to the API
 
+  @Input({ required: true }) customerId!: string | null;
+
+  private lotService = inject(LotService);
+
   lotFormGroup: FormGroup<{ lot: FormArray<FormGroup<LotDetails>> }> = new FormGroup({
-    lot: new FormArray([this.buildLotFormGroup()])
+    lot: new FormArray<FormGroup<LotDetails>>([])
   });
 
   private buildLotFormGroup(): FormGroup<LotDetails> {
     return new FormGroup<LotDetails>({
-      customer_id: new FormControl<string | null>('1'),
+      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
       l_property_address: new FormControl<string | null>(null, [Validators.required]),
       l_property_value: new FormControl<string | null>(null, [Validators.required]),
       l_property_type: new FormControl<string | null>(null),
@@ -70,11 +77,29 @@ export class LotComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.addLot();
+  }
+
   addLot(): void {
     (this.lotFormGroup.get('lot') as FormArray)?.push(this.buildLotFormGroup());
   }
 
   removeLot(index: number): void {
     (this.lotFormGroup.get('lot') as FormArray)?.removeAt(index);
+  }
+
+  submitForm(): void {
+    let { lot } = this.lotFormGroup.value;
+    this.lotService.addLot(lot).subscribe(
+      {
+        next: (response) => {
+          console.log(response);
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      }
+    );
   }
 }
