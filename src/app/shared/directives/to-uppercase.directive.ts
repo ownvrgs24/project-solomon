@@ -7,23 +7,12 @@ import {
 } from '@angular/core';
 
 @Directive({
-    selector: 'input[toUppercase], textarea[toUppercase]',
+    selector: '[toUppercase]',
     standalone: true,
 })
-export class UpperCaseInputDirective extends DefaultValueAccessor {
-    @HostListener('input', ['$event']) input($event: InputEvent) {
-        setTimeout(() => {
-            const target = $event.target as HTMLInputElement | HTMLTextAreaElement;
-            const start = target.selectionStart;
-
-            target.value = target.value.toUpperCase();
-            target.setSelectionRange(start, start);
-
-            this.onChange(target.value);
-        }, 70);
-    }
-
-    constructor(renderer: Renderer2, elementRef: ElementRef) {
-        super(renderer, elementRef, false);
+export class UpperCaseInputDirective {
+    @HostListener('input', ['$event']) onkeyup(event: KeyboardEvent) {
+        const input = event.target as HTMLInputElement;
+        input.value = input.value.toUpperCase();
     }
 }

@@ -56,7 +56,7 @@ export class AtmCardComponent {
   private atmCardService = inject(AtmCardService);
 
   atmCardFormGroup: FormGroup<{ card: FormArray<FormGroup<CardDetails>> }> = new FormGroup({
-    card: new FormArray([this.buildAtmCardFormGroup()])
+    card: new FormArray<FormGroup<CardDetails>>([])
   });
 
   private buildAtmCardFormGroup(): FormGroup<CardDetails> {
@@ -83,20 +83,7 @@ export class AtmCardComponent {
   }
 
   ngOnInit(): void {
-    this.atmCardFormGroup.get('card')?.setValue([
-      {
-        customer_id: this.customerId,
-        account_name: null,
-        account_number: null,
-        card_number: null,
-        pin: null,
-        issuing_bank: null,
-        account_type: null,
-        username: null,
-        password: null,
-        remarks: null,
-      }
-    ]);
+    this.initializeCardForm();
   }
 
   submitForm() {

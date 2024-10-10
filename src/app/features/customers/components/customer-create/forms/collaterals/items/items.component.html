@@ -1,4 +1,4 @@
-<form [formGroup]="itemsFormGroup">
+<form [formGroup]="itemsFormGroup" (ngSubmit)="submitForm()">
     <ng-container formArrayName="items">
         <ng-container *ngFor="let item of itemsFormGroup.controls.items.controls; let i = index">
             <ng-container [formGroupName]="i">
@@ -8,12 +8,6 @@
                             severity="danger" pTooltip="Delete this form" />
                     </div>
                     <div class="grid grid-cols-4 gap-4 items-start my-4">
-                        <!-- item_description isrequired
-                        item_serial_number
-                        item_quantity
-                        item_monetary_value
-                        date_acquired
-                        remarks -->
                         <div class="grid grid-flow-row gap-2">
                             <label for="item_description">ITEM DESCRIPTION</label>
                             <input name="item_description" formControlName="item_description" required pInputText
@@ -58,7 +52,7 @@
 
                         <div class="grid grid-flow-row gap-2">
                             <label for="item_quantity">ITEM QUANTITY</label>
-                            <p-inputNumber [useGrouping]="false" styleClass="w-full" formControlName="item_quantity"
+                            <input pKeyFilter="num" pInputText styleClass="w-full" formControlName="item_quantity"
                                 id="item_quantity" placeholder="Ex. 10" aria-describedby="item_quantity-help" />
                             <small id="item_quantity-help">
                                 This is a <strong>OPTIONAL</strong> field.

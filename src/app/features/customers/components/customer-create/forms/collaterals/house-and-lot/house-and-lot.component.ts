@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
+import { HouseAndLotService } from '../../../../../../../shared/services/collaterals/house-and-lot.service';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 interface HouseAndLotDetails {
   customer_id: FormControl<string | null>;
@@ -42,7 +44,8 @@ interface HouseAndLotDetails {
     FieldsetModule,
     InputNumberModule,
     CalendarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    KeyFilterModule,
   ],
   templateUrl: './house-and-lot.component.html',
   styleUrl: './house-and-lot.component.scss'
@@ -51,13 +54,21 @@ export class HouseAndLotComponent {
   // TODO: Remove the placeholder from the forms
   // TODO: Add function to send the form data to the API
 
+  @Input({ required: true }) customerId!: string | null;
+
+  private houseAndLotService = inject(HouseAndLotService);
+
   houseAndLotFormGroup: FormGroup<{ houseAndLot: FormArray<FormGroup<HouseAndLotDetails>> }> = new FormGroup({
-    houseAndLot: new FormArray([this.buildHouseAndLotFormGroup()])
+    houseAndLot: new FormArray<FormGroup<HouseAndLotDetails>>([])
   });
+
+  ngOnInit(): void {
+    this.initializeHouseAndLotForm();
+  }
 
   private buildHouseAndLotFormGroup(): FormGroup<HouseAndLotDetails> {
     return new FormGroup<HouseAndLotDetails>({
-      customer_id: new FormControl<string | null>('1'),
+      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
       hal_property_address: new FormControl<string | null>(null, [Validators.required]),
       hal_property_value: new FormControl<string | null>(null, [Validators.required]),
       hal_property_type: new FormControl<string | null>(null),
@@ -69,12 +80,24 @@ export class HouseAndLotComponent {
     });
   }
 
-  addHouseAndLot(): void {
+  initializeHouseAndLotForm(): void {
     (this.houseAndLotFormGroup.get('houseAndLot') as FormArray)?.push(this.buildHouseAndLotFormGroup());
   }
 
   removeHouseAndLot(index: number): void {
     (this.houseAndLotFormGroup.get('houseAndLot') as FormArray)?.removeAt(index);
+  }
+
+  submitForm() {
+    let { houseAndLot } = this.houseAndLotFormGroup.value;
+    this.houseAndLotService.addHouseAndLot(houseAndLot).subscribe({
+      next: () => {
+        console.log('House and Lot added successfully');
+      },
+      error: (error) => {
+        console.error('Error adding House and Lot', error);
+      }
+    });
   }
 
 }

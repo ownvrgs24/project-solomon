@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -11,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
+import { ItemService } from '../../../../../../../shared/services/collaterals/item.service';
+import { KeyFilterModule } from 'primeng/keyfilter';
 
 interface ItemDetails {
   customer_id: FormControl<string | null>;
@@ -41,7 +43,8 @@ interface ItemDetails {
     FieldsetModule,
     InputNumberModule,
     CalendarModule,
-    InputTextareaModule
+    InputTextareaModule,
+    KeyFilterModule
   ],
   templateUrl: './items.component.html',
   styleUrl: './items.component.scss'
@@ -52,13 +55,21 @@ export class ItemsComponent {
   // TODO: Remove the placeholder from the forms
   // TODO: Add function to send the form data to the API
 
+  @Input({ required: true }) customerId!: string | null;
+
+  private itemService = inject(ItemService);
+
   itemsFormGroup: FormGroup<{ items: FormArray<FormGroup<ItemDetails>> }> = new FormGroup({
-    items: new FormArray([this.buildItemFormGroup()])
+    items: new FormArray<FormGroup<ItemDetails>>([])
   });
+
+  ngOnInit(): void {
+    this.addItem();
+  }
 
   private buildItemFormGroup(): FormGroup<ItemDetails> {
     return new FormGroup<ItemDetails>({
-      customer_id: new FormControl<string | null>('1'),
+      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
       item_description: new FormControl<string | null>(null, [Validators.required]),
       item_monetary_value: new FormControl<string | null>(null, [Validators.required]),
       item_serial_number: new FormControl<string | null>(null),
@@ -74,6 +85,18 @@ export class ItemsComponent {
 
   removeItem(index: number): void {
     (this.itemsFormGroup.get('items') as FormArray)?.removeAt(index);
+  }
+
+  submitForm(): void {
+    let { items } = this.itemsFormGroup.value;
+    this.itemService.addItem(items).subscribe({
+      next: () => {
+        console.log('Item added');
+      },
+      error: (error) => {
+        console.error('Error adding item', error);
+      }
+    });
   }
 
 }

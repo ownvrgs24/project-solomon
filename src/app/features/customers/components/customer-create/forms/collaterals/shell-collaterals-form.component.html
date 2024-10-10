@@ -8,12 +8,12 @@
         }
         @case ('bank_check') {
         <ng-template pTemplate="content">
-            <app-bank-check />
+            <app-bank-check [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @case ('house_and_lot') {
         <ng-template pTemplate="content">
-            <app-house-and-lot />
+            <app-house-and-lot [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @case ('lot') {
@@ -23,7 +23,7 @@
         }
         @case ('item') {
         <ng-template pTemplate="content">
-            <app-items />
+            <app-items [customerId]="customerId ? customerId : null" />
         </ng-template>
         }
         @case ('vehicle') {
