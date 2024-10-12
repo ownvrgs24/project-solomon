@@ -35,7 +35,7 @@
     <p-tabPanel header="Profile Picture">
         <ng-template pTemplate="content">
             <p-card>
-                <app-profile-picture-form />
+                <app-profile-picture-form [customerId]="comakerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>
@@ -43,7 +43,7 @@
     <p-tabPanel header="Promissory Note">
         <ng-template pTemplate="content">
             <p-card>
-                <app-promissory-note />
+                <app-promissory-note [customerId]="comakerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>

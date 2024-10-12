@@ -10,11 +10,11 @@
     <!-- Controls -->
     <div class="py-4">
         <div *ngIf="!isCaptured" class="flex items-center gap-x-2">
-            <p-button icon="pi pi-camera" (click)="takeSnapshot()" label="Capture" [disabled]="!video"></p-button>
+            <p-button [disabled]="hasUploadSucceeded" icon="pi pi-camera" (click)="takeSnapshot()" label="Capture" [disabled]="!video"></p-button>
         </div>
         <div *ngIf="isCaptured" class="flex items-center gap-x-2">
-            <p-button severity="secondary" [outlined]="true" icon="pi pi-refresh" (click)="retakeImage()" label="Retake"></p-button>
-            <p-button icon="pi pi-upload" severity="success" (click)="confirmCapturedImage()" label="Confirm & Upload"></p-button>
+            <p-button [disabled]="hasUploadSucceeded" severity="secondary" [outlined]="true" icon="pi pi-refresh" (click)="retakeImage()" label="Retake"></p-button>
+            <p-button [disabled]="hasUploadSucceeded" icon="pi pi-upload" severity="success" (click)="confirmCapturedImage()" label="Confirm & Upload"></p-button>
         </div>
     </div>
 

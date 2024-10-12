@@ -44,7 +44,7 @@
         [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
-                <app-profile-picture-form />
+                <app-profile-picture-form [customerId]="customerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>
@@ -53,7 +53,7 @@
         [disabled]="isCustomerCreated">
         <ng-template pTemplate="content">
             <p-card>
-                <app-promissory-note />
+                <app-promissory-note [customerId]="customerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>

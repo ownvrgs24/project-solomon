@@ -1,0 +1,20 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpService } from './http.service';
+import { Observable } from 'rxjs';
+import { HttpEvent, HttpRequest } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UploadService {
+
+  readonly http = inject(HttpService);
+
+  saveProfilePicture(data: FormData) {
+    return this.http.postRequest('pfp', data);
+  }
+
+  uploadFiles(data: FormData) {
+    return this.http.uploadFile(data);
+  }
+}

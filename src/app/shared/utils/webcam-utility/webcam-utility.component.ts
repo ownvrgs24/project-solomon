@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Output, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild, AfterViewInit, OnDestroy, Input, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
+import { UploadService } from '../../services/upload.service';
+import { ImageService } from '../image.service';
 
 @Component({
   selector: 'app-webcam-utility',
@@ -13,7 +15,8 @@ import { MessagesModule } from 'primeng/messages';
 export class WebcamUtilityComponent implements AfterViewInit, OnDestroy {
 
   @Output() imageCaptured: EventEmitter<string> = new EventEmitter();
-
+  @Input({ required: true }) customerId!: string;
+  @Input({ required: true }) hasUploadSucceeded!: boolean;
   WIDTH = 340;
   HEIGHT = 280;
 
@@ -107,6 +110,7 @@ export class WebcamUtilityComponent implements AfterViewInit, OnDestroy {
   }
 
   confirmCapturedImage() {
+    // Emit the captured image
     if (this.capturedImage) {
       this.imageCaptured.emit(this.capturedImage);
     }

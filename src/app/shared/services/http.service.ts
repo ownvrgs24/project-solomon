@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,26 @@ export class HttpService {
 
   readonly http = inject(HttpClient);
 
+  uploadFile(formData: FormData): Observable<HttpEvent<any>> {
+    const req = new HttpRequest('POST', this.API_URL + `upload/files`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+    return this.http.request(req);
+  }
+
   postRequest(apiEndpoint: string, data: any) {
-    return this.http.post(this.API_URL + apiEndpoint, data);
+    return this.http.post(this.API_URL + apiEndpoint, data, {
+      reportProgress: true,
+      responseType: 'json'
+    });
   }
 
   getRequest(apiEndpoint: string) {
-    return this.http.get(this.API_URL + apiEndpoint);
+    return this.http.get(this.API_URL + apiEndpoint, {
+      reportProgress: true,
+      responseType: 'json'
+    });
   }
 
   deleteRequest(apiEndpoint: string) {
