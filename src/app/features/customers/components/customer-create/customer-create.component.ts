@@ -11,11 +11,12 @@ import { PromissoryNoteComponent } from "./forms/promissory-note/promissory-note
 import { ArchivesComponent } from "./forms/archives/archives.component";
 import { ShellCoMakerComponent } from "./forms/co-maker/shell-co-maker.component";
 import { signal } from '@angular/core';
+import { DelinquentStatusComponent } from "./forms/delinquent-status/delinquent-status.component";
 
 @Component({
   selector: 'app-customer-create',
   standalone: true,
-  imports: [ButtonModule, TabViewModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ProfilePictureFormComponent, PromissoryNoteComponent, ArchivesComponent, ShellCoMakerComponent],
+  imports: [ButtonModule, TabViewModule, PersonalInformationFormComponent, CardModule, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ProfilePictureFormComponent, PromissoryNoteComponent, ArchivesComponent, ShellCoMakerComponent, DelinquentStatusComponent],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss'
 })
@@ -23,7 +24,7 @@ export class CustomerCreateComponent {
 
 
   activeIndex: number = 0;
-  customerId = signal<string | null>(null);
+  customerId = signal<string | null>('8835a3d1-ed37-471f-84ab-da5eb177655e');
   
   onCustomerCreated($event: string): void {
     this.customerId.set($event);

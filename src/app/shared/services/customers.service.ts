@@ -7,8 +7,6 @@ import { Customer } from '../../features/customers/components/customer-list/cust
 })
 export class CustomersService {
 
-
-
   readonly http = inject(HttpService);
 
   fetchCustomers() {
@@ -23,5 +21,8 @@ export class CustomersService {
     return this.http.postRequest(`customer/link`, data);
   }
 
+  markAsDelinquent(data: any) {
+    return this.http.postRequest(`customer/mark-as-delinquent`, data);
+  }
+
 }
-``

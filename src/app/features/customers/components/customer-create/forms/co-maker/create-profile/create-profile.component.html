@@ -51,7 +51,7 @@
     <p-tabPanel header="Archives">
         <ng-template pTemplate="content">
             <p-card>
-                <app-archives />
+                <app-archives [customerId]="comakerId()" />
             </p-card>
         </ng-template>
     </p-tabPanel>

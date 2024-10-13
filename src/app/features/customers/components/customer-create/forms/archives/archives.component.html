@@ -1,5 +1,8 @@
-<p-fileUpload name="file[]" url="https://www.primefaces.org/cdn/api/upload.php" (onUpload)="onUpload($event)"
-    [multiple]="true" accept=".pdf,.doc,.docx,image/*" maxFileSize="10000000">
+<p-messages />
+<p-fileUpload #fileUploaderForm (onProgress)="onFileUploadProgress($event, fileUploaderForm)" name="files[]"
+    [customUpload]="true" (uploadHandler)="uploadHandler($event, fileUploaderForm)" [multiple]="true"
+    accept=".pdf,.doc,.docx,image/*" maxFileSize="10000000" (onSelect)="handleSelectedFile($event)"
+    (onUpload)="onUpload($event)">
     <ng-template pTemplate="content">
         <ul *ngIf="uploadedFiles.length">
             <li *ngFor="let file of uploadedFiles">

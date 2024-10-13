@@ -120,9 +120,7 @@ export class PersonalInformationFormComponent {
         if (this.customerId) {
           this.linkCustomerCoMaker(data.customer.customer_id);
         }
-
         this.customerRegistered.emit(data.customer.customer_id);
-
         this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
         this.personalInformationForm.disable();
       },

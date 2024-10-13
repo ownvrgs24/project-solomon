@@ -6,7 +6,7 @@
 
     <div class="grid grid-cols-6 gap-4 items-baseline">
         <div class="grid grid-flow-row gap-2">
-            <label for="lastname" toUppercase>LAST NAME</label>
+            <label for="lastname">LAST NAME</label>
             <input formControlName="last_name" required pInputText id="lastname" placeholder="Ex. DELA CRUZ"
                 aria-describedby="lastname-help" toUppercase pKeyFilter="alpha" />
             @if (personalInformationForm.get('last_name')?.hasError('required') &&
@@ -58,7 +58,7 @@
         <!-- Civil Status -->
         <div class="grid grid-flow-row gap-2">
             <label for="civil-status">CIVIL STATUS</label>
-            <p-dropdown formControlName="civil_status" styleClass="w-full" [options]="civilStatusList"
+            <p-dropdown required formControlName="civil_status" styleClass="w-full" [options]="civilStatusList"
                 optionLabel="label" optionValue="value" placeholder="Select Civil Status" />
             @if (personalInformationForm.get('civil_status')?.hasError('required') &&
             personalInformationForm.get('civil_status')?.touched) {
@@ -70,8 +70,8 @@
 
         <div class="grid grid-flow-row gap-2">
             <label for="contact-no">CONTACT NO.</label>
-            <p-inputMask formControlName="mobile_number" styleClass="w-full" mask="0999 999 9999"
-                placeholder="0912 345 6789" [unmask]="true" pKeyFilter="num" />
+            <p-inputMask [unmask]="true" [autoClear]="true" [pValidateOnly]="true" formControlName="mobile_number"
+                styleClass="w-full" mask="0999 999 9999" placeholder="0912 345 6789" pKeyFilter="num" />
             <small id="contact-no-help">
                 Leave this field blank if data is <strong>NOT available</strong>.
             </small>
@@ -101,7 +101,7 @@
 
         <div class="grid grid-flow-row gap-2">
             <label for="date-of-birth">DATE OF BIRTH (mm/yy/dd)</label>
-            <p-calendar placeholder="03/24/1999" formControlName="date_of_birth" styleClass="w-full" iconDisplay="input"
+            <p-calendar placeholder="mm/dd/yyyy" formControlName="date_of_birth" styleClass="w-full" iconDisplay="input"
                 [showIcon]="true" inputId="icondisplay" mask="99/99/9999" slotChar="mm/dd/yyyy" />
             <small id=" date-of-birth-help">
                 Leave this field blank if data is <strong>NOT available</strong>.

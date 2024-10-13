@@ -1,7 +1,5 @@
 <p-tabView [activeIndex]="0">
-    @if (messages) {
-    <p-messages [(value)]="messages" [enableService]="false" />
-    }
+    <p-messages />
     <p-tabPanel header="Camera" [leftIcon]="hasUploadSucceeded ? 'pi pi-lock' : 'pi pi-camera'"
         [disabled]="hasUploadSucceeded">
         <ng-template pTemplate="content">

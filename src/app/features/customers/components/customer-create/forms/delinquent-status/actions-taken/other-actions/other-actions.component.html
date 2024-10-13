@@ -1,0 +1,35 @@
+<p-messages />
+<form [formGroup]="otherActionsForm" (ngSubmit)="submitForm()">
+    <ng-container formArrayName="records">
+        <ng-container *ngFor="let item of otherActionsForm.controls.records.controls; let i=index">
+            <ng-container [formGroupName]="i">
+                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+                    <div *ngIf="i !== 0" class="flex justify-end">
+                        <p-button (onClick)="removeOtherActions(i)" type="button" icon="pi pi-trash" [outlined]="true"
+                            severity="danger" pTooltip="Delete this form" />
+                    </div>
+                    <div class="grid grid-cols-1 gap-4 items-baseline">
+                        <div class="grid grid-flow-row gap-2">
+                            <label for="remarks">REMARKS</label>
+                            <textarea toUppercase required formControlName="remarks" name="remarks" pInputTextarea
+                                id="remarks" placeholder="Enter any additional information"
+                                aria-describedby="remarks-help" cols="3"></textarea>
+                            @if
+                            (otherActionsForm.get('records')?.get(i.toString())?.get('remarks')?.hasError('required')
+                            && otherActionsForm.get('records')?.get(i.toString())?.get('remarks')?.touched) {
+                            <small class="p-error block">
+                                Remarks is required!
+                            </small>
+                            }
+                        </div>
+                    </div>
+                </p-fieldset>
+            </ng-container>
+        </ng-container>
+
+        <p-button [outlined]="true" [disabled]="otherActionsForm.invalid" (onClick)="addOtherActions()"
+            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
+        <p-button type="submit" [disabled]="otherActionsForm.invalid" icon="pi pi-save" label="Save"></p-button>
+
+    </ng-container>
+</form>
