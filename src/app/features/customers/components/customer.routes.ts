@@ -1,27 +1,41 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-    {
-        path: "create",
-        async loadComponent() {
-            const m = await import(
-                "./customer-create/customer-create.component"
-            );
-            return m.CustomerCreateComponent;
-        },
+  {
+    path: 'create',
+    async loadComponent() {
+      const m = await import('./customer-create/customer-create.component');
+      return m.CustomerCreateComponent;
     },
-    {
-        path: "list",
-        async loadComponent() {
-            const m = await import(
-                "./customer-list/customer-list.component"
-            );
-            return m.CustomerListComponent;
-        },
+  },
+  {
+    path: 'list',
+    async loadComponent() {
+      const m = await import('./customer-list/customer-list.component');
+      return m.CustomerListComponent;
     },
-    {
-        path: "",
-        redirectTo: "create",
-        pathMatch: "full",
+  },
+  {
+    path: 'loans-records/:id',
+    async loadComponent() {
+      const m = await import(
+        './customer-loans/loan-records/loan-records.component'
+      );
+      return m.LoanRecordsComponent;
     },
+  },
+  {
+    path: 'loans-records/:id/:loan_id',
+    async loadComponent() {
+      const m = await import(
+        './customer-loans/ammortization-table/ammortization-table.component'
+      );
+      return m.AmmortizationTableComponent;
+    },
+  },
+  {
+    path: '',
+    redirectTo: 'create',
+    pathMatch: 'full',
+  },
 ];

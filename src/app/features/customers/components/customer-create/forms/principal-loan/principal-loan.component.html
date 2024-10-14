@@ -1,0 +1,109 @@
+<p-messages />
+<p-confirmDialog />
+<p-fieldset legend="Please fill up the form" [toggleable]="false">
+  <form [formGroup]="principalLoanFormGroup" (ngSubmit)="submitForm()">
+    <div class="grid grid-cols-5 gap-4 items-baseline my-4">
+      <div class="grid grid-flow-row gap-2">
+        <label for="loan_amount">LOAN AMOUNT</label>
+        <p-inputNumber
+          type="number"
+          required
+          styleClass="w-full"
+          formControlName="loan_amount"
+          placeholder="Enter Loan Amount"
+          mode="currency"
+          currency="PHP"
+        />
+
+        @if ( principalLoanFormGroup.get('loan_amount')?.hasError('required') &&
+        principalLoanFormGroup.get('loan_amount')?.touched ) {
+        <small class="p-error block"> Loan Amount is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2">
+        <label for="loan_interest_rate">LOAN INTEREST RATE</label>
+        <p-inputNumber
+          type="number"
+          required
+          styleClass="w-full"
+          formControlName="loan_interest_rate"
+          placeholder="Enter Loan Interest Rate"
+          suffix="%"
+        />
+
+        @if (
+        principalLoanFormGroup.get('loan_interest_rate')?.hasError('required')
+        && principalLoanFormGroup.get('loan_interest_rate')?.touched ) {
+        <small class="p-error block"> Loan Interest Rate is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2">
+        <label for="loan_mode_of_payment">MODE OF PAYMENT</label>
+        <p-dropdown
+          required
+          styleClass="w-full"
+          [options]="paymentScheduleOptions"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="false"
+          filterBy="name"
+          formControlName="loan_mode_of_payment"
+          placeholder="Select Mode of Payment"
+        >
+        </p-dropdown>
+
+        @if (
+        principalLoanFormGroup.get('loan_mode_of_payment')?.hasError('required')
+        && principalLoanFormGroup.get('loan_mode_of_payment')?.touched ) {
+        <small class="p-error block"> Mode of Payment is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2">
+        <label for="loan_opening_date">LOAN OPENING DATE (mm/dd/yyyy)</label>
+        <p-calendar
+          required
+          placeholder="mm/dd/yyyy"
+          formControlName="loan_opening_date"
+          styleClass="w-full"
+          iconDisplay="input"
+          [showIcon]="true"
+          inputId="loan_opening_date"
+          mask="99/99/9999"
+          slotChar="mm/dd/yyyy"
+        ></p-calendar>
+        @if (
+        principalLoanFormGroup.get('loan_opening_date')?.hasError('required') &&
+        principalLoanFormGroup.get('loan_opening_date')?.touched ) {
+        <small class="p-error block"> Loan Opening Date is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2">
+        <label for="loan_remarks">REMARKS</label>
+        <textarea
+          pInputTextarea
+          formControlName="loan_remarks"
+          id="loan_remarks"
+          placeholder="Enter Remarks"
+          styleClass="w-full"
+          toUppercase
+        ></textarea>
+        <small id="loan_remarks">
+          This is a <strong>OPTIONAL</strong> field.
+        </small>
+      </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <p-button
+      type="submit"
+      [disabled]="principalLoanFormGroup.invalid"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </form>
+</p-fieldset>

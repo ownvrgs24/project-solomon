@@ -8,36 +8,39 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule, UpperCasePipe } from '@angular/common';
 import { TagModule } from 'primeng/tag';
 import { UpperCaseInputDirective } from '../../../../shared/directives/to-uppercase.directive';
-
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
+import { RouterModule } from '@angular/router';
+import { StatusTagService } from '../../../../shared/services/status-tag.service';
 
 export interface Customer {
-  recno: number
-  customer_id: string
-  first_name: string
-  middle_name: any
-  last_name: string
-  extension_name: any
-  gender: string
-  civil_status: string
-  mobile_number: string
-  telephone_number: any
-  email_address: string
-  client_picture: any
-  date_of_birth: string
-  client_status: string
-  cmk_status: any
-  date_marked_as_delinquent: any
-  created_at: string
-  updated_at: string
+  recno: number;
+  customer_id: string;
+  first_name: string;
+  middle_name: any;
+  last_name: string;
+  extension_name: any;
+  gender: string;
+  civil_status: string;
+  mobile_number: string;
+  telephone_number: any;
+  email_address: string;
+  client_picture: any;
+  date_of_birth: string;
+  client_status: string;
+  cmk_status: any;
+  date_marked_as_delinquent: any;
+  created_at: string;
+  updated_at: string;
   cx_address: {
     complete_address: string;
   }[];
   comakers_array?: {
-    first_name: string
-    middle_name: string
-    last_name: string
+    first_name: string;
+    middle_name: string;
+    last_name: string;
     extension_name: string;
-  }[],
+  }[];
   comakers?: string;
   address?: string;
 }
@@ -45,27 +48,26 @@ export interface Customer {
 @Component({
   selector: 'app-customer-list',
   standalone: true,
-  imports: [TableModule, IconFieldModule, FormsModule, InputIconModule, InputTextModule, CommonModule, TagModule, UpperCaseInputDirective],
+  imports: [
+    TableModule,
+    IconFieldModule,
+    FormsModule,
+    InputIconModule,
+    InputTextModule,
+    CommonModule,
+    TagModule,
+    UpperCaseInputDirective,
+    ButtonModule,
+    TooltipModule,
+    RouterModule,
+  ],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss',
-  providers: [CustomersService]
+  providers: [CustomersService],
 })
 export class CustomerListComponent {
-
-  getSeverity(status: any): "success" | "secondary" | "info" | "warning" | "danger" | "contrast" | undefined {
-    switch (status) {
-      case 'ACTIVE':
-        return 'success';
-      case 'FOR REVIEW':
-        return 'warning';
-      case 'DELINQUENT':
-        return 'danger';
-      default:
-        return undefined;
-    }
-  }
-
   readonly customerService = inject(CustomersService);
+  public readonly statusTagService = inject(StatusTagService);
   loading: boolean = true;
 
   customers: Customer[] = [];
@@ -76,7 +78,6 @@ export class CustomerListComponent {
 
   searchValue!: string;
 
-
   fetchCustomers() {
     this.customerService.fetchCustomers().subscribe((data) => {
       this.loading = true;
@@ -84,15 +85,16 @@ export class CustomerListComponent {
       this.customers = this.customers.map((customer) => {
         return {
           ...customer,
-          client_status: customer.client_status.replace(/_/g, ' ').toUpperCase(),
-          client_status_severity: this.getSeverity(customer.client_status),
-          address: customer.cx_address.map((address) => address.complete_address).join(', '),
-          comakers: customer.comakers_array?.map((comaker) => {
-            return `${comaker.first_name} ${comaker.middle_name} ${comaker.last_name} ${comaker.extension_name}`;
-          }).join(', ')
+          address: customer.cx_address
+            .map((address) => address.complete_address)
+            .join(', '),
+          comakers: customer.comakers_array
+            ?.map((comaker) => {
+              return `${comaker.first_name} ${comaker.middle_name} ${comaker.last_name} ${comaker.extension_name}`;
+            })
+            .join(', '),
         };
       });
-
 
       this.loading = false;
     });

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilsService {
-
-  constructor() { }
+  constructor() {}
 
   computeAge(birthdate: Date): number {
     const today = new Date();
@@ -18,5 +17,4 @@ export class UtilsService {
     }
     return age;
   }
-
 }

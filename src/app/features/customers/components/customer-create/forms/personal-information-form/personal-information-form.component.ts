@@ -4,7 +4,13 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { UtilsService } from '../../../../../../shared/services/utils.service';
 import { CommonModule } from '@angular/common';
 import { DividerModule } from 'primeng/divider';
@@ -26,8 +32,6 @@ interface PersonalInformation {
   date_of_birth: FormControl<Date | null>;
 }
 
-
-
 @Component({
   selector: 'app-personal-information-form',
   standalone: true,
@@ -43,13 +47,12 @@ interface PersonalInformation {
     CalendarModule,
     ReactiveFormsModule,
     CommonModule,
-    UpperCaseInputDirective
+    UpperCaseInputDirective,
   ],
   templateUrl: './personal-information-form.component.html',
-  styleUrl: './personal-information-form.component.scss'
+  styleUrl: './personal-information-form.component.scss',
 })
 export class PersonalInformationFormComponent {
-
   formMessage: Message[] | undefined;
 
   @Output() customerRegistered: EventEmitter<string> = new EventEmitter();
@@ -88,7 +91,7 @@ export class PersonalInformationFormComponent {
     { label: 'VIII', value: 'VIII' },
     { label: 'IX', value: 'IX' },
     { label: 'X', value: 'X' },
-  ]
+  ];
 
   personalInformationForm: FormGroup<PersonalInformation> = new FormGroup({
     first_name: new FormControl('', [Validators.required]),
@@ -116,31 +119,40 @@ export class PersonalInformationFormComponent {
     const { value } = this.personalInformationForm;
     this.customerService.registerCustomer(value).subscribe({
       next: (data: any) => {
-
         if (this.customerId) {
           this.linkCustomerCoMaker(data.customer.customer_id);
         }
         this.customerRegistered.emit(data.customer.customer_id);
-        this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
+        this.formMessage = [
+          { severity: 'success', summary: 'Success', detail: data.message },
+        ];
         this.personalInformationForm.disable();
       },
       error: (error: TypeError) => {
-        this.formMessage = [{ severity: 'error', summary: 'Error', detail: error.message }];
-      }
+        this.formMessage = [
+          { severity: 'error', summary: 'Error', detail: error.message },
+        ];
+      },
     });
   }
 
   linkCustomerCoMaker(customerId: string): void {
-    this.customerService.linkCustomerCoMaker({
-      customer_id: this.customerId,
-      comaker_id: customerId
-    }).subscribe({
-      next: (data: any) => {
-        this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
-      },
-      error: (error: TypeError) => {
-        this.formMessage = [{ severity: 'error', summary: 'Error', detail: error.message }];
-      }
-    });
+    this.customerService
+      .linkCustomerCoMaker({
+        customer_id: this.customerId,
+        comaker_id: customerId,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.formMessage = [
+            { severity: 'success', summary: 'Success', detail: data.message },
+          ];
+        },
+        error: (error: TypeError) => {
+          this.formMessage = [
+            { severity: 'error', summary: 'Error', detail: error.message },
+          ];
+        },
+      });
   }
 }

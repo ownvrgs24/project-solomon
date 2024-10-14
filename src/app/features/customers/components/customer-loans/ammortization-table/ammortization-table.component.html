@@ -1,0 +1,106 @@
+<div class="grid grid-cols-4 gap-4">
+  <div class="col-span-1 gap-4">
+    <p-fieldset legend="Customer Details">
+      <p>{{ customerData.fullname }}</p>
+    </p-fieldset>
+
+    <p-fieldset legend="Loan Details">
+      <p>{{ loanData.loan_interest_rate }} %</p>
+      <p>{{ loanData.loan_mode_of_payment }}</p>
+      <p-tag
+        styleClass="text-xl"
+        [value]="
+          loanData.principal_loan_amount
+            ? (loanData.principal_loan_amount | currency : 'PHP')?.toString()
+            : ''
+        "
+        [severity]="'info'"
+      />
+    </p-fieldset>
+  </div>
+
+  <p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
+    <p-table
+      [value]="amortizationTable"
+      styleClass="p-datatable-gridlines"
+      editMode="row"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Status</th>
+          <th>Transaction Date</th>
+          <th>OR No.</th>
+          <th>Balance Interest</th>
+          <th>Interest</th>
+          <th>Payment</th>
+          <th>Capital</th>
+          <th>Balance</th>
+          <th>Collection</th>
+          <th>Change</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr>
+          <td>
+            <p-tag
+              [value]="item.transaction_status"
+              [severity]="
+                statusTagService.getStatusLabel(item.transaction_status)
+              "
+            />
+          </td>
+          <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
+          <td>
+            @if (item.transaction_or_number) {
+            <p-chip [label]="item.transaction_or_number" />
+            } @else { - }
+          </td>
+          <td>
+            {{
+              item.balance_interest === 0
+                ? "-"
+                : (item?.balance_interest | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{
+              item.interest === 0 ? "-" : (item?.interest | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{ item.payment === 0 ? "-" : (item?.payment | currency : "PHP") }}
+          </td>
+          <td>
+            {{ item.capital === 0 ? "-" : (item?.capital | currency : "PHP") }}
+          </td>
+          <td>
+            {{ item.balance === 0 ? "-" : (item?.balance | currency : "PHP") }}
+          </td>
+          <td>
+            {{
+              item.collection === 0
+                ? "-"
+                : (item?.collection | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{ item.change === 0 ? "-" : (item?.change | currency : "PHP") }}
+          </td>
+          <td>
+            <p-button
+              [rounded]="true"
+              [text]="true"
+              severity="danger"
+              [disabled]="i !== amortizationTable.length - 1"
+              icon="pi pi-trash"
+              pTooltip="Void Transaction (Delete)"
+              tooltipPosition="top"
+              tooltipStyleClass="text-center"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-fieldset>
+</div>

@@ -1,123 +1,209 @@
-<form [formGroup]="personalInformationForm" (ngSubmit)="submitPersonalInformation()">
+<form
+  [formGroup]="personalInformationForm"
+  (ngSubmit)="submitPersonalInformation()"
+>
+  @if (formMessage) {
+  <p-messages
+    [(value)]="formMessage"
+    [closable]="true"
+    [showTransitionOptions]="'500ms'"
+  />
+  }
 
-    @if (formMessage) {
-    <p-messages [(value)]="formMessage" [closable]="true" [showTransitionOptions]="'500ms'" />
-    }
-
-    <div class="grid grid-cols-6 gap-4 items-baseline">
-        <div class="grid grid-flow-row gap-2">
-            <label for="lastname">LAST NAME</label>
-            <input formControlName="last_name" required pInputText id="lastname" placeholder="Ex. DELA CRUZ"
-                aria-describedby="lastname-help" toUppercase pKeyFilter="alpha" />
-            @if (personalInformationForm.get('last_name')?.hasError('required') &&
-            personalInformationForm.get('last_name')?.touched) {
-            <small class="p-error block">Last name is required!</small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="firstname">FIRST NAME</label>
-            <input formControlName="first_name" required pInputText id="firstname" placeholder="Ex. JUAN"
-                aria-describedby="firstname-help" toUppercase pKeyFilter="alpha" />
-            @if (personalInformationForm.get('first_name')?.hasError('required') &&
-            personalInformationForm.get('first_name')?.touched) {
-            <small class="p-error block">First name is required!</small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="middlename">MIDDLE NAME</label>
-            <input formControlName="middle_name" pInputText id="middlename" placeholder="Ex. MALAKAS"
-                aria-describedby="middlename-help" toUppercase pKeyFilter="alpha" />
-            <small id="middlename-help">
-                This is a <strong>OPTIONAL</strong> field.
-            </small>
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="suffix">SUFFIX</label>
-            <p-dropdown formControlName="extension_name" styleClass="w-full" [options]="suffixList" optionLabel="label"
-                optionValue="value" placeholder="Select Suffix" />
-            <small id="suffix-help">
-                If theres no suffix, please select <strong>NONE</strong>.
-            </small>
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="gender">GENDER</label>
-            <p-dropdown required formControlName="gender" styleClass="w-full" [options]="genderList" optionLabel="label"
-                optionValue="value" placeholder="Select gender" />
-            @if (personalInformationForm.get('gender')?.hasError('required') &&
-            personalInformationForm.get('gender')?.touched) {
-            <small class="p-error block">
-                Gender selection is required.
-            </small>
-            }
-        </div>
-
-        <!-- Civil Status -->
-        <div class="grid grid-flow-row gap-2">
-            <label for="civil-status">CIVIL STATUS</label>
-            <p-dropdown required formControlName="civil_status" styleClass="w-full" [options]="civilStatusList"
-                optionLabel="label" optionValue="value" placeholder="Select Civil Status" />
-            @if (personalInformationForm.get('civil_status')?.hasError('required') &&
-            personalInformationForm.get('civil_status')?.touched) {
-            <small class="p-error block">
-                Civil status selection is required.
-            </small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="contact-no">CONTACT NO.</label>
-            <p-inputMask [unmask]="true" [autoClear]="true" [pValidateOnly]="true" formControlName="mobile_number"
-                styleClass="w-full" mask="0999 999 9999" placeholder="0912 345 6789" pKeyFilter="num" />
-            <small id="contact-no-help">
-                Leave this field blank if data is <strong>NOT available</strong>.
-            </small>
-        </div>
-
-
-
-        <!-- Telephone  -->
-        <div class="grid grid-flow-row gap-2">
-            <label for="telephone">TELEPHONE</label>
-            <input formControlName="telephone_number" pInputText id="telephone" type="tel" placeholder="047 1234"
-                aria-describedby="telephone-help" pKeyFilter="num" />
-            <small id="telephone-help">
-                This is a <strong>OPTIONAL</strong> field.
-            </small>
-        </div>
-
-        <!-- Email Address -->
-        <div class="grid grid-flow-row gap-2">
-            <label for="email">EMAIL ADDRESS</label>
-            <input formControlName="email_address" pInputText id="email" type="email"
-                placeholder="Ex. juandelacruz@email.com" aria-describedby="email-help" pKeyFilter="email" />
-            <small id="email-help">
-                Leave this field blank if data is <strong>NOT available</strong>.
-            </small>
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="date-of-birth">DATE OF BIRTH (mm/yy/dd)</label>
-            <p-calendar placeholder="mm/dd/yyyy" formControlName="date_of_birth" styleClass="w-full" iconDisplay="input"
-                [showIcon]="true" inputId="icondisplay" mask="99/99/9999" slotChar="mm/dd/yyyy" />
-            <small id=" date-of-birth-help">
-                Leave this field blank if data is <strong>NOT available</strong>.
-            </small>
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="age">AGE</label>
-            <input [value]="computeAge" pInputText id="age" readonly aria-describedby="age-help" toUppercase />
-            <small id="age-help">
-                Automatically calculated from <strong>DATE OF BIRTH</strong>.
-            </small>
-        </div>
+  <div class="grid grid-cols-6 gap-4 items-baseline">
+    <div class="grid grid-flow-row gap-2">
+      <label for="lastname">LAST NAME</label>
+      <input
+        required
+        formControlName="last_name"
+        required
+        pInputText
+        id="lastname"
+        placeholder="Ex. DELA CRUZ"
+        aria-describedby="lastname-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
+      @if (personalInformationForm.get('last_name')?.hasError('required') &&
+      personalInformationForm.get('last_name')?.touched) {
+      <small class="p-error block" id="lastname">Last name is required!</small>
+      }
     </div>
 
-    <p-divider></p-divider>
+    <div class="grid grid-flow-row gap-2">
+      <label for="firstname">FIRST NAME</label>
+      <input
+        formControlName="first_name"
+        required
+        pInputText
+        id="firstname"
+        placeholder="Ex. JUAN"
+        aria-describedby="firstname-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
+      @if (personalInformationForm.get('first_name')?.hasError('required') &&
+      personalInformationForm.get('first_name')?.touched) {
+      <small class="p-error block">First name is required!</small>
+      }
+    </div>
 
-    <p-button type="submit" [disabled]="personalInformationForm.invalid" icon="pi pi-save" label="Save"></p-button>
+    <div class="grid grid-flow-row gap-2">
+      <label for="middlename">MIDDLE NAME</label>
+      <input
+        formControlName="middle_name"
+        pInputText
+        id="middlename"
+        placeholder="Ex. MALAKAS"
+        aria-describedby="middlename-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
+      <small id="middlename-help">
+        This is a <strong>OPTIONAL</strong> field.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="suffix">SUFFIX</label>
+      <p-dropdown
+        formControlName="extension_name"
+        styleClass="w-full"
+        [options]="suffixList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Suffix"
+      />
+      <small id="suffix-help">
+        If theres no suffix, please select <strong>NONE</strong>.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="gender">GENDER</label>
+      <p-dropdown
+        required
+        formControlName="gender"
+        styleClass="w-full"
+        [options]="genderList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select gender"
+      />
+      @if (personalInformationForm.get('gender')?.hasError('required') &&
+      personalInformationForm.get('gender')?.touched) {
+      <small class="p-error block"> Gender selection is required. </small>
+      }
+    </div>
+
+    <!-- Civil Status -->
+    <div class="grid grid-flow-row gap-2">
+      <label for="civil-status">CIVIL STATUS</label>
+      <p-dropdown
+        required
+        formControlName="civil_status"
+        styleClass="w-full"
+        [options]="civilStatusList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Civil Status"
+      />
+      @if (personalInformationForm.get('civil_status')?.hasError('required') &&
+      personalInformationForm.get('civil_status')?.touched) {
+      <small class="p-error block"> Civil status selection is required. </small>
+      }
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="contact-no">CONTACT NO.</label>
+      <p-inputMask
+        [unmask]="true"
+        [autoClear]="true"
+        [pValidateOnly]="true"
+        formControlName="mobile_number"
+        styleClass="w-full"
+        mask="0999 999 9999"
+        placeholder="0912 345 6789"
+        pKeyFilter="num"
+      />
+      <small id="contact-no-help">
+        Leave this field blank if data is <strong>NOT available</strong>.
+      </small>
+    </div>
+
+    <!-- Telephone  -->
+    <div class="grid grid-flow-row gap-2">
+      <label for="telephone">TELEPHONE</label>
+      <input
+        formControlName="telephone_number"
+        pInputText
+        id="telephone"
+        type="tel"
+        placeholder="047 1234"
+        aria-describedby="telephone-help"
+        pKeyFilter="num"
+      />
+      <small id="telephone-help">
+        This is a <strong>OPTIONAL</strong> field.
+      </small>
+    </div>
+
+    <!-- Email Address -->
+    <div class="grid grid-flow-row gap-2">
+      <label for="email">EMAIL ADDRESS</label>
+      <input
+        formControlName="email_address"
+        pInputText
+        id="email"
+        type="email"
+        placeholder="Ex. juandelacruz@email.com"
+        aria-describedby="email-help"
+        pKeyFilter="email"
+      />
+      <small id="email-help">
+        Leave this field blank if data is <strong>NOT available</strong>.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="date-of-birth">DATE OF BIRTH (mm/yy/dd)</label>
+      <p-calendar
+        placeholder="mm/dd/yyyy"
+        formControlName="date_of_birth"
+        styleClass="w-full"
+        iconDisplay="input"
+        [showIcon]="true"
+        inputId="icondisplay"
+        mask="99/99/9999"
+        slotChar="mm/dd/yyyy"
+      />
+      <small id=" date-of-birth-help">
+        Leave this field blank if data is <strong>NOT available</strong>.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="age">AGE</label>
+      <input
+        [value]="computeAge"
+        pInputText
+        id="age"
+        readonly
+        aria-describedby="age-help"
+        toUppercase
+      />
+      <small id="age-help">
+        Automatically calculated from <strong>DATE OF BIRTH</strong>.
+      </small>
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <p-button
+    type="submit"
+    [disabled]="personalInformationForm.invalid"
+    icon="pi pi-save"
+    label="Save"
+  ></p-button>
 </form>

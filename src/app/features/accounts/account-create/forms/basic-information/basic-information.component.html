@@ -1,67 +1,93 @@
 <form [formGroup]="basicInformation">
-    <div class="grid grid-cols-2 gap-4 items-start my-4">
+  <div class="grid grid-cols-2 gap-4 items-start my-4">
+    <div class="grid grid-flow-row gap-2">
+      <label for="designation">LAST NAME</label>
+      <input
+        name="last_name"
+        formControlName="last_name"
+        required
+        pInputText
+        id="last_name"
+        placeholder="Ex. DELA CRUZ"
+        aria-describedby="last_name-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
 
-        <div class="grid grid-flow-row gap-2">
+      @if (basicInformation.get('last_name')?.hasError('required') &&
+      basicInformation.get('last_name')?.touched) {
 
-            <label for="designation">LAST NAME</label>
-
-            <input name="last_name" formControlName="last_name" required pInputText id="last_name"
-                placeholder="Ex. DELA CRUZ" aria-describedby="last_name-help" toUppercase pKeyFilter="alpha" />
-
-            @if (basicInformation.get('last_name')?.hasError('required') &&
-            basicInformation.get('last_name')?.touched) {
-
-            <small class="p-error block">
-                Last name is required!
-            </small>
-
-            }
-
-        </div>
-        <div class="grid grid-flow-row gap-2">
-
-            <label for="first_name">FIRST NAME</label>
-
-            <input name="first_name" formControlName="first_name" required pInputText id="first_name"
-                placeholder="Ex. JUAN" aria-describedby="first_name-help" toUppercase pKeyFilter="alpha" />
-
-            @if (basicInformation.get('first_name')?.hasError('required') &&
-            basicInformation.get('first_name')?.touched) {
-
-            <small class="p-error block">
-                First name is required!
-            </small>
-
-            }
-        </div>
-        <div class="grid grid-flow-row gap-2">
-
-            <label for="middle_name">MIDDLE NAME</label>
-
-            <input name="middle_name" formControlName="middle_name" pInputText id="middle_name" placeholder="Ex. SANTOS"
-                aria-describedby="middle_name-help" toUppercase pKeyFilter="alpha" />
-
-            <small id="company_address-help">
-
-                This is a <strong>OPTIONAL</strong> field.
-
-            </small>
-        </div>
-        <div class="grid grid-flow-row gap-2">
-            <label for="suffix">SUFFIX</label>
-            <p-dropdown formControlName="suffix" styleClass="w-full" [options]="suffixList" optionLabel="label"
-                optionValue="value" placeholder="Select Suffix" />
-            <small id="suffix-help">
-                If theres no suffix, please select <strong>NONE</strong>.
-            </small>
-        </div>
-        <div class="grid grid-flow-row gap-2">
-            <label for="email_address">EMAIL ADDRESS</label>
-            <input name="email_address" formControlName="email_address" pInputText id="email_address"
-                placeholder="Ex. juan.delacruz@example.com" aria-describedby="email_address-help" />
-            <small id="company_address-help">
-                This is a <strong>OPTIONAL</strong> field.
-            </small>
-        </div>
+      <small class="p-error block"> Last name is required! </small>
+      }
     </div>
+    <div class="grid grid-flow-row gap-2">
+      <label for="first_name">FIRST NAME</label>
+
+      <input
+        name="first_name"
+        formControlName="first_name"
+        required
+        pInputText
+        id="first_name"
+        placeholder="Ex. JUAN"
+        aria-describedby="first_name-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
+
+      @if (basicInformation.get('first_name')?.hasError('required') &&
+      basicInformation.get('first_name')?.touched) {
+
+      <small class="p-error block"> First name is required! </small>
+
+      }
+    </div>
+    <div class="grid grid-flow-row gap-2">
+      <label for="middle_name">MIDDLE NAME</label>
+
+      <input
+        name="middle_name"
+        formControlName="middle_name"
+        pInputText
+        id="middle_name"
+        placeholder="Ex. SANTOS"
+        aria-describedby="middle_name-help"
+        toUppercase
+        pKeyFilter="alpha"
+      />
+
+      <small id="middle_name-help">
+        This is a <strong>OPTIONAL</strong> field.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="suffix">SUFFIX</label>
+      <p-dropdown
+        formControlName="suffix"
+        styleClass="w-full"
+        [options]="suffixList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Suffix"
+      />
+      <small id="suffix-help">
+        If theres no suffix, please select <strong>NONE</strong>.
+      </small>
+    </div>
+    <div class="grid grid-flow-row gap-2">
+      <label for="email_address">EMAIL ADDRESS</label>
+      <input
+        name="email_address"
+        formControlName="email_address"
+        pInputText
+        id="email_address"
+        placeholder="Ex. juan.delacruz@example.com"
+        aria-describedby="email_address-help"
+      />
+      <small id="company_address-help">
+        This is a <strong>OPTIONAL</strong> field.
+      </small>
+    </div>
+  </div>
 </form>

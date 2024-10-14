@@ -9,11 +9,12 @@ import { PromissoryNoteComponent } from "../../promissory-note/promissory-note.c
 import { CardModule } from 'primeng/card';
 import { TabViewModule } from 'primeng/tabview';
 import { ArchivesComponent } from "../../archives/archives.component";
+import { DelinquentStatusComponent } from "../../delinquent-status/delinquent-status.component";
 
 @Component({
   selector: 'app-create-profile',
   standalone: true,
-  imports: [CardModule, TabViewModule, PersonalInformationFormComponent, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ShellCoMakerComponent, ProfilePictureFormComponent, PromissoryNoteComponent, ArchivesComponent],
+  imports: [CardModule, TabViewModule, PersonalInformationFormComponent, AddressFormComponent, ShellCollateralsFormComponent, ShellSourceOfIncomeComponent, ShellCoMakerComponent, ProfilePictureFormComponent, PromissoryNoteComponent, ArchivesComponent, DelinquentStatusComponent],
   templateUrl: './create-profile.component.html',
   styleUrl: './create-profile.component.scss'
 })

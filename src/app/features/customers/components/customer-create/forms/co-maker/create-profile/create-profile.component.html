@@ -1,65 +1,68 @@
 <p-tabView>
-    <p-tabPanel header="Personal">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-personal-information-form (customerRegistered)="onCoMakerProfileCreated($event)"
-                    [customerId]="customerId" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Personal">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-personal-information-form
+          (customerRegistered)="onCoMakerProfileCreated($event)"
+          [customerId]="customerId"
+        />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Address">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-address-form [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Address">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-address-form [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Collateral">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-shell-collaterals-form [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Collateral">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-shell-collaterals-form [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Source of Income">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-shell-source-of-income [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Source of Income">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-shell-source-of-income [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Profile Picture">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-profile-picture-form [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Profile Picture">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-profile-picture-form [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Promissory Note">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-promissory-note [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Promissory Note">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-promissory-note [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Archives">
-        <ng-template pTemplate="content">
-            <p-card>
-                <app-archives [customerId]="comakerId()" />
-            </p-card>
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Archives">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-archives [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 
-    <p-tabPanel header="Delinquent Status">
-        <ng-template pTemplate="content">
-            <p-card></p-card>
-        </ng-template>
-    </p-tabPanel>
-
+  <p-tabPanel header="Delinquent Status">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-delinquent-status [customerId]="comakerId()" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
 </p-tabView>
