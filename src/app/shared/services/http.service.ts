@@ -3,11 +3,10 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HttpService {
-
-  protected BASE_URL: string = "http://localhost:8000";
+  protected BASE_URL: string = 'http://localhost:8000';
 
   protected API_URL: string = `${this.BASE_URL}/api/`;
 
@@ -19,24 +18,29 @@ export class HttpService {
   readonly http = inject(HttpClient);
 
   uploadFile(formData: FormData): Observable<HttpEvent<any>> {
-    const req = new HttpRequest('POST', this.API_URL + `upload/files`, formData, {
-      reportProgress: true,
-      responseType: 'json'
-    });
+    const req = new HttpRequest(
+      'POST',
+      this.API_URL + `upload/files`,
+      formData,
+      {
+        reportProgress: true,
+        responseType: 'json',
+      }
+    );
     return this.http.request(req);
   }
 
   postRequest(apiEndpoint: string, data: any) {
     return this.http.post(this.API_URL + apiEndpoint, data, {
       reportProgress: true,
-      responseType: 'json'
+      responseType: 'json',
     });
   }
 
   getRequest(apiEndpoint: string) {
     return this.http.get(this.API_URL + apiEndpoint, {
       reportProgress: true,
-      responseType: 'json'
+      responseType: 'json',
     });
   }
 
@@ -51,7 +55,4 @@ export class HttpService {
   get rootURL(): string {
     return this.BASE_URL;
   }
-
-
-
 }

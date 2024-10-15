@@ -11,6 +11,8 @@ import { ChipModule } from 'primeng/chip';
 import { StatusTagService } from '../../../../../shared/services/status-tag.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { FieldsetModule } from 'primeng/fieldset';
+import { AvatarModule } from 'primeng/avatar';
+import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -50,6 +52,7 @@ export interface Transaction {
   created_at?: string;
   updated_at?: string;
 }
+[];
 
 @Component({
   selector: 'app-ammortization-table',
@@ -65,6 +68,7 @@ export interface Transaction {
     TagModule,
     TooltipModule,
     FieldsetModule,
+    AvatarModule,
   ],
   templateUrl: './ammortization-table.component.html',
   styleUrl: './ammortization-table.component.scss',
@@ -74,11 +78,26 @@ export class AmmortizationTableComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute);
   readonly loanService = inject(LoanService);
   readonly messageService = inject(MessageService);
+  private readonly loanInterestCalculatorService = inject(
+    LoanInterestCalculatorService
+  );
   public readonly statusTagService = inject(StatusTagService);
 
-  amortizationTable: AmortizationTable[] = [];
+  amortizationTable!: AmortizationTable[];
   customerData!: Customer;
   loanData!: Loan;
+
+  actualInterestData: {
+    interest: number;
+    selectedIndex: number;
+    interestRate: number;
+    message: string;
+  } = {
+    interest: 0,
+    selectedIndex: 0,
+    interestRate: 0,
+    message: '',
+  };
 
   ngOnInit(): void {
     this.getAmortizationTable();
@@ -98,6 +117,13 @@ export class AmmortizationTableComponent implements OnInit {
           summary: 'Error',
           detail: error.message,
         });
+      },
+      complete: () => {
+        this.actualInterestData =
+          this.loanInterestCalculatorService.calculateInterest(
+            this.loanData,
+            this.amortizationTable as unknown as Transaction[]
+          );
       },
     });
   }

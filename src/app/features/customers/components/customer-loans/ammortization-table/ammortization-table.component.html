@@ -1,23 +1,37 @@
 <div class="grid grid-cols-4 gap-4">
-  <div class="col-span-1 gap-4">
+  @if (customerData) {
+  <div class="col-span-1 gap-4 flex flex-col">
     <p-fieldset legend="Customer Details">
-      <p>{{ customerData.fullname }}</p>
+      <div class="flex items-center gap-5">
+        <p-avatar
+          [label]="customerData.fullname.charAt(0)"
+          size="xlarge"
+          shape="square"
+        />
+        <div class="text-xl font-semibold">{{ customerData.fullname }}</div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Due Obligations">
+      <div class="flex flex-col gap-4">
+        <div class="text-green-400 text-3xl font-bold font-mono">
+          {{ actualInterestData.interest | currency : "PHP" }}
+        </div>
+        <p-chip [label]="actualInterestData.message" icon="pi pi-calculator" />
+      </div>
     </p-fieldset>
 
     <p-fieldset legend="Loan Details">
-      <p>{{ loanData.loan_interest_rate }} %</p>
-      <p>{{ loanData.loan_mode_of_payment }}</p>
-      <p-tag
-        styleClass="text-xl"
-        [value]="
-          loanData.principal_loan_amount
-            ? (loanData.principal_loan_amount | currency : 'PHP')?.toString()
-            : ''
-        "
-        [severity]="'info'"
-      />
+      <div class="grid grid-cols-2 gap-4 text-lg">
+        <div>Interest</div>
+        <div class="font-semibold">{{ loanData.loan_interest_rate }} %</div>
+
+        <div>Mode of Payment</div>
+        <div class="font-semibold">{{ loanData.loan_mode_of_payment }}</div>
+      </div>
     </p-fieldset>
   </div>
+  }
 
   <p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
     <p-table
@@ -41,7 +55,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item let-i="rowIndex">
-        <tr>
+        <tr class="font-mono text-lg">
           <td>
             <p-tag
               [value]="item.transaction_status"
@@ -58,41 +72,59 @@
           </td>
           <td>
             {{
-              item.balance_interest === 0
+              item?.balance_interest == null || item?.balance_interest === 0
                 ? "-"
                 : (item?.balance_interest | currency : "PHP")
             }}
           </td>
           <td>
             {{
-              item.interest === 0 ? "-" : (item?.interest | currency : "PHP")
+              item.interest == null || item.interest === 0
+                ? "-"
+                : (item?.interest | currency : "PHP")
             }}
           </td>
           <td>
-            {{ item.payment === 0 ? "-" : (item?.payment | currency : "PHP") }}
-          </td>
-          <td>
-            {{ item.capital === 0 ? "-" : (item?.capital | currency : "PHP") }}
-          </td>
-          <td>
-            {{ item.balance === 0 ? "-" : (item?.balance | currency : "PHP") }}
+            {{
+              item.payment == null || item.payment === 0
+                ? "-"
+                : (item?.payment | currency : "PHP")
+            }}
           </td>
           <td>
             {{
-              item.collection === 0
+              item.capital == null || item.capital === 0
+                ? "-"
+                : (item?.capital | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{
+              item.balance == null || item.balance === 0
+                ? "-"
+                : (item?.balance | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{
+              item.collection == null || item.collection === 0
                 ? "-"
                 : (item?.collection | currency : "PHP")
             }}
           </td>
           <td>
-            {{ item.change === 0 ? "-" : (item?.change | currency : "PHP") }}
+            {{
+              item.change == null || item.change === 0
+                ? "-"
+                : (item?.change | currency : "PHP")
+            }}
           </td>
           <td>
             <p-button
               [rounded]="true"
               [text]="true"
               severity="danger"
-              [disabled]="i !== amortizationTable.length - 1"
+              [disabled]="i !== amortizationTable.length - 1 || i === 0"
               icon="pi pi-trash"
               pTooltip="Void Transaction (Delete)"
               tooltipPosition="top"
