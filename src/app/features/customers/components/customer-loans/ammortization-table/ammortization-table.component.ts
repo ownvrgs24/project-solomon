@@ -13,6 +13,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
 import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { PaymentsComponent } from './dialog/payments/payments.component';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -72,7 +74,7 @@ export interface Transaction {
   ],
   templateUrl: './ammortization-table.component.html',
   styleUrl: './ammortization-table.component.scss',
-  providers: [MessageService],
+  providers: [MessageService, DialogService],
 })
 export class AmmortizationTableComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute);
@@ -82,10 +84,13 @@ export class AmmortizationTableComponent implements OnInit {
     LoanInterestCalculatorService
   );
   public readonly statusTagService = inject(StatusTagService);
+  public readonly dialogService = inject(DialogService);
 
   amortizationTable!: AmortizationTable[];
   customerData!: Customer;
   loanData!: Loan;
+
+  dialogRef: DynamicDialogRef | undefined;
 
   actualInterestData: {
     interest: number;
@@ -126,5 +131,23 @@ export class AmmortizationTableComponent implements OnInit {
           );
       },
     });
+  }
+
+  payDueObligation() {
+    this.dialogService.open(PaymentsComponent, {
+      header: 'PAY DUE OBLIGATION',
+      width: '35%',
+      draggable: true,
+      data: {
+        customer: this.customerData,
+        loan: this.loanData,
+        transactions: this.amortizationTable,
+        interest: this.actualInterestData,
+      },
+    });
+  }
+
+  addCapital() {
+    throw new Error('Method not implemented.');
   }
 }

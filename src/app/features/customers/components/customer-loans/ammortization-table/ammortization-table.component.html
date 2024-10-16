@@ -12,7 +12,7 @@
       </div>
     </p-fieldset>
 
-    <p-fieldset legend="Due Obligations">
+    <p-fieldset legend="Interest / Due Obligations">
       <div class="flex flex-col gap-4">
         <div class="text-green-400 text-3xl font-bold font-mono">
           {{ actualInterestData.interest | currency : "PHP" }}
@@ -28,6 +28,26 @@
 
         <div>Mode of Payment</div>
         <div class="font-semibold">{{ loanData.loan_mode_of_payment }}</div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Actions">
+      <div class="flex flex-col gap-4">
+        <p-button
+          (onClick)="addCapital()"
+          styleClass="w-full"
+          severity="secondary"
+          size="large"
+          label="ADD CAPITAL"
+          [outlined]="true"
+        ></p-button>
+        <p-button
+          (onClick)="payDueObligation()"
+          styleClass="w-full"
+          severity="primary"
+          size="large"
+          label="PAY"
+        ></p-button>
       </div>
     </p-fieldset>
   </div>
