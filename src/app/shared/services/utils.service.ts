@@ -17,4 +17,11 @@ export class UtilsService {
     }
     return age;
   }
+
+  currencyFormatter = (value: number) => {
+    return new Intl.NumberFormat('ph-PH', {
+      style: 'currency',
+      currency: 'PHP',
+    }).format(value);
+  };
 }

@@ -1,7 +1,7 @@
-<form [formGroup]="paymentsForm">
+<form [formGroup]="paymentsForm" (ngSubmit)="payDueObligation()">
   <p-fieldset legend="Payment form">
     <div class="flex flex-col gap-4 items-start my-4">
-      <div class="grid grid-cols-2 gap-x-4 w-full items-start">
+      <div class="grid grid-cols-2 gap-4 w-full items-start">
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="date-of-birth">Transaction Date</label>
           <p-calendar
@@ -73,6 +73,20 @@
       </div>
 
       <div class="grid grid-flow-row gap-2 w-full">
+        <label for="interest" class="text-red-500">Balance Interest</label>
+        <p-inputNumber
+          formControlName="balance_interest"
+          id="interest"
+          mode="currency"
+          currency="PHP"
+          styleClass="w-full text-end"
+          placeholder="0"
+          [readonly]="true"
+          inputStyleClass="text-red-500"
+        ></p-inputNumber>
+      </div>
+
+      <div class="grid grid-flow-row gap-2 w-full">
         <label for="payment">Payment</label>
         <p-inputNumber
           formControlName="payment"
@@ -136,6 +150,6 @@
     [size]="'large'"
     label="PAY NOW"
     [disabled]="paymentsForm.invalid"
-    (onClick)="payDueObligation()"
+    type="submit"
   ></p-button>
 </form>

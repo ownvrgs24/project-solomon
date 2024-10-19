@@ -10,22 +10,22 @@ import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
-import {
-  DialogService,
-  DynamicDialogConfig,
-  DynamicDialogRef,
-} from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { UtilsService } from '../../../../../../../shared/services/utils.service';
+import { AmmortizationTableComponent } from '../../ammortization-table.component';
 
 interface PaymentsDialog {
   transaction_date: FormControl<Date | null>;
   transaction_or_number: FormControl<number | null>;
   interest: FormControl<number | null>;
+  balance_interest: FormControl<number | null>;
   payment: FormControl<number | null>;
   change: FormControl<number | null>;
   collection: FormControl<number | null>;
@@ -55,8 +55,12 @@ interface PaymentsDialog {
 })
 export class PaymentsComponent implements OnInit {
   public readonly dialogConfig = inject(DynamicDialogConfig);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly utilityService = inject(UtilsService);
 
   paymentsForm: FormGroup = new FormGroup({});
+
+  dialogRef: DynamicDialogRef | undefined;
 
   ngOnInit(): void {
     this.initializeForm();
@@ -65,12 +69,11 @@ export class PaymentsComponent implements OnInit {
   initializeForm(): void {
     const { transactions, customer, loan, interest } = this.dialogConfig.data;
 
-    console.log(this.dialogConfig.data);
-
     const paymentsDialog: PaymentsDialog = {
       transaction_date: new FormControl(new Date(), [Validators.required]),
       transaction_or_number: new FormControl(0, [Validators.required]),
       interest: new FormControl(interest.interest, [Validators.required]),
+      balance_interest: new FormControl(0, [Validators.required]),
       payment: new FormControl(null, [Validators.required]),
       change: new FormControl(null, [Validators.required]),
       collection: new FormControl(null, [Validators.required]),
@@ -99,6 +102,13 @@ export class PaymentsComponent implements OnInit {
   validateCollection() {
     const { interest, collection } = this.paymentsForm.value;
 
+    if (collection < interest) {
+      const balance_interest = interest - collection;
+      this.paymentsForm.get('balance_interest')?.setValue(balance_interest);
+    } else {
+      this.paymentsForm.get('balance_interest')?.setValue(0);
+    }
+
     const isCollectionValid =
       collection !== null &&
       this.paymentsForm.get('collection')?.valid &&
@@ -122,7 +132,26 @@ export class PaymentsComponent implements OnInit {
   }
 
   payDueObligation() {
-    console.log(this.paymentsForm.value);
-    // TODO: Implement payment logic here and close the dialog
+    const { balance_interest } = this.paymentsForm.value;
+
+    if (balance_interest >= 0) {
+      this.confirmationService.confirm({
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        acceptIcon: 'none',
+        rejectIcon: 'none',
+        rejectButtonStyleClass: 'p-button-text',
+        acceptLabel: 'Confirm',
+        message: `You currently have ${this.utilityService.currencyFormatter(
+          balance_interest
+        )} in balance interest. Please confirm your transaction before proceeding.`,
+        accept: () => {
+          this.dialogRef?.close();
+        },
+        reject: () => {
+          console.log('Payment cancelled');
+        },
+      });
+    }
   }
 }

@@ -134,7 +134,7 @@ export class AmmortizationTableComponent implements OnInit {
   }
 
   payDueObligation() {
-    this.dialogService.open(PaymentsComponent, {
+    this.dialogRef = this.dialogService.open(PaymentsComponent, {
       header: 'PAY DUE OBLIGATION',
       width: '35%',
       draggable: true,
@@ -144,6 +144,12 @@ export class AmmortizationTableComponent implements OnInit {
         transactions: this.amortizationTable,
         interest: this.actualInterestData,
       },
+    });
+
+    this.dialogRef.onClose.subscribe((data) => {
+      if (data) {
+        console.log('Payment data: ', data);
+      }
     });
   }
 
