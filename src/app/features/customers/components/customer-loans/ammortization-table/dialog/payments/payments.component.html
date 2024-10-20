@@ -13,6 +13,7 @@
             inputId="icondisplay"
             mask="99/99/9999"
             slotChar="mm/dd/yyyy"
+            [touchUI]="true"
           />
           @if ( paymentsForm.get('transaction_date')?.hasError('required') &&
           paymentsForm.get('transaction_date')?.touched ) {
@@ -48,6 +49,7 @@
           styleClass="w-full text-end text-mono"
           placeholder="0"
           (keyup)="validateCollection()"
+          [autofocus]="true"
         ></p-inputNumber>
         @if ( paymentsForm.get('collection')?.hasError('required') &&
         paymentsForm.get('collection')?.touched ) {

@@ -1,0 +1,63 @@
+<form [formGroup]="capitalForm" (ngSubmit)="submitCapitalForm()">
+  <p-fieldset legend="Form">
+    <div class="flex flex-col gap-4 items-start my-4">
+      <div class="grid grid-flow-row gap-2 w-full">
+        <label for="date-of-birth">Transaction Date</label>
+        <p-calendar
+          placeholder="mm/dd/yyyy"
+          formControlName="transaction_date"
+          styleClass="w-full"
+          iconDisplay="input"
+          [showIcon]="false"
+          inputId="icondisplay"
+          mask="99/99/9999"
+          slotChar="mm/dd/yyyy"
+          [touchUI]="true"
+        />
+        @if ( capitalForm.get('transaction_date')?.hasError('required') &&
+        capitalForm.get('transaction_date')?.touched ) {
+        <small class="p-error block"> Transaction Date is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2 w-full">
+        <label for="capital">Capital</label>
+        <p-inputNumber
+          [autofocus]="true"
+          formControlName="capital"
+          id="capital"
+          mode="currency"
+          currency="PHP"
+          styleClass="w-full text-end text-mono"
+          placeholder="0"
+        ></p-inputNumber>
+        @if ( capitalForm.get('capital')?.hasError('required') &&
+        capitalForm.get('capital')?.touched ) {
+        <small class="p-error block"> Capital is required! </small>
+        }
+      </div>
+
+      <div class="grid grid-flow-row gap-2 w-full">
+        <label for="remarks">Remarks</label>
+        <textarea
+          formControlName="remarks"
+          pInputTextarea
+          id="remarks"
+          styleClass="w-full"
+          placeholder="Enter remarks here..."
+          rows="5"
+          toUppercase
+        ></textarea>
+      </div>
+    </div>
+  </p-fieldset>
+  <p-button
+    styleClass="w-full mt-4 font-bold"
+    outlined="true"
+    severity="contrast"
+    [size]="'large'"
+    label="SUBMIT"
+    [disabled]="capitalForm.invalid"
+    type="submit"
+  ></p-button>
+</form>

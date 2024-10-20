@@ -16,6 +16,8 @@ import { LoanInterestCalculatorService } from '../../../../../shared/services/lo
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaymentsComponent } from './dialog/payments/payments.component';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { ToastModule } from 'primeng/toast';
+import { CapitalComponent } from './dialog/capital/capital.component';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -72,6 +74,7 @@ export interface Transaction {
     TooltipModule,
     FieldsetModule,
     AvatarModule,
+    ToastModule,
   ],
   templateUrl: './ammortization-table.component.html',
   styleUrl: './ammortization-table.component.scss',
@@ -121,6 +124,12 @@ export class AmmortizationTableComponent implements OnInit {
         this.loanData,
         this.amortizationTable as unknown as Transaction[]
       );
+
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Next Due Interest',
+      detail: this.actualInterestData.message,
+    });
   }
 
   getAmortizationTable() {
@@ -150,7 +159,7 @@ export class AmmortizationTableComponent implements OnInit {
   payDueObligation() {
     this.ref = this.dialogService.open(PaymentsComponent, {
       header: 'PAY DUE OBLIGATION',
-      width: '30%',
+      width: '40%',
       draggable: true,
       data: {
         customer: this.customerData,
@@ -191,6 +200,45 @@ export class AmmortizationTableComponent implements OnInit {
   }
 
   addCapital() {
-    throw new Error('Method not implemented.');
+    this.ref = this.dialogService.open(CapitalComponent, {
+      header: 'ADD CAPITAL',
+      width: '40%',
+      draggable: true,
+      data: {
+        customer: this.customerData,
+        loan: this.loanData,
+        transactions: this.amortizationTable,
+        interest: this.actualInterestData,
+      },
+    });
+
+    this.ref.onClose.subscribe((data: AmortizationTable) => {
+      if (data) {
+        this.transactionService
+          .submitTransaction({
+            ...data,
+            loan_id: this.loanData.loan_id,
+          })
+          .subscribe({
+            next: (response: any) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: response.message,
+              });
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+              });
+            },
+            complete: () => {
+              this.amortizationTable.push(data);
+            },
+          });
+      }
+    });
   }
 }

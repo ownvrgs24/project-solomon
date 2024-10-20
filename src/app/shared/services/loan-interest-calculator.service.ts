@@ -28,8 +28,6 @@ export class LoanInterestCalculatorService {
     interestRate: number;
     message: string;
   } {
-    console.log('loanData', loanData);
-
     const selectedIndex = this.findLatestApprovedIndex(transactionData);
     const latestBalance =
       selectedIndex !== -1 ? transactionData[selectedIndex].balance : 0;
@@ -118,6 +116,7 @@ export class LoanInterestCalculatorService {
   } {
     let interest = 0;
     let message = '';
+    
     if (months >= 0) {
       interest = latestBalance * (interestRate / 100) * months;
     }
@@ -238,8 +237,15 @@ export class LoanInterestCalculatorService {
       transactionData[selectedIndex]?.balance_interest || 0
     );
 
+    const capitalInterest = this.calculateCapitalInterest(
+      loanData,
+      transactionData
+    );
+
+    const totalInterest = projectedInterest.interest + capitalInterest;
+
     return {
-      interest: projectedInterest.interest,
+      interest: totalInterest,
       balanceInterest: projectedInterest.balanceInterest,
       selectedIndex,
       interestRate: loanData.loan_interest_rate,

@@ -1,3 +1,4 @@
+<p-toast [position]="'top-center'" />
 <div class="grid grid-cols-4 gap-4">
   @if (customerData) {
   <div class="col-span-1 gap-4 flex flex-col">
@@ -20,14 +21,13 @@
       </div>
     </p-fieldset>
 
-    <p-fieldset legend="Next Due Interest">
+    <p-fieldset legend="Amount Due Interest">
       <div class="flex flex-col gap-4">
         <div class="text-green-400 text-3xl font-bold font-mono">
           {{ actualInterestData.interest | currency : "PHP" }}
         </div>
         <p>{{ actualInterestData.message }}</p>
         <p-button
-          [disabled]="actualInterestData.interest !== 0"
           severity="success"
           label="Compute the next due interest"
           outlined="true"
