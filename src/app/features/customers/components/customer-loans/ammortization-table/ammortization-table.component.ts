@@ -16,8 +16,6 @@ import { LoanInterestCalculatorService } from '../../../../../shared/services/lo
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaymentsComponent } from './dialog/payments/payments.component';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
-import { LoginComponent } from '../../../../auth/components/login.component';
-import { map } from 'rxjs';
 
 export interface AmortizationTable {
   customer: Customer;

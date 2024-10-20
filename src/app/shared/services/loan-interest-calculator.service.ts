@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   Loan,
   Transaction,
 } from '../../features/customers/components/customer-loans/ammortization-table/ammortization-table.component';
+import { MessageService } from 'primeng/api';
 
 export enum MODE_OF_PAYMENT {
   BI_MONTHLY = 'BI_MONTHLY',
@@ -15,6 +16,7 @@ export enum MODE_OF_PAYMENT {
 export class LoanInterestCalculatorService {
   protected readonly loanInterestMultiplier: number = 0.005;
   private enum: typeof MODE_OF_PAYMENT = MODE_OF_PAYMENT;
+  private messageService = inject(MessageService);
 
   calculateInterest(
     loanData: Loan,
@@ -26,6 +28,8 @@ export class LoanInterestCalculatorService {
     interestRate: number;
     message: string;
   } {
+    console.log('loanData', loanData);
+
     const selectedIndex = this.findLatestApprovedIndex(transactionData);
     const latestBalance =
       selectedIndex !== -1 ? transactionData[selectedIndex].balance : 0;
@@ -135,24 +139,48 @@ export class LoanInterestCalculatorService {
     };
   }
 
-  accurateDateDifference(startDate: Date, endDate: Date) {
+  accurateDateDifference(
+    startDate: Date,
+    endDate: Date,
+    modeOfPayment?: MODE_OF_PAYMENT
+  ) {
     let start = new Date(startDate);
     let end = new Date(endDate);
+
+    const currentDate = new Date();
+
+    // Validate if start date is in the future
+    if (start > currentDate) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail:
+          'Start date cannot be in the future! Please wait for the start date to arrive.',
+      });
+      throw new Error(
+        'Start date cannot be in the future! Please wait for the start date to arrive.'
+      );
+    }
 
     // Swap if start date is greater than end date
     if (start > end) {
       [start, end] = [end, start];
     }
 
-    // Calculate months difference
+    // Direct calculation for BI_MONTHLY
+    if (modeOfPayment === MODE_OF_PAYMENT.BI_MONTHLY) {
+      const timeDiff = end.getTime() - start.getTime();
+      const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      return { months: 0, days: daysDiff };
+    }
+
+    // Default calculation for MONTHLY
     const monthsDiff =
       (end.getFullYear() - start.getFullYear()) * 12 +
       (end.getMonth() - start.getMonth());
 
-    // Calculate days difference
     let daysDiff = end.getDate() - start.getDate();
 
-    // Adjust days difference if it's negative
     if (daysDiff < 0) {
       const lastMonth = new Date(end.getFullYear(), end.getMonth(), 0);
       daysDiff += lastMonth.getDate();
@@ -179,6 +207,7 @@ export class LoanInterestCalculatorService {
     nextPaymentDate: Date;
   } {
     const selectedIndex = this.findLatestApprovedIndex(transactionData);
+
     const latestBalance =
       selectedIndex !== -1 ? transactionData[selectedIndex].balance : 0;
 
@@ -188,6 +217,7 @@ export class LoanInterestCalculatorService {
     );
     const modeOfPayment =
       this.enum[loanData.loan_mode_of_payment as keyof typeof MODE_OF_PAYMENT];
+
     const nextPaymentDate = this.calculateNextPaymentDate(
       modeOfPayment,
       lastTransactionDate
@@ -195,7 +225,8 @@ export class LoanInterestCalculatorService {
 
     const { months, days } = this.accurateDateDifference(
       new Date(transactionData[selectedIndex]?.transaction_date),
-      nextPaymentDate
+      nextPaymentDate,
+      modeOfPayment
     );
 
     const projectedInterest = this.computeActualInterest(
@@ -213,9 +244,7 @@ export class LoanInterestCalculatorService {
       selectedIndex,
       interestRate: loanData.loan_interest_rate,
       nextPaymentDate,
-      message: `Projected interest until ${nextPaymentDate.toDateString()}: ${
-        projectedInterest.message
-      }`,
+      message: projectedInterest.message,
     };
   }
 
@@ -228,10 +257,10 @@ export class LoanInterestCalculatorService {
   ): Date {
     const nextDate = new Date(lastTransactionDate);
     if (modeOfPayment === MODE_OF_PAYMENT.BI_MONTHLY) {
-      // Assuming BI_MONTHLY means every 15 days
+      // Add exactly 15 days for BI_MONTHLY payments
       nextDate.setDate(nextDate.getDate() + 15);
     } else if (modeOfPayment === MODE_OF_PAYMENT.MONTHLY) {
-      // Assuming MONTHLY means every 1 month
+      // Add 1 month for MONTHLY payments
       nextDate.setMonth(nextDate.getMonth() + 1);
     }
     return nextDate;

@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './system-logs.component.html',
-  styleUrl: './system-logs.component.scss'
+  styleUrl: './system-logs.component.scss',
 })
-export class SystemLogsComponent {
-
-}
+export class SystemLogsComponent {}

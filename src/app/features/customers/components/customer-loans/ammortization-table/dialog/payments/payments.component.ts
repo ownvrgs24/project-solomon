@@ -72,15 +72,16 @@ export class PaymentsComponent implements OnInit {
       (interest?.balanceInterest || 0) + (interest?.interest || 0);
 
     const paymentsDialog: PaymentsDialog = {
-      transaction_date: new FormControl(new Date(interest.nextPaymentDate), [
-        Validators.required,
-      ]),
+      transaction_date: new FormControl(
+        new Date(interest?.nextPaymentDate || new Date()),
+        [Validators.required]
+      ),
       transaction_or_number: new FormControl(null),
       interest: new FormControl(computed_interest, [Validators.required]),
-      balance_interest: new FormControl(0, [Validators.required]),
-      payment: new FormControl(0, [Validators.required]),
-      change: new FormControl(0, [Validators.required]),
-      collection: new FormControl(0, [Validators.required]),
+      balance_interest: new FormControl(null, [Validators.required]),
+      payment: new FormControl(null, [Validators.required]),
+      change: new FormControl(null, [Validators.required]),
+      collection: new FormControl(null, [Validators.required]),
       is_interest_applied: new FormControl(true, [Validators.required]),
       transaction_remarks: new FormControl(''),
     };
@@ -117,7 +118,7 @@ export class PaymentsComponent implements OnInit {
       this.paymentsForm.get('balance_interest')?.setValue(0);
       this.paymentsForm
         .get('transaction_date')
-        ?.setValue(new Date(interest.nextPaymentDate));
+        ?.setValue(new Date(interest?.nextPaymentDate || new Date()));
       this.paymentsForm.get('transaction_date')?.enable();
     }
 
