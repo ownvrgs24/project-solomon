@@ -15,6 +15,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaymentsComponent } from './dialog/payments/payments.component';
+import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { LoginComponent } from '../../../../auth/components/login.component';
+import { map } from 'rxjs';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -80,32 +83,46 @@ export class AmmortizationTableComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute);
   readonly loanService = inject(LoanService);
   readonly messageService = inject(MessageService);
-  private readonly loanInterestCalculatorService = inject(
+  private readonly loanInterestCalculator = inject(
     LoanInterestCalculatorService
   );
   public readonly statusTagService = inject(StatusTagService);
   public readonly dialogService = inject(DialogService);
+  private transactionService = inject(TransactionService);
 
   amortizationTable!: AmortizationTable[];
   customerData!: Customer;
   loanData!: Loan;
 
-  dialogRef: DynamicDialogRef | undefined;
+  currentDate: Date = new Date();
+
+  ref: DynamicDialogRef | undefined;
 
   actualInterestData: {
     interest: number;
     selectedIndex: number;
     interestRate: number;
     message: string;
+    balanceInterest: number;
+    nextPaymentDate?: Date;
   } = {
     interest: 0,
     selectedIndex: 0,
     interestRate: 0,
     message: '',
+    balanceInterest: 0,
   };
 
   ngOnInit(): void {
     this.getAmortizationTable();
+  }
+
+  calculateNextDueInterest() {
+    this.actualInterestData =
+      this.loanInterestCalculator.computeNextProjectedInterest(
+        this.loanData,
+        this.amortizationTable as unknown as Transaction[]
+      );
   }
 
   getAmortizationTable() {
@@ -124,19 +141,18 @@ export class AmmortizationTableComponent implements OnInit {
         });
       },
       complete: () => {
-        this.actualInterestData =
-          this.loanInterestCalculatorService.calculateInterest(
-            this.loanData,
-            this.amortizationTable as unknown as Transaction[]
-          );
+        this.actualInterestData = this.loanInterestCalculator.calculateInterest(
+          this.loanData,
+          this.amortizationTable as unknown as Transaction[]
+        );
       },
     });
   }
 
   payDueObligation() {
-    this.dialogRef = this.dialogService.open(PaymentsComponent, {
+    this.ref = this.dialogService.open(PaymentsComponent, {
       header: 'PAY DUE OBLIGATION',
-      width: '35%',
+      width: '30%',
       draggable: true,
       data: {
         customer: this.customerData,
@@ -146,9 +162,32 @@ export class AmmortizationTableComponent implements OnInit {
       },
     });
 
-    this.dialogRef.onClose.subscribe((data) => {
+    this.ref.onClose.subscribe((data: AmortizationTable) => {
       if (data) {
-        console.log('Payment data: ', data);
+        this.transactionService
+          .submitTransaction({
+            ...data,
+            loan_id: this.loanData.loan_id,
+          })
+          .subscribe({
+            next: (response: any) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: response.message,
+              });
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+              });
+            },
+            complete: () => {
+              this.amortizationTable.push(data);
+            },
+          });
       }
     });
   }

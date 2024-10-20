@@ -15,13 +15,13 @@ export enum MODE_OF_PAYMENT {
 export class LoanInterestCalculatorService {
   protected readonly loanInterestMultiplier: number = 0.005;
   private enum: typeof MODE_OF_PAYMENT = MODE_OF_PAYMENT;
-  private loanInterestMessage: string = '';
 
   calculateInterest(
     loanData: Loan,
     transactionData: Transaction[]
   ): {
     interest: number;
+    balanceInterest: number;
     selectedIndex: number;
     interestRate: number;
     message: string;
@@ -41,19 +41,23 @@ export class LoanInterestCalculatorService {
       new Date()
     );
 
-    const interest = this.computeActualInterest(
+    const { interest, balanceInterest, message } = this.computeActualInterest(
       latestBalance,
       loanData.loan_interest_rate,
       months,
       loanData.loan_mode_of_payment,
-      days
+      days,
+      transactionData[selectedIndex]?.balance_interest || 0
     );
 
+    const totalInterest = interest + capitalInterest;
+
     return {
-      interest: capitalInterest + interest,
+      interest: totalInterest,
+      balanceInterest,
       selectedIndex,
       interestRate: loanData.loan_interest_rate,
-      message: this.loanInterestMessage,
+      message,
     };
   }
 
@@ -101,10 +105,15 @@ export class LoanInterestCalculatorService {
     interestRate: number,
     months: number,
     modeOfPayment: string,
-    days: number
-  ): number {
+    days: number,
+    balanceInterest: number
+  ): {
+    interest: number;
+    balanceInterest: number;
+    message: string;
+  } {
     let interest = 0;
-
+    let message = '';
     if (months >= 0) {
       interest = latestBalance * (interestRate / 100) * months;
     }
@@ -114,12 +123,16 @@ export class LoanInterestCalculatorService {
         interest +=
           latestBalance * (interestRate * this.loanInterestMultiplier);
       }
-      this.loanInterestMessage = `Calculated interest for ${months} month(s) and ${days} day(s)`;
+      message = `Calculated interest for ${months} month(s) and ${days} day(s)`;
     } else if (modeOfPayment === this.enum.MONTHLY) {
-      this.loanInterestMessage = `Calculated interest for ${months} month(s)`;
+      message = `Calculated interest for ${months} month(s)`;
     }
 
-    return interest;
+    return {
+      interest,
+      balanceInterest,
+      message,
+    };
   }
 
   accurateDateDifference(startDate: Date, endDate: Date) {
@@ -149,5 +162,78 @@ export class LoanInterestCalculatorService {
       months: monthsDiff,
       days: daysDiff,
     };
+  }
+
+  /**
+   * Computes the next projected interest based on the mode of payment.
+   */
+  computeNextProjectedInterest(
+    loanData: Loan,
+    transactionData: Transaction[]
+  ): {
+    interest: number;
+    selectedIndex: number;
+    interestRate: number;
+    message: string;
+    balanceInterest: number;
+    nextPaymentDate: Date;
+  } {
+    const selectedIndex = this.findLatestApprovedIndex(transactionData);
+    const latestBalance =
+      selectedIndex !== -1 ? transactionData[selectedIndex].balance : 0;
+
+    // Determine the next date based on the mode of payment
+    const lastTransactionDate = new Date(
+      transactionData[selectedIndex]?.transaction_date
+    );
+    const modeOfPayment =
+      this.enum[loanData.loan_mode_of_payment as keyof typeof MODE_OF_PAYMENT];
+    const nextPaymentDate = this.calculateNextPaymentDate(
+      modeOfPayment,
+      lastTransactionDate
+    );
+
+    const { months, days } = this.accurateDateDifference(
+      new Date(transactionData[selectedIndex]?.transaction_date),
+      nextPaymentDate
+    );
+
+    const projectedInterest = this.computeActualInterest(
+      latestBalance,
+      loanData.loan_interest_rate,
+      months,
+      loanData.loan_mode_of_payment,
+      days,
+      transactionData[selectedIndex]?.balance_interest || 0
+    );
+
+    return {
+      interest: projectedInterest.interest,
+      balanceInterest: projectedInterest.balanceInterest,
+      selectedIndex,
+      interestRate: loanData.loan_interest_rate,
+      nextPaymentDate,
+      message: `Projected interest until ${nextPaymentDate.toDateString()}: ${
+        projectedInterest.message
+      }`,
+    };
+  }
+
+  /**
+   * Helper to calculate the next payment date based on mode of payment.
+   */
+  private calculateNextPaymentDate(
+    modeOfPayment: MODE_OF_PAYMENT,
+    lastTransactionDate: Date
+  ): Date {
+    const nextDate = new Date(lastTransactionDate);
+    if (modeOfPayment === MODE_OF_PAYMENT.BI_MONTHLY) {
+      // Assuming BI_MONTHLY means every 15 days
+      nextDate.setDate(nextDate.getDate() + 15);
+    } else if (modeOfPayment === MODE_OF_PAYMENT.MONTHLY) {
+      // Assuming MONTHLY means every 1 month
+      nextDate.setMonth(nextDate.getMonth() + 1);
+    }
+    return nextDate;
   }
 }

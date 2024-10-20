@@ -12,12 +12,28 @@
       </div>
     </p-fieldset>
 
-    <p-fieldset legend="Interest / Due Obligations">
+    <p-fieldset legend="Balance Interest">
+      <div class="flex flex-col gap-4">
+        <div class="text-red-500 text-3xl font-bold font-mono">
+          {{ actualInterestData.balanceInterest | currency : "PHP" }}
+        </div>
+      </div>
+    </p-fieldset>
+
+    <p-fieldset legend="Next Due Interest">
       <div class="flex flex-col gap-4">
         <div class="text-green-400 text-3xl font-bold font-mono">
           {{ actualInterestData.interest | currency : "PHP" }}
         </div>
-        <p-chip [label]="actualInterestData.message" icon="pi pi-calculator" />
+        <p>{{ actualInterestData.message }}</p>
+        <p-button
+          [disabled]="actualInterestData.interest !== 0"
+          severity="success"
+          label="Compute the next due interest"
+          outlined="true"
+          icon="pi pi-sync"
+          (onClick)="calculateNextDueInterest()"
+        ></p-button>
       </div>
     </p-fieldset>
 
@@ -86,9 +102,10 @@
           </td>
           <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
           <td>
-            @if (item.transaction_or_number) {
-            <p-chip [label]="item.transaction_or_number" />
-            } @else { - }
+            <p-chip
+              styleClass="w-full justify-center"
+              [label]="item?.transaction_or_number ?? 'n/a'"
+            />
           </td>
           <td>
             {{
