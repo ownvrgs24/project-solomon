@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -9,6 +14,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
 import { SelfEmployedService } from '../../../../../../../shared/services/source-of-income/self-employed.service';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
+import { GalleriaThumbnails } from 'primeng/galleria';
 
 interface SelfEmployedDetails {
   customer_id: FormControl<string | null>;
@@ -30,37 +38,50 @@ interface SelfEmployedDetails {
     UpperCaseInputDirective,
     FieldsetModule,
     InputTextareaModule,
-    InputNumberModule
+    InputNumberModule,
+    MessagesModule,
   ],
   templateUrl: './self-employed.component.html',
-  styleUrl: './self-employed.component.scss'
+  styleUrl: './self-employed.component.scss',
 })
 export class SelfEmployedComponent {
-
   @Input({ required: true }) customerId!: string | null;
 
   private selfEmployedService = inject(SelfEmployedService);
+  private messagesService = inject(MessageService);
 
   ngOnInit(): void {
     this.selfEmployedFormGroup.controls.customer_id.setValue(this.customerId);
   }
 
   selfEmployedFormGroup: FormGroup<SelfEmployedDetails> = new FormGroup({
-    customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
+    customer_id: new FormControl<string | null>(this.customerId, [
+      Validators.required,
+    ]),
     net_income: new FormControl<string | null>(null, [Validators.required]),
     source: new FormControl<string | null>(null, [Validators.required]),
-    remarks: new FormControl<string | null>(null)
+    remarks: new FormControl<string | null>(null),
   });
 
   submitForm(): void {
-    this.selfEmployedService.addSelfEmployed(this.selfEmployedFormGroup.value).subscribe({
-      next: () => {
-        console.log('Self-employed form submitted successfully');
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    })
+    this.selfEmployedService
+      .addSelfEmployed(this.selfEmployedFormGroup.value)
+      .subscribe({
+        next: (response: any) => {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+          this.selfEmployedFormGroup.disable();
+        },
+        error: (error) => {
+          this.messagesService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+      });
   }
-
 }

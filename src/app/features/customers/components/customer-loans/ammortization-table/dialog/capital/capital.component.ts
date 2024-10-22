@@ -21,7 +21,7 @@ import { UpperCaseInputDirective } from '../../../../../../../shared/directives/
 interface Capital {
   transaction_date: FormControl<Date | null>;
   capital: FormControl<number | null>;
-  remarks: FormControl<string | null>;
+  transaction_remarks: FormControl<string | null>;
 }
 
 @Component({
@@ -53,7 +53,7 @@ export class CapitalComponent {
       Validators.required,
     ]),
     capital: new FormControl<number | null>(null, [Validators.required]),
-    remarks: new FormControl<string | null>(null),
+    transaction_remarks: new FormControl<string | null>(null),
   });
 
   submitCapitalForm() {

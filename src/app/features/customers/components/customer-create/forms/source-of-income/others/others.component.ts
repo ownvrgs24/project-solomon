@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -8,6 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
 import { OtherService } from '../../../../../../../shared/services/source-of-income/other.service';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 interface OthersDetails {
   customer_id: FormControl<string | null>;
@@ -26,16 +33,17 @@ interface OthersDetails {
     FieldsetModule,
     UpperCaseInputDirective,
     FieldsetModule,
-    InputTextareaModule
+    InputTextareaModule,
+    MessagesModule,
   ],
   templateUrl: './others.component.html',
-  styleUrl: './others.component.scss'
+  styleUrl: './others.component.scss',
 })
 export class OthersComponent {
-
   @Input({ required: true }) customerId!: string | null;
 
   private otherIncomeService = inject(OtherService);
+  private messageService = inject(MessageService);
 
   othersFormGroup: FormGroup<OthersDetails> = new FormGroup({
     customer_id: new FormControl<string | null>('1'),
@@ -48,13 +56,21 @@ export class OthersComponent {
 
   submitForm(): void {
     this.otherIncomeService.addOther(this.othersFormGroup.value).subscribe({
-      next: () => {
-        console.log('Other income form submitted successfully');
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+        this.othersFormGroup.disable();
       },
       error: (error) => {
-        console.error('Error submitting other income form', error);
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
     });
   }
-
 }

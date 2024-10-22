@@ -58,16 +58,16 @@ export class ArchivesComponent {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Files uploaded successfully',
-            life: 3000,
-            closable: false,
+            detail: response.body.message,
+            life: 5000,
+            closable: true,
           });
           fileUploadForm.clear();
           this.uploadedFiles.push(...event.files); // Spread operator to add all uploaded files
           fileUploadForm.uploading = false;
         }
       },
-      error: (error) => {
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

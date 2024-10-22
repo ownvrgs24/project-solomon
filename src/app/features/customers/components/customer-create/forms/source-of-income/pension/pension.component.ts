@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -10,7 +15,8 @@ import { UpperCaseInputDirective } from '../../../../../../../shared/directives/
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PensionService } from '../../../../../../../shared/services/source-of-income/pension.service';
 import { DropdownModule } from 'primeng/dropdown';
-
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 interface PensionDetails {
   customer_id: FormControl<string | null>;
@@ -35,16 +41,16 @@ interface PensionDetails {
     InputTextareaModule,
     InputNumberModule,
     DropdownModule,
+    MessagesModule,
   ],
   templateUrl: './pension.component.html',
-  styleUrl: './pension.component.scss'
+  styleUrl: './pension.component.scss',
 })
-
 export class PensionComponent {
-
   @Input({ required: true }) customerId!: string | null;
 
   private pensionService = inject(PensionService);
+  private messageService = inject(MessageService);
 
   payfrequency: { label: string; value: string }[] = [
     { label: 'Monthly', value: 'MONTHLY' },
@@ -53,7 +59,7 @@ export class PensionComponent {
     { label: 'Weekly', value: 'WEEKLY' },
     { label: 'Daily', value: 'DAILY' },
     { label: 'Quarterly', value: 'QUARTERLY' },
-    { label: 'Annually', value: 'ANNUALLY' }
+    { label: 'Annually', value: 'ANNUALLY' },
   ];
 
   pensionFormGroup: FormGroup<PensionDetails> = new FormGroup({
@@ -61,7 +67,7 @@ export class PensionComponent {
     source: new FormControl<string | null>(null, [Validators.required]),
     amount: new FormControl<string | null>(null, [Validators.required]),
     pay_frequency: new FormControl<string | null>(null),
-    remarks: new FormControl<string | null>(null)
+    remarks: new FormControl<string | null>(null),
   });
 
   ngOnInit(): void {
@@ -70,13 +76,21 @@ export class PensionComponent {
 
   submitForm(): void {
     this.pensionService.addPension(this.pensionFormGroup.value).subscribe({
-      next: () => {
-        console.log('Pension form submitted successfully');
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Pension Added',
+          detail: response.message,
+        });
+        this.pensionFormGroup.disable();
       },
       error: (error) => {
-        console.error(error);
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
     });
   }
-
 }

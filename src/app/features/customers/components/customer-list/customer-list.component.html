@@ -17,6 +17,7 @@
 
   <p-table
     [paginator]="true"
+    paginatorPosition="top"
     [value]="customers"
     [filterDelay]="0"
     [globalFilterFields]="[
@@ -26,12 +27,12 @@
       'client_status',
       'address',
       'mobile_number',
-      'comakers'
+      'fixed_co_maker'
     ]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rows]="10"
+    [rows]="25"
     [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 25, 50]"
+    [rowsPerPageOptions]="[25, 50, 100]"
     #dt
     [showCurrentPageReport]="true"
     [loading]="loading"
@@ -39,6 +40,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Status</th>
+        <th>Profile Picture</th>
         <th>Name</th>
         <th>Co Maker</th>
         <th>Address</th>
@@ -56,11 +58,23 @@
           />
         </td>
         <td>
+          <p-avatar
+            [image]="customer.client_picture"
+            size="xlarge"
+            shape="circle"
+            (onImageError)="customer.client_picture = 'placeholder.png'"
+          />
+        </td>
+        <td>
           {{ customer.last_name }}, {{ customer.first_name }}
           {{ customer.middle_name }} {{ customer.extension_name }}
         </td>
-        <td>{{ customer.comakers || "-" }}</td>
-        <td>{{ customer.address || "-" }}</td>
+        <td>
+          @for (item of customer.fixed_co_maker; track item.fixed_co_maker) {
+          <p-tag styleClass="mx-1 my-2" icon="pi pi-user" [value]="item" />
+          }
+        </td>
+        <td [width]="250">{{ customer.address }}</td>
         <td>{{ customer.mobile_number || "-" }}</td>
         <td>
           {{ customer.created_at | date : "MMM dd, yyyy hh:mm a" || "-" }}

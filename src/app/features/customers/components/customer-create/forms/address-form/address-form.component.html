@@ -1,3 +1,4 @@
+<p-messages />
 <form [formGroup]="addressForm" (ngSubmit)="submitForm()">
   <ng-container formArrayName="address">
     <ng-container
@@ -201,7 +202,7 @@
     ></p-button>
     <p-button
       type="submit"
-      [disabled]="addressForm.invalid"
+      [disabled]="addressForm.invalid || addressForm.disabled"
       icon="pi pi-save"
       label="Save"
     ></p-button>

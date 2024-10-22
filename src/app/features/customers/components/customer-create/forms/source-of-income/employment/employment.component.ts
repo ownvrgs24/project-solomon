@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FieldsetModule } from 'primeng/fieldset';
@@ -11,6 +16,8 @@ import { UpperCaseInputDirective } from '../../../../../../../shared/directives/
 import { CalendarModule } from 'primeng/calendar';
 import { EmploymentService } from '../../../../../../../shared/services/source-of-income/employment.service';
 import { DropdownModule } from 'primeng/dropdown';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 interface EmploymentDetails {
   customer_id: FormControl<string | null>;
@@ -41,16 +48,17 @@ interface EmploymentDetails {
     InputNumberModule,
     InputTextareaModule,
     CalendarModule,
-    DropdownModule
+    DropdownModule,
+    MessagesModule,
   ],
   templateUrl: './employment.component.html',
-  styleUrl: './employment.component.scss'
+  styleUrl: './employment.component.scss',
 })
 export class EmploymentComponent implements OnInit {
-
   @Input({ required: true }) customerId!: string | null;
 
   private employmentService = inject(EmploymentService);
+  private messagesService = inject(MessageService);
 
   ngOnInit(): void {
     this.employmentFormGroup.controls.customer_id.setValue(this.customerId);
@@ -63,33 +71,55 @@ export class EmploymentComponent implements OnInit {
     { label: 'Weekly', value: 'WEEKLY' },
     { label: 'Daily', value: 'DAILY' },
     { label: 'Quarterly', value: 'QUARTERLY' },
-    { label: 'Annually', value: 'ANNUALLY' }
+    { label: 'Annually', value: 'ANNUALLY' },
   ];
 
+  employmentOptions: { label: string; value: string }[] = [
+    { label: 'Regular', value: 'REGULAR' },
+    { label: 'Casual', value: 'CASUAL' },
+    { label: 'Contractual', value: 'CONTRACTUAL' },
+    { label: 'Probationary', value: 'PROBATIONARY' },
+    { label: 'Project', value: 'PROJECT' },
+    { label: 'Seasonal', value: 'SEASONAL' },
+    { label: 'Fixed', value: 'FIXED' },
+    { label: 'Others', value: 'OTHERS' },
+  ];
 
   employmentFormGroup: FormGroup<EmploymentDetails> = new FormGroup({
-    customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
+    customer_id: new FormControl<string | null>(this.customerId, [
+      Validators.required,
+    ]),
     designation: new FormControl<string | null>(null, [Validators.required]),
     company: new FormControl<string | null>(null, [Validators.required]),
+    pay_frequency: new FormControl<string | null>(null, [Validators.required]),
     net_salary: new FormControl<number | null>(null, [Validators.required]),
     company_address: new FormControl<string | null>(null),
     company_contact: new FormControl<string | null>(null),
     company_email: new FormControl<string | null>(null),
     date_of_employment: new FormControl<Date | null>(null),
-    pay_frequency: new FormControl<string | null>(null),
-    status: new FormControl<string | null>(null),
-    remarks: new FormControl<string | null>(null)
+    status: new FormControl<string | null>(null, [Validators.required]),
+    remarks: new FormControl<string | null>(null),
   });
 
   submitForm() {
-    this.employmentService.addEmployment(this.employmentFormGroup.value).subscribe({
-      next: () => {
-        console.log('Success');
-      },
-      error: (error) => {
-        console.error('Error', error);
-      }
-    });
+    this.employmentService
+      .addEmployment(this.employmentFormGroup.value)
+      .subscribe({
+        next: (response: any) => {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+          this.employmentFormGroup.disable();
+        },
+        error: (error) => {
+          this.messagesService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+      });
   }
-
 }

@@ -12,7 +12,7 @@ import { ArchivesComponent } from './forms/archives/archives.component';
 import { ShellCoMakerComponent } from './forms/co-maker/shell-co-maker.component';
 import { signal } from '@angular/core';
 import { DelinquentStatusComponent } from './forms/delinquent-status/delinquent-status.component';
-import { PrincipalLoanComponent } from "./forms/principal-loan/principal-loan.component";
+import { PrincipalLoanComponent } from './forms/principal-loan/principal-loan.component';
 
 @Component({
   selector: 'app-customer-create',
@@ -30,14 +30,14 @@ import { PrincipalLoanComponent } from "./forms/principal-loan/principal-loan.co
     ArchivesComponent,
     ShellCoMakerComponent,
     DelinquentStatusComponent,
-    PrincipalLoanComponent
-],
+    PrincipalLoanComponent,
+  ],
   templateUrl: './customer-create.component.html',
   styleUrl: './customer-create.component.scss',
 })
 export class CustomerCreateComponent {
   activeIndex: number = 0;
-  customerId = signal<string | null>('8835a3d1-ed37-471f-84ab-da5eb177655e');
+  customerId = signal<string | null>('9d8b0f80-82a1-4f93-be08-23ce02cf871e');
 
   onCustomerCreated($event: string): void {
     this.customerId.set($event);

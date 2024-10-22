@@ -1,6 +1,12 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { DividerModule } from 'primeng/divider';
@@ -13,6 +19,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
 import { VehicleService } from '../../../../../../../shared/services/collaterals/vehicle.service';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { MessagesModule } from 'primeng/messages';
+import { MessageService } from 'primeng/api';
 
 interface VehicleDetails {
   customer_id: FormControl<string | null>;
@@ -42,9 +50,10 @@ interface VehicleDetails {
     CalendarModule,
     InputTextareaModule,
     KeyFilterModule,
+    MessagesModule,
   ],
   templateUrl: './vehicle.component.html',
-  styleUrl: './vehicle.component.scss'
+  styleUrl: './vehicle.component.scss',
 })
 export class VehicleComponent {
   // TODO: Remove the placeholder from the forms
@@ -53,18 +62,25 @@ export class VehicleComponent {
   @Input({ required: true }) customerId!: string | null;
 
   private vehicleService = inject(VehicleService);
+  private messageService = inject(MessageService);
 
-  vehicleFormGroup: FormGroup<{ vehicle: FormArray<FormGroup<VehicleDetails>> }> = new FormGroup({
-    vehicle: new FormArray<FormGroup<VehicleDetails>>([])
+  vehicleFormGroup: FormGroup<{
+    vehicle: FormArray<FormGroup<VehicleDetails>>;
+  }> = new FormGroup({
+    vehicle: new FormArray<FormGroup<VehicleDetails>>([]),
   });
 
   private buildVehicleFormGroup(): FormGroup<VehicleDetails> {
     return new FormGroup<VehicleDetails>({
-      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
-      vehicle_details: new FormControl<string | null>(null, [Validators.required]),
+      customer_id: new FormControl<string | null>(this.customerId, [
+        Validators.required,
+      ]),
+      vehicle_details: new FormControl<string | null>(null, [
+        Validators.required,
+      ]),
       official_receipt: new FormControl<string | null>(null),
       certificate_of_registration: new FormControl<string | null>(null),
-      remarks: new FormControl<string | null>(null)
+      remarks: new FormControl<string | null>(null),
     });
   }
 
@@ -73,7 +89,9 @@ export class VehicleComponent {
   }
 
   addVehicle(): void {
-    (this.vehicleFormGroup.get('vehicle') as FormArray)?.push(this.buildVehicleFormGroup());
+    (this.vehicleFormGroup.get('vehicle') as FormArray)?.push(
+      this.buildVehicleFormGroup()
+    );
   }
 
   removeVehicle(index: number): void {
@@ -82,14 +100,22 @@ export class VehicleComponent {
 
   submitForm(): void {
     let { vehicle } = this.vehicleFormGroup.value;
-
     this.vehicleService.addVehicle(vehicle).subscribe({
-      next: () => {
-        console.log('Vehicle added successfully');
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+        this.vehicleFormGroup.disable();
       },
       error: (error) => {
-        console.error('Error adding vehicle', error);
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
     });
   }
 }

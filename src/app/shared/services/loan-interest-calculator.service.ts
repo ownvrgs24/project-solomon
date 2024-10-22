@@ -116,7 +116,7 @@ export class LoanInterestCalculatorService {
   } {
     let interest = 0;
     let message = '';
-    
+
     if (months >= 0) {
       interest = latestBalance * (interestRate / 100) * months;
     }

@@ -1,17 +1,17 @@
 <p-tabView>
-    <p-tabPanel header="Create Profile">
-        <ng-template pTemplate="content">
-            <app-create-profile [customerId]="customerId" />
-        </ng-template>
-    </p-tabPanel>
-    <p-tabPanel header="Customer List">
-        <ng-template pTemplate="content">
-            <app-customer-list />
-        </ng-template>
-    </p-tabPanel>
-    <p-tabPanel header="Signatory Arrangement">
-        <ng-template pTemplate="content">
-            <app-signatory-arrangement />
-        </ng-template>
-    </p-tabPanel>
+  <p-tabPanel header="Create Profile">
+    <ng-template pTemplate="content">
+      <app-create-profile [customerId]="customerId" />
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel header="Customer List">
+    <ng-template pTemplate="content">
+      <app-customer-list [customerId]="customerId" />
+    </ng-template>
+  </p-tabPanel>
+  <p-tabPanel header="Signatory Arrangement">
+    <ng-template pTemplate="content">
+      <app-signatory-arrangement [customerId]="customerId" />
+    </ng-template>
+  </p-tabPanel>
 </p-tabView>

@@ -202,7 +202,9 @@
 
   <p-button
     type="submit"
-    [disabled]="personalInformationForm.invalid"
+    [disabled]="
+      personalInformationForm.invalid || personalInformationForm.disabled
+    "
     icon="pi pi-save"
     label="Save"
   ></p-button>

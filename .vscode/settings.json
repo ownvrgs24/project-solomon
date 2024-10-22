@@ -18,5 +18,8 @@
         "titleBar.inactiveBackground": "#0a557399",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#0a5573"
+    "peacock.color": "#0a5573",
+    "cSpell.words": [
+        "fileupload"
+    ]
 }

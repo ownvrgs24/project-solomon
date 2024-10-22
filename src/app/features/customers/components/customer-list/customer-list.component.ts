@@ -1,17 +1,19 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CustomersService } from '../../../../shared/services/customers.service';
 import { IconFieldModule } from 'primeng/iconfield';
 import { FormsModule } from '@angular/forms';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { CommonModule, UpperCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { TagModule } from 'primeng/tag';
 import { UpperCaseInputDirective } from '../../../../shared/directives/to-uppercase.directive';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { RouterModule } from '@angular/router';
 import { StatusTagService } from '../../../../shared/services/status-tag.service';
+import { HttpService } from '../../../../shared/services/http.service';
+import { AvatarModule } from 'primeng/avatar';
 
 export interface Customer {
   recno: number;
@@ -35,14 +37,13 @@ export interface Customer {
   cx_address: {
     complete_address: string;
   }[];
-  comakers_array?: {
-    first_name: string;
-    middle_name: string;
-    last_name: string;
-    extension_name: string;
+  co_makers: {
+    customer_id: string;
+    comaker_id: string;
+    cx_detail: Customer;
   }[];
-  comakers?: string;
   address?: string;
+  fixed_co_maker?: string[];
 }
 
 @Component({
@@ -60,6 +61,7 @@ export interface Customer {
     ButtonModule,
     TooltipModule,
     RouterModule,
+    AvatarModule,
   ],
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss',
@@ -68,6 +70,7 @@ export interface Customer {
 export class CustomerListComponent {
   readonly customerService = inject(CustomersService);
   public readonly statusTagService = inject(StatusTagService);
+  private readonly http = inject(HttpService);
   loading: boolean = true;
 
   customers: Customer[] = [];
@@ -82,17 +85,20 @@ export class CustomerListComponent {
     this.customerService.fetchCustomers().subscribe((data) => {
       this.loading = true;
       this.customers = data as Customer[];
+
       this.customers = this.customers.map((customer) => {
         return {
           ...customer,
+          client_picture: `${this.http.rootURL}/${customer.client_picture}`,
           address: customer.cx_address
             .map((address) => address.complete_address)
-            .join(', '),
-          comakers: customer.comakers_array
-            ?.map((comaker) => {
-              return `${comaker.first_name} ${comaker.middle_name} ${comaker.last_name} ${comaker.extension_name}`;
-            })
-            .join(', '),
+            .join(', '), // join the address array
+          fixed_co_maker: customer.co_makers?.map((comaker) => {
+            return `${comaker.cx_detail.last_name ?? ''}, 
+              ${comaker.cx_detail.first_name ?? ''} 
+              ${comaker.cx_detail.middle_name ?? ''} 
+              ${comaker.cx_detail.extension_name ?? ''}`.trim();
+          }),
         };
       });
 

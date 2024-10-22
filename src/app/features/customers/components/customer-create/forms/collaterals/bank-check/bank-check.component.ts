@@ -1,6 +1,12 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
@@ -11,9 +17,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { InputMaskModule } from 'primeng/inputmask';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { BankCheckService } from '../../../../../../../shared/services/collaterals/bank-check.service';
+import { MessageService } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
 
 interface BankCheckDetails {
   customer_id: FormControl<string | null>;
@@ -47,25 +54,28 @@ interface BankCheckDetails {
     InputTextareaModule,
     KeyFilterModule,
     UpperCaseInputDirective,
+    MessagesModule,
   ],
   templateUrl: './bank-check.component.html',
-  styleUrl: './bank-check.component.scss'
+  styleUrl: './bank-check.component.scss',
 })
 export class BankCheckComponent {
-  // TODO: Remove the placeholder from the forms
-  // TODO: Add function to send the form data to the API
   private bankCheckService = inject(BankCheckService);
+  private messagesService = inject(MessageService);
 
   @Input({ required: true }) customerId!: string | null;
 
-
-  bankCheckFormGroup: FormGroup<{ check: FormArray<FormGroup<BankCheckDetails>> }> = new FormGroup({
-    check: new FormArray<FormGroup<BankCheckDetails>>([])
+  bankCheckFormGroup: FormGroup<{
+    check: FormArray<FormGroup<BankCheckDetails>>;
+  }> = new FormGroup({
+    check: new FormArray<FormGroup<BankCheckDetails>>([]),
   });
 
   private buildBankCheckFormGroup(): FormGroup<BankCheckDetails> {
     return new FormGroup<BankCheckDetails>({
-      customer_id: new FormControl<string | null>(this.customerId, [Validators.required]),
+      customer_id: new FormControl<string | null>(this.customerId, [
+        Validators.required,
+      ]),
       payee: new FormControl<string | null>(null, [Validators.required]),
       amount: new FormControl<string | null>(null, [Validators.required]),
       check_date: new FormControl<Date | null>(null),
@@ -81,7 +91,9 @@ export class BankCheckComponent {
   }
 
   initializeBankCheckForm() {
-    (this.bankCheckFormGroup.get('check') as FormArray).push(this.buildBankCheckFormGroup());
+    (this.bankCheckFormGroup.get('check') as FormArray).push(
+      this.buildBankCheckFormGroup()
+    );
   }
 
   removeBankCheckForm(index: number) {
@@ -91,13 +103,21 @@ export class BankCheckComponent {
   submitForm() {
     let { check } = this.bankCheckFormGroup.value;
     this.bankCheckService.addBankCheck(check).subscribe({
-      next: () => {
-        console.log('Bank Check form submitted successfully');
+      next: (response: any) => {
+        this.messagesService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+        this.bankCheckFormGroup.disable();
       },
       error: (error) => {
-        console.error('Error submitting Bank Check form', error);
-      }
+        this.messagesService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
     });
   }
-
 }

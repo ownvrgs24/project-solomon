@@ -3,10 +3,9 @@ import { HttpService } from './http.service';
 import { Customer } from '../../features/customers/components/customer-list/customer-list.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomersService {
-
   readonly http = inject(HttpService);
 
   fetchCustomers() {
@@ -25,4 +24,11 @@ export class CustomersService {
     return this.http.postRequest(`customer/mark-as-delinquent`, data);
   }
 
+  fetchCustomerByStatus(status: string) {
+    return this.http.getRequest(`customers/${status}`);
+  }
+
+  updateCustomerSignatoryArrangement(data: any) {
+    return this.http.putRequest(`customer/update-signatory-arrangement`, data);
+  }
 }

@@ -5,11 +5,12 @@ import { FieldsetModule } from 'primeng/fieldset';
 import { FileUpload, FileUploadModule, UploadEvent } from 'primeng/fileupload';
 import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
-import { WebcamUtilityComponent } from "../../../../../../shared/utils/webcam-utility/webcam-utility.component";
+import { WebcamUtilityComponent } from '../../../../../../shared/utils/webcam-utility/webcam-utility.component';
 import { ImageService } from '../../../../../../shared/utils/image.service';
 import { UploadService } from '../../../../../../shared/services/upload.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-profile-picture-form',
@@ -18,16 +19,16 @@ import { MessageModule } from 'primeng/message';
     FileUploadModule,
     CommonModule,
     FieldsetModule,
-    TabViewModule, CardModule,
+    TabViewModule,
+    CardModule,
     TooltipModule,
     WebcamUtilityComponent,
-    MessageModule
+    MessagesModule,
   ],
   templateUrl: './profile-picture-form.component.html',
-  styleUrl: './profile-picture-form.component.scss'
+  styleUrl: './profile-picture-form.component.scss',
 })
 export class ProfilePictureFormComponent {
-
   messages: Message[] | undefined;
   imageData: string | null = null;
   hasUploadSucceeded: boolean = false;
@@ -54,22 +55,25 @@ export class ProfilePictureFormComponent {
     }
   }
 
-
   onUpload() {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to proceed?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
-      rejectButtonStyleClass: "p-button-text",
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
       accept: async () => {
         this.uploadFileToServer(this.imageData || '');
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
       },
       reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Rejected',
+          detail: 'You have rejected',
+          life: 3000,
+        });
+      },
     });
   }
 
@@ -78,22 +82,25 @@ export class ProfilePictureFormComponent {
     this.files = [];
   }
 
-
   async onCaptureImageEmitted(image: string) {
     this.confirmationService.confirm({
       message: 'Are you sure that you want to proceed?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
-      rejectButtonStyleClass: "p-button-text",
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
       accept: async () => {
         this.uploadFileToServer(image);
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted' });
       },
       reject: () => {
-        this.messageService.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 });
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Rejected',
+          detail: 'You have rejected',
+          life: 3000,
+        });
+      },
     });
   }
 
@@ -105,12 +112,20 @@ export class ProfilePictureFormComponent {
       next: (response: any) => {
         this.imageData = image;
         this.hasUploadSucceeded = true;
-        this.messages = [{ severity: 'success', summary: 'Success', detail: response.message }];
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
       },
-      error: error => {
+      error: (error) => {
         this.hasUploadSucceeded = false;
-        this.messages = [{ severity: 'error', summary: 'Error', detail: error }];
-      }
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.message,
+        });
+      },
     });
   }
 }

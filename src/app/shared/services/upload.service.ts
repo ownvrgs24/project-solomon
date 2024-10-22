@@ -11,7 +11,7 @@ export class UploadService {
   readonly http = inject(HttpService);
 
   saveProfilePicture(data: FormData) {
-    return this.http.postRequest('pfp', data);
+    return this.http.postRequest('upload/pfp', data);
   }
 
   uploadFiles(data: FormData) {

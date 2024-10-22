@@ -101,7 +101,9 @@
 
     <p-button
       type="submit"
-      [disabled]="principalLoanFormGroup.invalid"
+      [disabled]="
+        principalLoanFormGroup.invalid || principalLoanFormGroup.disabled
+      "
       icon="pi pi-save"
       label="Save"
     ></p-button>

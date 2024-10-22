@@ -1,85 +1,131 @@
+<p-messages />
 <form [formGroup]="businessFormGroup" (ngSubmit)="submitForm()">
+  <p-fieldset legend="Please fill up the form" styleClass="my-4">
+    <div class="grid grid-cols-4 gap-4 items-start my-4">
+      <div class="grid grid-flow-row gap-2">
+        <label for="business_name">BUSINESS NAME</label>
+        <input
+          name="business_name"
+          formControlName="business_name"
+          required
+          pInputText
+          id="business_name"
+          placeholder="Ex. 1234 Sample St., Sample City"
+          aria-describedby="business_name-help"
+          toUppercase
+        />
+        @if (businessFormGroup.get('business_name')?.hasError('required') &&
+        businessFormGroup.get('business_name')?.touched) {
+        <small class="p-error block"> Business name is required! </small>
+        }
+      </div>
 
-    <p-fieldset legend="Please fill up the form" styleClass="my-4">
+      <div class="grid grid-flow-row gap-2">
+        <label for="net_income">NET INCOME</label>
+        <p-inputNumber
+          styleClass="w-full"
+          mode="currency"
+          currency="PHP"
+          formControlName="net_income"
+          required
+          id="net_income"
+          placeholder="Ex. ₱10,00.00"
+          aria-describedby="net_income-help"
+        />
+        @if (businessFormGroup.get('net_income')?.hasError('required') &&
+        businessFormGroup.get('net_income')?.touched) {
+        <small class="p-error block"> Net income is required! </small>
+        }
+      </div>
 
-        <div class="grid grid-cols-4 gap-4 items-start my-4">
+      <div class="grid grid-flow-row gap-2">
+        <label for="business_address">BUSINESS ADDRESS</label>
+        <input
+          name="business_address"
+          formControlName="business_address"
+          pInputText
+          id="business_address"
+          placeholder="Ex. 1234 Sample St., Sample City"
+          aria-describedby="business_address-help"
+          toUppercase
+        />
+        @if ( businessFormGroup.get('business_address')?.hasError('required') &&
+        businessFormGroup.get('business_address')?.touched ) {
+        <small class="p-error block"> Business address is required! </small>
+        }
+      </div>
 
-            <div class="grid grid-flow-row gap-2">
-                <label for="business_name">BUSINESS NAME</label>
-                <input name="business_name" formControlName="business_name" required pInputText id="business_name"
-                    placeholder="Ex. 1234 Sample St., Sample City" aria-describedby="business_name-help" toUppercase />
-                @if (businessFormGroup.get('business_name')?.hasError('required') &&
-                businessFormGroup.get('business_name')?.touched) {
-                <small class="p-error block">
-                    Business name is required!
-                </small>
-                }
-            </div>
+      <div class="grid grid-flow-row gap-2">
+        <label for="business_contact">BUSINESS CONTACT</label>
+        <input
+          pKeyFilter="pnum"
+          name="business_contact"
+          formControlName="business_contact"
+          pInputText
+          id="business_contact"
+          placeholder="Ex. Juan Dela Cruz"
+          aria-describedby="business_contact-help"
+          toUppercase
+        />
+        <small id="business_contact-help">
+          This is a <strong>OPTIONAL</strong> field.
+        </small>
+      </div>
 
-            <div class="grid grid-flow-row gap-2">
-                <label for="net_income">NET INCOME</label>
-                <p-inputNumber styleClass="w-full" mode="currency" currency="PHP" formControlName="net_income" required
-                    id="net_income" placeholder="Ex. ₱10,00.00" aria-describedby="net_income-help" />
-                @if (businessFormGroup.get('net_income')?.hasError('required') &&
-                businessFormGroup.get('net_income')?.touched) {
-                <small class="p-error block">
-                    Net income is required!
-                </small>
-                }
-            </div>
+      <div class="grid grid-flow-row gap-2">
+        <label for="business_telephone">BUSINESS TELEPHONE</label>
+        <input
+          pKeyFilter="num"
+          name="business_telephone"
+          formControlName="business_telephone"
+          pInputText
+          id="business_telephone"
+          placeholder="Ex. 1234567890"
+          aria-describedby="business_telephone-help"
+        />
+        <small id="business_telephone-help">
+          This is a <strong>OPTIONAL</strong> field.
+        </small>
+      </div>
 
-            <!-- The rest is optional -->
-            <div class="grid grid-flow-row gap-2">
-                <label for="business_address">BUSINESS ADDRESS</label>
-                <input name="business_address" formControlName="business_address" pInputText id="business_address"
-                    placeholder="Ex. 1234 Sample St., Sample City" aria-describedby="business_address-help"
-                    toUppercase />
-                <small id="business_address-help">
-                    This is a <strong>OPTIONAL</strong> field.
-                </small>
-            </div>
+      <div class="grid grid-flow-row gap-2">
+        <label for="business_email">BUSINESS EMAIL</label>
+        <input
+          pKeyFilter="email"
+          name="business_email"
+          formControlName="business_email"
+          pInputText
+          id="business_email"
+          placeholder="Ex. example@business.com"
+          aria-describedby="business_email-help"
+        />
+        <small id="business_email-help">
+          This is a <strong>OPTIONAL</strong> field.
+        </small>
+      </div>
 
-            <div class="grid grid-flow-row gap-2">
-                <label for="business_contact">BUSINESS CONTACT</label>
-                <input pKeyFilter="pnum" name="business_contact" formControlName="business_contact" pInputText
-                    id="business_contact" placeholder="Ex. Juan Dela Cruz" aria-describedby="business_contact-help"
-                    toUppercase />
-                <small id="business_contact-help">
-                    This is a <strong>OPTIONAL</strong> field.
-                </small>
-            </div>
+      <div class="grid grid-flow-row col-span-2 gap-2">
+        <label for="remarks">REMARKS</label>
+        <textarea
+          toUppercase
+          name="remarks"
+          formControlName="remarks"
+          pInputTextarea
+          id="remarks"
+          placeholder="Enter any additional information"
+          aria-describedby="remarks-help"
+        ></textarea>
+        <small id="remarks-help">
+          This is a <strong>OPTIONAL</strong> field.
+        </small>
+      </div>
+    </div>
 
-            <div class="grid grid-flow-row gap-2">
-                <label for="business_telephone">BUSINESS TELEPHONE</label>
-                <input pKeyFilter="num" name="business_telephone" formControlName="business_telephone" pInputText
-                    id="business_telephone" placeholder="Ex. 1234567890" aria-describedby="business_telephone-help" />
-                <small id="business_telephone-help">
-                    This is a <strong>OPTIONAL</strong> field.
-                </small>
-            </div>
-
-            <div class="grid grid-flow-row gap-2">
-                <label for="business_email">BUSINESS EMAIL</label>
-                <input pKeyFilter="email" name="business_email" formControlName="business_email" pInputText
-                    id="business_email" placeholder="Ex. example@business.com" aria-describedby="business_email-help" />
-                <small id="business_email-help">
-                    This is a <strong>OPTIONAL</strong> field.
-                </small>
-            </div>
-
-            <div class="grid grid-flow-row col-span-2 gap-2">
-                <label for="remarks">REMARKS</label>
-                <textarea toUppercase name="remarks" formControlName="remarks" pInputTextarea id="remarks"
-                    placeholder="Enter any additional information" aria-describedby="remarks-help"></textarea>
-                <small id="remarks-help">
-                    This is a <strong>OPTIONAL</strong> field.
-                </small>
-            </div>
-
-        </div>
-
-        <p-button type="submit" [disabled]="businessFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
-
-    </p-fieldset>
-
+    <p-button
+      type="submit"
+      [disabled]="businessFormGroup.invalid || businessFormGroup.disabled"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </p-fieldset>
 </form>

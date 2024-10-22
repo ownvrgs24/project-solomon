@@ -10,7 +10,12 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Address">
+  <p-tabPanel
+    header="Address"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+    header="Address"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-address-form [customerId]="comakerId()" />
@@ -18,7 +23,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Collateral">
+  <p-tabPanel
+    header="Collateral"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-shell-collaterals-form [customerId]="comakerId()" />
@@ -26,7 +35,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Source of Income">
+  <p-tabPanel
+    header="Source of Income"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-shell-source-of-income [customerId]="comakerId()" />
@@ -34,7 +47,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Profile Picture">
+  <p-tabPanel
+    header="Profile Picture"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-profile-picture-form [customerId]="comakerId()" />
@@ -42,7 +59,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Promissory Note">
+  <p-tabPanel
+    header="Promissory Note"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-promissory-note [customerId]="comakerId()" />
@@ -50,7 +71,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Archives">
+  <p-tabPanel
+    header="Archives"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-archives [customerId]="comakerId()" />
@@ -58,7 +83,11 @@
     </ng-template>
   </p-tabPanel>
 
-  <p-tabPanel header="Delinquent Status">
+  <p-tabPanel
+    header="Delinquent Status"
+    [leftIcon]="isCoMakerProfileCreated ? 'pi pi-lock' : ''"
+    [disabled]="isCoMakerProfileCreated"
+  >
     <ng-template pTemplate="content">
       <p-card>
         <app-delinquent-status [customerId]="comakerId()" />

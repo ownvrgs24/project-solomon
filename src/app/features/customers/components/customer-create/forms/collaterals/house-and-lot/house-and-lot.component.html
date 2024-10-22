@@ -1,103 +1,179 @@
+<p-messages />
 <form [formGroup]="houseAndLotFormGroup" (ngSubmit)="submitForm()">
-    <ng-container formArrayName="houseAndLot">
-        <ng-container *ngFor="let item of houseAndLotFormGroup.controls.houseAndLot.controls; let i = index">
-            <ng-container [formGroupName]="i">
-                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
-                    <div *ngIf="i !== 0" class="flex justify-end">
-                        <p-button (onClick)="removeHouseAndLot(i)" type="button" icon="pi pi-trash" [outlined]="true"
-                            severity="danger" pTooltip="Delete this form" />
-                    </div>
-                    <div class="grid grid-cols-4 gap-4 items-start my-4">
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_property_address">PROPERTY ADDRESS</label>
-                            <input name="hal_property_address" formControlName="hal_property_address" required
-                                pInputText id="hal_property_address" placeholder="Ex. 1234 Sample St., Sample City"
-                                aria-describedby="hal_property_address-help" toUppercase />
-                            @if
-                            (houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_address')?.hasError('required')
-                            &&
-                            houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_address')?.touched)
-                            {
-                            <small class="p-error block">
-                                Property address is required!
-                            </small>
-                            }
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_property_value">PROPERTY VALUE</label>
-                            <p-inputNumber styleClass="w-full" mode="currency" currency="PHP"
-                                formControlName="hal_property_value" required id="hal_property_value"
-                                placeholder="Ex. ₱10,00.00" aria-describedby="hal_property_value-help" />
-                            @if
-                            (houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_value')?.hasError('required')
-                            &&
-                            houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_value')?.touched)
-                            {
-                            <small class="p-error block">
-                                Property value is required!
-                            </small>
-                            }
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_property_type">PROPERTY TYPE</label>
-                            <input name="hal_property_type" formControlName="hal_property_type" pInputText
-                                id="hal_property_type" placeholder="Ex. Residential"
-                                aria-describedby="hal_property_type-help" toUppercase />
-                            <small id="hal_property_type-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_tax_deed_number">TAX DEED NUMBER</label>
-                            <input pInputText pKeyFilter="num" formControlName="hal_tax_deed_number"
-                                id="hal_tax_deed_number" placeholder="Ex. 123456"
-                                aria-describedby="hal_tax_deed_number-help" styleClass="w-full" />
-                            <small id="hal_tax_deed_number-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_tax_declaration_number">TAX DECLARATION NUMBER</label>
-                            <input pInputText pKeyFilter="num" formControlName="hal_tax_declaration_number"
-                                id="hal_tax_declaration_number" placeholder="Ex. 123456"
-                                aria-describedby="hal_tax_declaration_number-help" styleClass="w-full" />
-                            <small id="hal_tax_declaration_number-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_sqm_area">SQM AREA</label>
-                            <p-inputNumber [useGrouping]="false" pKeyFilter="num" formControlName="hal_sqm_area"
-                                id="hal_sqm_area" placeholder="Ex. 123456" aria-describedby="hal_sqm_area-help"
-                                styleClass="w-full" />
-                            <small id="hal_sqm_area-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hal_title_number">TITLE NUMBER</label>
-                            <input pInputText pKeyFilter="num" formControlName="hal_title_number" id="hal_title_number"
-                                placeholder="Ex. 123456" aria-describedby="hal_title_number-help" styleClass="w-full" />
-                            <small id="hal_title_number-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="remarks">REMARKS</label>
-                            <input toUppercase name="remarks" formControlName="remarks" pInputText id="remarks"
-                                placeholder="Ex. This is a sample remarks." aria-describedby="remarks-help" />
-                            <small id="remarks-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                    </div>
-                </p-fieldset>
-            </ng-container>
-        </ng-container>
-
-        <p-button [outlined]="true" [disabled]="houseAndLotFormGroup.invalid" (onClick)="initializeHouseAndLotForm()"
-            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
-        <p-button type="submit" [disabled]="houseAndLotFormGroup.invalid" icon="pi pi-save" label="Save"></p-button>
-
+  <ng-container formArrayName="houseAndLot">
+    <ng-container
+      *ngFor="
+        let item of houseAndLotFormGroup.controls.houseAndLot.controls;
+        let i = index
+      "
+    >
+      <ng-container [formGroupName]="i">
+        <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+          <div *ngIf="i !== 0" class="flex justify-end">
+            <p-button
+              (onClick)="removeHouseAndLot(i)"
+              type="button"
+              icon="pi pi-trash"
+              [outlined]="true"
+              severity="danger"
+              pTooltip="Delete this form"
+            />
+          </div>
+          <div class="grid grid-cols-4 gap-4 items-start my-4">
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_property_address">PROPERTY ADDRESS</label>
+              <input
+                name="hal_property_address"
+                formControlName="hal_property_address"
+                required
+                pInputText
+                id="hal_property_address"
+                placeholder="Ex. 1234 Sample St., Sample City"
+                aria-describedby="hal_property_address-help"
+                toUppercase
+              />
+              @if
+              (houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_address')?.hasError('required')
+              &&
+              houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_address')?.touched)
+              {
+              <small class="p-error block">
+                Property address is required!
+              </small>
+              }
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_property_value">PROPERTY VALUE</label>
+              <p-inputNumber
+                styleClass="w-full"
+                mode="currency"
+                currency="PHP"
+                formControlName="hal_property_value"
+                required
+                id="hal_property_value"
+                placeholder="Ex. ₱10,00.00"
+                aria-describedby="hal_property_value-help"
+              />
+              @if
+              (houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_value')?.hasError('required')
+              &&
+              houseAndLotFormGroup.get('houseAndLot')?.get(i.toString())?.get('hal_property_value')?.touched)
+              {
+              <small class="p-error block"> Property value is required! </small>
+              }
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_property_type">PROPERTY TYPE</label>
+              <input
+                name="hal_property_type"
+                formControlName="hal_property_type"
+                pInputText
+                id="hal_property_type"
+                placeholder="Ex. Residential"
+                aria-describedby="hal_property_type-help"
+                toUppercase
+              />
+              <small id="hal_property_type-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_tax_deed_number">TAX DEED NUMBER</label>
+              <input
+                pInputText
+                pKeyFilter="num"
+                formControlName="hal_tax_deed_number"
+                id="hal_tax_deed_number"
+                placeholder="Ex. 123456"
+                aria-describedby="hal_tax_deed_number-help"
+                styleClass="w-full"
+              />
+              <small id="hal_tax_deed_number-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_tax_declaration_number"
+                >TAX DECLARATION NUMBER</label
+              >
+              <input
+                pInputText
+                pKeyFilter="num"
+                formControlName="hal_tax_declaration_number"
+                id="hal_tax_declaration_number"
+                placeholder="Ex. 123456"
+                aria-describedby="hal_tax_declaration_number-help"
+                styleClass="w-full"
+              />
+              <small id="hal_tax_declaration_number-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_sqm_area">SQM AREA</label>
+              <p-inputNumber
+                [useGrouping]="false"
+                pKeyFilter="num"
+                formControlName="hal_sqm_area"
+                id="hal_sqm_area"
+                placeholder="Ex. 123456"
+                aria-describedby="hal_sqm_area-help"
+                styleClass="w-full"
+              />
+              <small id="hal_sqm_area-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="hal_title_number">TITLE NUMBER</label>
+              <input
+                pInputText
+                pKeyFilter="num"
+                formControlName="hal_title_number"
+                id="hal_title_number"
+                placeholder="Ex. 123456"
+                aria-describedby="hal_title_number-help"
+                styleClass="w-full"
+              />
+              <small id="hal_title_number-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="remarks">REMARKS</label>
+              <input
+                toUppercase
+                name="remarks"
+                formControlName="remarks"
+                pInputText
+                id="remarks"
+                placeholder="Ex. This is a sample remarks."
+                aria-describedby="remarks-help"
+              />
+              <small id="remarks-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+          </div>
+        </p-fieldset>
+      </ng-container>
     </ng-container>
+
+    <p-button
+      [outlined]="true"
+      [disabled]="houseAndLotFormGroup.invalid || houseAndLotFormGroup.disabled"
+      (onClick)="initializeHouseAndLotForm()"
+      styleClass="me-2"
+      type="button"
+      icon="pi pi-plus"
+      severity="secondary"
+      label="Add form"
+    ></p-button>
+    <p-button
+      type="submit"
+      [disabled]="houseAndLotFormGroup.invalid || houseAndLotFormGroup.disabled"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </ng-container>
 </form>

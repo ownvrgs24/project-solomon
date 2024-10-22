@@ -18,6 +18,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AddressService } from '../../../../../../shared/services/address.service';
+import { MessageService } from 'primeng/api';
+import { MessagesModule } from 'primeng/messages';
 
 interface AddressForm {
   customer_id: FormControl<string | null>;
@@ -50,6 +52,7 @@ interface AddressForm {
     InputTextModule,
     FieldsetModule,
     UpperCaseInputDirective,
+    MessagesModule,
   ],
   templateUrl: './address-form.component.html',
   styleUrls: ['./address-form.component.scss'],
@@ -61,6 +64,7 @@ export class AddressFormComponent implements OnInit {
 
   private geolocationService = inject(GeolocationService);
   private addressService = inject(AddressService);
+  private messageService = inject(MessageService);
 
   regionList: { code: string; regionName: string }[] = [];
 
@@ -270,12 +274,19 @@ export class AddressFormComponent implements OnInit {
       )
       .subscribe({
         next: (data: any) => {
-          // TODO: Add a success message to the form
-          // this.formMessage = [{ severity: 'success', summary: 'Success', detail: data.message }];
-          console.log(data);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: data.message,
+          });
+          this.addressForm.disable();
         },
         error: (error: TypeError) => {
-          console.log(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
         },
       });
   }

@@ -94,21 +94,17 @@ export class PersonalInformationFormComponent {
   ];
 
   personalInformationForm: FormGroup<PersonalInformation> = new FormGroup({
-    first_name: new FormControl('', [Validators.required]),
-    last_name: new FormControl('', [Validators.required]),
-    middle_name: new FormControl(''),
-    extension_name: new FormControl(''),
-    gender: new FormControl('', [Validators.required]),
-    civil_status: new FormControl('', [Validators.required]),
-    mobile_number: new FormControl(''),
-    telephone_number: new FormControl(''),
-    email_address: new FormControl(''),
-    date_of_birth: new FormControl(),
+    first_name: new FormControl<string | null>(null, [Validators.required]),
+    last_name: new FormControl<string | null>(null, [Validators.required]),
+    middle_name: new FormControl<string | null>(null),
+    extension_name: new FormControl<string | null>(null),
+    gender: new FormControl<string | null>(null, [Validators.required]),
+    civil_status: new FormControl<string | null>(null, [Validators.required]),
+    mobile_number: new FormControl<string | null>(null),
+    telephone_number: new FormControl<string | null>(null),
+    email_address: new FormControl<string | null>(null),
+    date_of_birth: new FormControl<Date | null>(null),
   });
-
-  ngOnInit(): void {
-    console.log(this.customerId);
-  }
 
   get computeAge(): number {
     const birthdate = this.personalInformationForm.get('date_of_birth')?.value;

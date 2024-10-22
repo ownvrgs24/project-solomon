@@ -1,4 +1,27 @@
-<p-selectButton [options]="[
-    { label: 'Signatory by Mrs. Dolly Escobar', value: 'signatory_by_mrs_dolly_escobar' },
-    { label: 'Signatory by Dr. Claire Escobar', value: 'signatory_by_dr_claire_escobar' },
-]" optionLabel="label" optionValue="value" />
+<p-fieldset legend="Please Select Signatory">
+  <p-messages />
+  <form [formGroup]="signatoryForm" (ngSubmit)="submitSignatoryArrangement()">
+    <div class="flex flex-column gap-3">
+      @for (item of signatoryOptions; track item.value) {
+
+      <p-radioButton
+        formControlName="signatory_arrangement"
+        [inputId]="item.value"
+        [value]="item.value"
+      />
+      <label [for]="item.value" class="ml-2">
+        {{ item.label }}
+      </label>
+      }
+    </div>
+
+    <p-divider></p-divider>
+
+    <p-button
+      [disabled]="signatoryForm.invalid || signatoryForm.disabled"
+      type="submit"
+      icon="pi pi-check"
+      label="Confirm"
+    ></p-button>
+  </form>
+</p-fieldset>
