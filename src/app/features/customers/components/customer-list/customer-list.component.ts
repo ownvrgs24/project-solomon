@@ -68,6 +68,8 @@ export interface Customer {
   providers: [CustomersService],
 })
 export class CustomerListComponent {
+  // TODO: Add pagination in the future
+
   readonly customerService = inject(CustomersService);
   public readonly statusTagService = inject(StatusTagService);
   private readonly http = inject(HttpService);
