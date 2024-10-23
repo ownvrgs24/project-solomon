@@ -24,6 +24,8 @@ import { OthersComponent } from '../source-of-income/others/others.component';
 })
 export class ShellSourceOfIncomeComponent {
   @Input({ required: false }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   tabs: { title: string; value: string }[] = [
     { title: 'Employment', value: 'employment' },

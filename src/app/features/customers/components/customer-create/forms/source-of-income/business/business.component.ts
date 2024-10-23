@@ -51,12 +51,24 @@ interface BusinessDetails {
 })
 export class BusinessComponent {
   @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private businessService = inject(BusinessOwnerService);
   private messageService = inject(MessageService);
 
   ngOnInit(): void {
-    this.businessFormGroup.controls.customer_id.setValue(this.customerId);
+    if (this.isEditMode) {
+      this.businessFormGroup.patchValue({
+        ...this.customerData?.soi_business_owner,
+        customer_id: this.customerData?.customer_id,
+      });
+      return;
+    }
+
+    this.businessFormGroup.controls.customer_id.setValue(
+      this.customerId || this.customerData?.customer_id
+    );
   }
 
   businessFormGroup: FormGroup<BusinessDetails> = new FormGroup({
@@ -74,7 +86,34 @@ export class BusinessComponent {
     remarks: new FormControl<string | null>(null),
   });
 
+  updateBusinessInformation() {
+    this.businessService
+      .updateBusinessOwner(this.businessFormGroup.value)
+      .subscribe({
+        next: (response: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+          this.businessFormGroup.patchValue(response.data);
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error.message,
+          });
+        },
+      });
+  }
+
   submitForm() {
+    if (this.isEditMode) {
+      this.updateBusinessInformation();
+      return;
+    }
+
     this.businessService
       .addBusinessOwner(this.businessFormGroup.value)
       .subscribe({

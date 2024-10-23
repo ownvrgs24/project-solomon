@@ -12,4 +12,8 @@ export class BusinessOwnerService {
     return this.http.postRequest('income/business-owner', data);
   }
 
+  updateBusinessOwner(data: any) {
+    return this.http.putRequest('income/business-owner', data);
+  }
+
 }

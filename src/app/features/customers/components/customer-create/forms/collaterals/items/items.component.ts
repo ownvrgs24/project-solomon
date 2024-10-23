@@ -89,6 +89,9 @@ export class ItemsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeItems(this.customerData?.cl_item);
+      if (this.customerData.cl_item.length === 0) {
+        this.addItem();
+      }
     }
   }
 

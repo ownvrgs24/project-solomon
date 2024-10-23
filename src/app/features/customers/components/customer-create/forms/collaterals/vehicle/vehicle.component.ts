@@ -104,6 +104,9 @@ export class VehicleComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeVehicle(this.customerData?.cl_vehicle);
+      if (this.customerData.cl_vehicle.length === 0) {
+        this.initializeVehicleForm();
+      }
     }
   }
 

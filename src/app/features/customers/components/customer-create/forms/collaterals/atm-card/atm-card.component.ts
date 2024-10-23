@@ -191,6 +191,9 @@ export class AtmCardComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeAtmCardRecords(this.customerData.cl_atm_card);
+      if (this.customerData.cl_atm_card.length === 0) {
+        this.initializeCardForm();
+      }
     }
   }
 

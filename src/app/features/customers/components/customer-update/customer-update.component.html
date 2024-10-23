@@ -32,7 +32,10 @@
   <p-tabPanel header="Source of Income">
     <ng-template pTemplate="content">
       <p-card>
-        <app-shell-source-of-income />
+        <app-shell-source-of-income
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>

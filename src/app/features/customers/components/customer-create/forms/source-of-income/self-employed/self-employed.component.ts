@@ -46,12 +46,24 @@ interface SelfEmployedDetails {
 })
 export class SelfEmployedComponent {
   @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private selfEmployedService = inject(SelfEmployedService);
   private messagesService = inject(MessageService);
 
   ngOnInit(): void {
-    this.selfEmployedFormGroup.controls.customer_id.setValue(this.customerId);
+    if (this.isEditMode) {
+      this.selfEmployedFormGroup.patchValue({
+        ...this.customerData?.soi_self_employed,
+        customer_id: this.customerData?.customer_id,
+      });
+      return;
+    }
+
+    this.selfEmployedFormGroup.controls.customer_id.setValue(
+      this.customerId || this.customerData?.customer_id
+    );
   }
 
   selfEmployedFormGroup: FormGroup<SelfEmployedDetails> = new FormGroup({
@@ -63,7 +75,34 @@ export class SelfEmployedComponent {
     remarks: new FormControl<string | null>(null),
   });
 
+  updateSelfEmployedInfo(): void {
+    this.selfEmployedService
+      .updateSelfEmployed(this.selfEmployedFormGroup.value)
+      .subscribe({
+        next: (response: any) => {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+          this.selfEmployedFormGroup.patchValue(response.data);
+        },
+        error: (error) => {
+          this.messagesService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+      });
+  }
+
   submitForm(): void {
+    if (this.isEditMode) {
+      this.updateSelfEmployedInfo();
+      return;
+    }
+
     this.selfEmployedService
       .addSelfEmployed(this.selfEmployedFormGroup.value)
       .subscribe({

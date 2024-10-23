@@ -110,12 +110,19 @@ export class AddressFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
-      this.syncCustomerAddress();
+      this.syncCustomerAddress(this.customerData.cx_address);
+      if (this.customerData.cx_address.length === 0) {
+        this.initializeAddressForm();
+      }
     }
   }
 
-  syncCustomerAddress() {
-    const address = this.customerData.cx_address;
+  syncCustomerAddress(customerData: any) {
+    const address = customerData;
+
+    const AddressFormArray = this.addressForm.get('address') as FormArray;
+    AddressFormArray.clear();
+
     address.forEach(async (record: AddressData, index: number) => {
       this.onRegionChange(record.region, index);
       this.onProvinceChange(record.province, index);
@@ -298,13 +305,13 @@ export class AddressFormComponent implements OnInit, OnChanges {
         this.addressService.formatAddress(address, this.regionList)
       )
       .subscribe({
-        next: (data: any) => {
+        next: (response: any) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: data.message,
+            detail: response.message,
           });
-          this.addressForm.disable();
+          this.syncCustomerAddress(response.address);
         },
         error: (error: TypeError) => {
           this.messageService.add({

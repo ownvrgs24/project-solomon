@@ -10,4 +10,8 @@ export class EmploymentService {
   addEmployment(data: any) {
     return this.http.postRequest('income/employment', data);
   }
+
+  updateEmployment(data: any) {
+    return this.http.putRequest('income/employment', data);
+  }
 }

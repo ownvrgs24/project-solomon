@@ -95,6 +95,9 @@ export class HouseAndLotComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeHouseAndLotForm(this.customerData.cl_house_and_lot);
+      if (this.customerData.cl_house_and_lot.length === 0) {
+        this.initializeHouseAndLotForm();
+      }
     }
   }
 

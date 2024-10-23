@@ -106,6 +106,9 @@ export class LotComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeLotForm(this.customerData.cl_lot);
+      if (this.customerData.cl_lot.length === 0) {
+        this.initializeLotForm();
+      }
     }
   }
 

@@ -2,14 +2,16 @@ import { inject, Injectable } from '@angular/core';
 import { HttpService } from '../http.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SelfEmployedService {
-
   readonly http = inject(HttpService);
 
   addSelfEmployed(data: any) {
     return this.http.postRequest('income/self-employed', data);
   }
 
+  updateSelfEmployed(data: any) {
+    return this.http.putRequest('income/self-employed', data);
+  }
 }

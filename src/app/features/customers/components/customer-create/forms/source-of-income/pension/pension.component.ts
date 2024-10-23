@@ -48,6 +48,8 @@ interface PensionDetails {
 })
 export class PensionComponent {
   @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private pensionService = inject(PensionService);
   private messageService = inject(MessageService);
@@ -63,7 +65,7 @@ export class PensionComponent {
   ];
 
   pensionFormGroup: FormGroup<PensionDetails> = new FormGroup({
-    customer_id: new FormControl<string | null>('1'),
+    customer_id: new FormControl<string | null>(this.customerId),
     source: new FormControl<string | null>(null, [Validators.required]),
     amount: new FormControl<string | null>(null, [Validators.required]),
     pay_frequency: new FormControl<string | null>(null),
@@ -71,10 +73,44 @@ export class PensionComponent {
   });
 
   ngOnInit(): void {
-    this.pensionFormGroup.controls.customer_id.setValue(this.customerId);
+    if (this.isEditMode) {
+      this.pensionFormGroup.patchValue({
+        ...this.customerData?.soi_pension_fund,
+        customer_id: this.customerData?.customer_id,
+      });
+      return;
+    }
+
+    this.pensionFormGroup.controls.customer_id.setValue(
+      this.customerId || this.customerData?.customer_id
+    );
+  }
+
+  updatePensionInfo(): void {
+    this.pensionService.updatePension(this.pensionFormGroup.value).subscribe({
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Pension Updated',
+          detail: response.message,
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
+    });
   }
 
   submitForm(): void {
+    if (this.isEditMode) {
+      this.updatePensionInfo();
+      return;
+    }
+
     this.pensionService.addPension(this.pensionFormGroup.value).subscribe({
       next: (response: any) => {
         this.messageService.add({

@@ -83,6 +83,9 @@ export class OthersComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
       this.synchronizeOtherCollateralForm(this.customerData.cl_other);
+      if (this.customerData.cl_other.length === 0) {
+        this.initializeOtherCollateralForm();
+      }
     }
   }
 

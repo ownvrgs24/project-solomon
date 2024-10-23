@@ -56,15 +56,34 @@ interface EmploymentDetails {
 })
 export class EmploymentComponent implements OnInit {
   @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private employmentService = inject(EmploymentService);
   private messagesService = inject(MessageService);
 
   ngOnInit(): void {
-    this.employmentFormGroup.controls.customer_id.setValue(this.customerId);
+    this.performValidationForUpdate();
   }
 
-  payfrequency: { label: string; value: string }[] = [
+  performValidationForUpdate() {
+    if (this.isEditMode) {
+      this.employmentFormGroup.patchValue({
+        ...this.customerData?.soi_employment,
+        date_of_employment: new Date(
+          this.customerData?.soi_employment?.date_of_employment || null
+        ),
+        customer_id: this.customerData?.customer_id,
+      });
+      return;
+    }
+
+    this.employmentFormGroup.controls.customer_id.setValue(
+      this.customerId || this.customerData?.customer_id
+    );
+  }
+
+  incomePayoutOptions: { label: string; value: string }[] = [
     { label: 'Monthly', value: 'MONTHLY' },
     { label: 'Bi-Monthly', value: 'BI_MONTHLY' },
     { label: 'Semi-Monthly', value: 'SEMI_MONTHLY' },
@@ -101,7 +120,37 @@ export class EmploymentComponent implements OnInit {
     remarks: new FormControl<string | null>(null),
   });
 
-  submitForm() {
+  updateEmployment() {
+    this.employmentService
+      .updateEmployment(this.employmentFormGroup.value)
+      .subscribe({
+        next: (response: any) => {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+          this.employmentFormGroup.patchValue({
+            ...response.data,
+            date_of_employment: new Date(response.data.date_of_employment),
+          });
+        },
+        error: (error) => {
+          this.messagesService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+      });
+  }
+
+  submitEmploymentForm() {
+    if (this.isEditMode) {
+      this.updateEmployment();
+      return;
+    }
+
     this.employmentService
       .addEmployment(this.employmentFormGroup.value)
       .subscribe({

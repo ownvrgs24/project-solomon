@@ -37,7 +37,7 @@ import { PrincipalLoanComponent } from './forms/principal-loan/principal-loan.co
 })
 export class CustomerCreateComponent {
   activeIndex: number = 0;
-  customerId = signal<string | null>('9d8b0f80-82a1-4f93-be08-23ce02cf871e');
+  customerId = signal<string | null>(null);
 
   onCustomerCreated($event: string): void {
     this.customerId.set($event);

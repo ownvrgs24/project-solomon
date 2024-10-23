@@ -28,7 +28,7 @@
   >
     <ng-template pTemplate="content">
       <p-card>
-        <app-address-form [customerId]="customerId()" />
+        <app-address-form [customerId]="customerId()" [isEditMode]="false" />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -40,7 +40,10 @@
   >
     <ng-template pTemplate="content">
       <p-card>
-        <app-shell-collaterals-form [customerId]="customerId()" />
+        <app-shell-collaterals-form
+          [customerId]="customerId()"
+          [isEditMode]="false"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -52,7 +55,10 @@
   >
     <ng-template pTemplate="content">
       <p-card>
-        <app-shell-source-of-income [customerId]="customerId()" />
+        <app-shell-source-of-income
+          [customerId]="customerId()"
+          [isEditMode]="false"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>
