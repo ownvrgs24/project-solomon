@@ -11,7 +11,15 @@
         <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
           <div *ngIf="i !== 0" class="flex justify-end">
             <p-button
-              (onClick)="removeHouseAndLot(i)"
+              (onClick)="
+                removeHouseAndLot(
+                  i,
+                  houseAndLotFormGroup
+                    .get('houseAndLot')
+                    ?.get(i.toString())
+                    ?.get('id')?.value
+                )
+              "
               type="button"
               icon="pi pi-trash"
               [outlined]="true"

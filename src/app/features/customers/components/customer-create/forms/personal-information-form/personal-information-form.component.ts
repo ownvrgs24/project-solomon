@@ -1,4 +1,16 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import {
+  Component,
+  effect,
+  EventEmitter,
+  inject,
+  input,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
@@ -18,6 +30,7 @@ import { CustomersService } from '../../../../../../shared/services/customers.se
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { MessagesModule } from 'primeng/messages';
 import { Message } from 'primeng/api';
+import { Observable } from 'rxjs';
 
 interface PersonalInformation {
   last_name: FormControl<string | null>;
@@ -52,16 +65,17 @@ interface PersonalInformation {
   templateUrl: './personal-information-form.component.html',
   styleUrl: './personal-information-form.component.scss',
 })
-export class PersonalInformationFormComponent {
-  formMessage: Message[] | undefined;
-
+export class PersonalInformationFormComponent implements OnChanges {
   @Output() customerRegistered: EventEmitter<string> = new EventEmitter();
-
   @Input({ required: false }) customerId!: string | null;
+  // Input for updating customer data
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private utils = inject(UtilsService);
-
   private customerService = inject(CustomersService);
+
+  formMessage: Message[] | undefined;
 
   genderList: { label: string; value: string }[] = [
     { label: 'Male', value: 'MALE' },
@@ -106,12 +120,47 @@ export class PersonalInformationFormComponent {
     date_of_birth: new FormControl<Date | null>(null),
   });
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      this.personalInformationForm.patchValue({
+        ...this.customerData,
+        date_of_birth: new Date(this.customerData.date_of_birth),
+      });
+    }
+  }
+
   get computeAge(): number {
-    const birthdate = this.personalInformationForm.get('date_of_birth')?.value;
-    return this.utils.computeAge(birthdate ?? new Date());
+    const birthday = this.personalInformationForm.get('date_of_birth')?.value;
+    return this.utils.computeAge(birthday ?? new Date());
+  }
+
+  updatePersonalInformation(): void {
+    const { value } = this.personalInformationForm;
+    this.customerService
+      .updateCustomerPersonalData({
+        ...value,
+        customer_id: this.customerData.customer_id,
+      })
+      .subscribe({
+        next: (data: any) => {
+          this.formMessage = [
+            { severity: 'success', summary: 'Success', detail: data.message },
+          ];
+        },
+        error: (error: TypeError) => {
+          this.formMessage = [
+            { severity: 'error', summary: 'Error', detail: error.message },
+          ];
+        },
+      });
   }
 
   submitPersonalInformation(): void {
+    if (this.isEditMode) {
+      this.updatePersonalInformation();
+      return;
+    }
+
     const { value } = this.personalInformationForm;
     this.customerService.registerCustomer(value).subscribe({
       next: (data: any) => {

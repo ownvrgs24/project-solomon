@@ -29,7 +29,7 @@ import { MessagesModule } from 'primeng/messages';
   providers: [MessageService],
 })
 export class PromissoryNoteComponent {
-  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) customerId!: string | null;
 
   uploadedFiles: any[] = [];
 

@@ -75,6 +75,7 @@ export class LoanRecordsComponent implements OnInit {
             severity: 'success',
             summary: 'Success',
             detail: response.message,
+            closable: false,
           });
         },
         error: () => {

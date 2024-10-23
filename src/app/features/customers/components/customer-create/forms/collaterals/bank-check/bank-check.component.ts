@@ -1,5 +1,12 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -19,11 +26,12 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { BankCheckService } from '../../../../../../../shared/services/collaterals/bank-check.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
 
 interface BankCheckDetails {
   customer_id: FormControl<string | null>;
+  id?: FormControl<string | null>;
   check_date: FormControl<Date | null>;
   issuing_bank: FormControl<string | null>;
   amount: FormControl<string | null>;
@@ -59,11 +67,14 @@ interface BankCheckDetails {
   templateUrl: './bank-check.component.html',
   styleUrl: './bank-check.component.scss',
 })
-export class BankCheckComponent {
+export class BankCheckComponent implements OnInit, OnChanges {
+  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
+
   private bankCheckService = inject(BankCheckService);
   private messagesService = inject(MessageService);
-
-  @Input({ required: true }) customerId!: string | null;
+  private confirmService = inject(ConfirmationService);
 
   bankCheckFormGroup: FormGroup<{
     check: FormArray<FormGroup<BankCheckDetails>>;
@@ -73,9 +84,10 @@ export class BankCheckComponent {
 
   private buildBankCheckFormGroup(): FormGroup<BankCheckDetails> {
     return new FormGroup<BankCheckDetails>({
-      customer_id: new FormControl<string | null>(this.customerId, [
-        Validators.required,
-      ]),
+      customer_id: new FormControl<string | null>(
+        this.customerId || this.customerData.customer_id,
+        [Validators.required]
+      ),
       payee: new FormControl<string | null>(null, [Validators.required]),
       amount: new FormControl<string | null>(null, [Validators.required]),
       check_date: new FormControl<Date | null>(null),
@@ -87,7 +99,49 @@ export class BankCheckComponent {
   }
 
   ngOnInit(): void {
+    if (this.isEditMode) {
+      return;
+    }
     this.initializeBankCheckForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      this.synchronizeBankCheckForm(this.customerData.cl_bank_check);
+    }
+  }
+
+  synchronizeBankCheckForm(customerData: any) {
+    const checks = customerData;
+
+    // Reset the form array to avoid duplicates
+    const checkArray = this.bankCheckFormGroup.get('check') as FormArray;
+    checkArray.clear();
+
+    checks.forEach((record: any) => {
+      (this.bankCheckFormGroup.get('check') as FormArray).push(
+        new FormGroup<BankCheckDetails>({
+          customer_id: new FormControl<string | null>(
+            record.customer_id || this.customerData.customer_id,
+            [Validators.required]
+          ),
+          id: new FormControl<string | null>(record.id),
+          payee: new FormControl<string | null>(record.payee, [
+            Validators.required,
+          ]),
+          amount: new FormControl<string | null>(record.amount, [
+            Validators.required,
+          ]),
+          check_date: new FormControl<Date | null>(new Date(record.check_date)),
+          issuing_bank: new FormControl<string | null>(record.issuing_bank),
+          check_number: new FormControl<string | null>(record.check_number),
+          date_acquired: new FormControl<Date | null>(
+            new Date(record.date_acquired)
+          ),
+          remarks: new FormControl<string | null>(record.remarks),
+        })
+      );
+    });
   }
 
   initializeBankCheckForm() {
@@ -96,11 +150,73 @@ export class BankCheckComponent {
     );
   }
 
-  removeBankCheckForm(index: number) {
+  removeBankCheckForm(index: number, id?: string) {
+    if (this.isEditMode && id) {
+      this.deleteBankCheckRecord(id, index);
+      return;
+    }
+
     (this.bankCheckFormGroup.get('check') as FormArray).removeAt(index);
   }
 
+  deleteBankCheckRecord(id: string, index: number) {
+    this.confirmService.confirm({
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+      header: 'Confirm Delete Address',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      message:
+        'Are you sure you want to DELETE this address from the database?',
+      accept: () => {
+        this.bankCheckService.deleteBankCheck(id).subscribe({
+          next: (response: any) => {
+            this.messagesService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: response.message,
+            });
+            this.removeBankCheckForm(index);
+          },
+          error: (error) => {
+            this.messagesService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message,
+            });
+          },
+        });
+      },
+    });
+  }
+
+  upsertBankCheckRecord() {
+    const { check } = this.bankCheckFormGroup.value;
+    this.bankCheckService.updateBankCheck(check).subscribe({
+      next: (response: any) => {
+        this.messagesService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+        this.synchronizeBankCheckForm(response.data);
+      },
+      error: (error) => {
+        this.messagesService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
+    });
+  }
+
   submitForm() {
+    if (this.isEditMode) {
+      this.upsertBankCheckRecord();
+      return;
+    }
+
     let { check } = this.bankCheckFormGroup.value;
     this.bankCheckService.addBankCheck(check).subscribe({
       next: (response: any) => {

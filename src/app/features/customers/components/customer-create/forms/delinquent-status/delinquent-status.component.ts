@@ -1,14 +1,19 @@
 import { Component, inject, Input } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { FieldsetModule } from 'primeng/fieldset';
 import { IconFieldModule } from 'primeng/iconfield';
 import { TabViewModule } from 'primeng/tabview';
-import { CourtHearingComponent } from "./actions-taken/court-hearing/court-hearing.component";
-import { DemandNoticeComponent } from "./actions-taken/demand-notice/demand-notice.component";
-import { ReportedlyComponent } from "./actions-taken/reportedly/reportedly.component";
-import { OtherActionsComponent } from "./actions-taken/other-actions/other-actions.component";
+import { CourtHearingComponent } from './actions-taken/court-hearing/court-hearing.component';
+import { DemandNoticeComponent } from './actions-taken/demand-notice/demand-notice.component';
+import { ReportedlyComponent } from './actions-taken/reportedly/reportedly.component';
+import { OtherActionsComponent } from './actions-taken/other-actions/other-actions.component';
 import { BlockUIModule } from 'primeng/blockui';
 import { CommonModule } from '@angular/common';
 import { CustomersService } from '../../../../../../shared/services/customers.service';
@@ -34,27 +39,25 @@ interface DelinquentStatus {
     BlockUIModule,
     ReactiveFormsModule,
     CommonModule,
-    MessagesModule
+    MessagesModule,
   ],
   templateUrl: './delinquent-status.component.html',
   styleUrl: './delinquent-status.component.scss',
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class DelinquentStatusComponent {
-
-  private confirmationService: ConfirmationService = inject(ConfirmationService);
-  private messageService: MessageService = inject(MessageService);
+  private confirmationService: ConfirmationService =
+    inject(ConfirmationService);
   private customerService: CustomersService = inject(CustomersService);
   private messagesService = inject(MessageService);
 
-  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) customerId!: string | null;
 
   blockedPanel: boolean = false;
 
   delinquentStatusForm: FormGroup<DelinquentStatus> = new FormGroup({
-    isDelinquent: new FormControl<boolean | null>(null)
+    isDelinquent: new FormControl<boolean | null>(null),
   });
-
 
   delinquentStatusOnChange($event: CheckboxChangeEvent): void {
     // Prevent the checkbox from changing immediately
@@ -65,9 +68,9 @@ export class DelinquentStatusComponent {
       message: 'Are you sure that you want to proceed?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
-      acceptIcon: "none",
-      rejectIcon: "none",
-      rejectButtonStyleClass: "p-button-text",
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
       accept: () => {
         this.delinquentStatusForm.get('isDelinquent')?.setValue(true);
         if (this.delinquentStatusForm.get('isDelinquent')?.value) {
@@ -79,23 +82,30 @@ export class DelinquentStatusComponent {
       reject: () => {
         this.delinquentStatusForm.get('isDelinquent')?.setValue(false);
         this.blockedPanel = false;
-      }
+      },
     });
   }
-
 
   flagCustomerAsDelinquent(): void {
-    this.customerService.markAsDelinquent({
-      customer_id: this.customerId || '',
-    }).subscribe({
-      next: (response: any) => {
-        this.messagesService.add({ severity: 'success', summary: 'Success', detail: response.message });
-      },
-      error: () => {
-        this.messagesService.add({ severity: 'error', summary: 'Error', detail: 'Failed to flag customer as delinquent' });
-      }
-    });
+    this.customerService
+      .markAsDelinquent({
+        customer_id: this.customerId || '',
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.messagesService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+        },
+        error: () => {
+          this.messagesService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to flag customer as delinquent',
+          });
+        },
+      });
   }
-
-
 }

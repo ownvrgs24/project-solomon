@@ -11,7 +11,13 @@
         <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
           <div *ngIf="i !== 0" class="flex justify-end">
             <p-button
-              (onClick)="removeVehicle(i)"
+              (onClick)="
+                removeVehicle(
+                  i,
+                  vehicleFormGroup.get('vehicle')?.get(i.toString())?.get('id')
+                    ?.value
+                )
+              "
               type="button"
               icon="pi pi-trash"
               [outlined]="true"
@@ -103,7 +109,7 @@
     <p-button
       [outlined]="true"
       [disabled]="vehicleFormGroup.invalid || vehicleFormGroup.disabled"
-      (onClick)="addVehicle()"
+      (onClick)="initializeVehicleForm()"
       styleClass="me-2"
       type="button"
       icon="pi pi-plus"

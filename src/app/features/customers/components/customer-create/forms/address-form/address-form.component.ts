@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -18,11 +25,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { AddressService } from '../../../../../../shared/services/address.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
 
 interface AddressForm {
   customer_id: FormControl<string | null>;
+  address_id?: FormControl<string | null>;
   region: FormControl<string | null>;
   province: FormControl<string | null>;
   province_list: FormControl<string[] | null>;
@@ -34,6 +42,22 @@ interface AddressForm {
   zip_code: FormControl<string | null>;
   complete_address: FormControl<string | null>;
   landmark: FormControl<string | null>;
+}
+
+interface AddressData {
+  customer_id: string;
+  address_id: string;
+  region: string;
+  province: string;
+  province_list: string[];
+  city: string;
+  city_list: string[];
+  barangay: string;
+  barangay_list: string[];
+  street: string;
+  zip_code: string;
+  complete_address: string;
+  landmark: string;
 }
 
 @Component({
@@ -57,69 +81,77 @@ interface AddressForm {
   templateUrl: './address-form.component.html',
   styleUrls: ['./address-form.component.scss'],
 })
-export class AddressFormComponent implements OnInit {
-  // TODO: Remove the placeholder from the forms
-
-  @Input({ required: true }) customerId!: string | null;
+export class AddressFormComponent implements OnInit, OnChanges {
+  @Input({ required: false }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private geolocationService = inject(GeolocationService);
   private addressService = inject(AddressService);
   private messageService = inject(MessageService);
+  private readonly confirmService = inject(ConfirmationService);
 
   regionList: { code: string; regionName: string }[] = [];
 
   addressForm: FormGroup<{ address: FormArray<FormGroup<AddressForm>> }> =
     new FormGroup({
-      address: new FormArray(
-        [
-          new FormGroup<AddressForm>({
-            customer_id: new FormControl<string | null>(this.customerId, [
-              Validators.required,
-            ]),
-            region: new FormControl<string | null>(null, [Validators.required]),
-            province: new FormControl<string | null>(null, [
-              Validators.required,
-            ]),
-            province_list: new FormControl<string[]>([]),
-            city: new FormControl<string | null>(null, [Validators.required]),
-            city_list: new FormControl<string[]>([]),
-            barangay: new FormControl<string | null>(null, [
-              Validators.required,
-            ]),
-            barangay_list: new FormControl<string[]>([]),
-            street: new FormControl<string | null>(null, [Validators.required]),
-            zip_code: new FormControl<string | null>(null, [
-              Validators.required,
-            ]),
-            complete_address: new FormControl<string | null>(null),
-            landmark: new FormControl<string | null>(null),
-          }),
-        ],
-        [Validators.required]
-      ),
+      address: new FormArray<FormGroup<AddressForm>>([]),
     });
 
   ngOnInit(): void {
     this.fetchRegions();
 
-    this.addressForm.get('address')?.setValue([
-      {
-        customer_id: this.customerId,
-        region: null,
-        province: null,
-        province_list: null,
-        city: null,
-        city_list: null,
-        barangay: null,
-        barangay_list: null,
-        street: null,
-        zip_code: null,
-        complete_address: null,
-        landmark: null,
-      },
-    ]);
+    if (this.isEditMode) {
+      return;
+    }
 
-    console.log(this.addressForm);
+    this.initializeAddressForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      this.syncCustomerAddress();
+    }
+  }
+
+  syncCustomerAddress() {
+    const address = this.customerData.cx_address;
+    address.forEach(async (record: AddressData, index: number) => {
+      this.onRegionChange(record.region, index);
+      this.onProvinceChange(record.province, index);
+      this.onCityChange(record.city, index);
+      (this.addressForm.get('address') as FormArray).push(
+        new FormGroup<AddressForm>({
+          customer_id: new FormControl<string | null>(
+            record.customer_id ?? null
+          ),
+          address_id: new FormControl<string | null>(record.address_id ?? null),
+          region: new FormControl<string | null>(record.region ?? null),
+          province: new FormControl<string | null>(record.province ?? null),
+          province_list: new FormControl<string[] | null>(
+            record.province_list ?? []
+          ),
+          city: new FormControl<string | null>(record.city ?? null),
+          city_list: new FormControl<string[] | null>(record.city_list ?? null),
+          barangay: new FormControl<string | null>(record.barangay ?? null),
+          barangay_list: new FormControl<string[] | null>(
+            record.barangay_list ?? null
+          ),
+          street: new FormControl<string | null>(record.street ?? null),
+          zip_code: new FormControl<string | null>(record.zip_code ?? null),
+          complete_address: new FormControl<string | null>(
+            record.complete_address ?? null
+          ),
+          landmark: new FormControl<string | null>(record.landmark ?? null),
+        })
+      );
+    });
+  }
+
+  initializeAddressForm() {
+    (this.addressForm.get('address') as FormArray)?.push(
+      this.buildAddressForm()
+    );
   }
 
   onRegionChange(code: string, index: number) {
@@ -140,9 +172,6 @@ export class AddressFormComponent implements OnInit {
       next: (regions) => {
         this.regionList = regions;
       },
-      complete() {
-        console.log('Regions fetched...');
-      },
     });
   }
 
@@ -160,9 +189,6 @@ export class AddressFormComponent implements OnInit {
           .get('province')
           ?.addValidators([Validators.required]);
       },
-      complete() {
-        console.log('Provinces fetched...');
-      },
     });
   }
 
@@ -174,9 +200,6 @@ export class AddressFormComponent implements OnInit {
         ).controls[index].get('city_list');
         cityList?.setValue(cities);
       },
-      complete() {
-        console.log('Cities fetched...');
-      },
     });
   }
 
@@ -187,9 +210,6 @@ export class AddressFormComponent implements OnInit {
           this.addressForm.get('address') as FormArray
         ).controls[index].get('barangay_list');
         barangayList?.setValue(barangays);
-      },
-      complete() {
-        console.log('Barangays fetched...');
       },
     });
   }
@@ -207,9 +227,6 @@ export class AddressFormComponent implements OnInit {
         (this.addressForm.get('address') as FormArray).controls[index]
           .get('province')
           ?.removeValidators([Validators.required]);
-      },
-      complete: () => {
-        console.log('NCR Cities fetched...');
       },
     });
   }
@@ -238,34 +255,73 @@ export class AddressFormComponent implements OnInit {
     )?.value;
   }
 
-  addAddressForm() {
+  private buildAddressForm(): FormGroup<AddressForm> {
+    return new FormGroup<AddressForm>({
+      customer_id: new FormControl<string | null>(
+        this.customerId || this.customerData.customer_id,
+        [Validators.required]
+      ),
+      region: new FormControl<string | null>(null, [Validators.required]),
+      province: new FormControl<string | null>(null, [Validators.required]),
+      province_list: new FormControl<string[]>([]),
+      city: new FormControl<string | null>(null, [Validators.required]),
+      city_list: new FormControl<string[]>([]),
+      barangay: new FormControl<string | null>(null, [Validators.required]),
+      barangay_list: new FormControl<string[]>([]),
+      street: new FormControl<string | null>(null, [Validators.required]),
+      zip_code: new FormControl<string | null>(null, [Validators.required]),
+      complete_address: new FormControl<string | null>(null),
+      landmark: new FormControl<string | null>(null),
+    });
+  }
+
+  addFormAddress() {
     (this.addressForm.get('address') as FormArray).push(
-      new FormGroup<AddressForm>({
-        customer_id: new FormControl<string | null>(this.customerId, [
-          Validators.required,
-        ]),
-        region: new FormControl<string | null>(null, [Validators.required]),
-        province: new FormControl<string | null>(null, [Validators.required]),
-        province_list: new FormControl<string[]>([]),
-        city: new FormControl<string | null>(null, [Validators.required]),
-        city_list: new FormControl<string[]>([]),
-        barangay: new FormControl<string | null>(null, [Validators.required]),
-        barangay_list: new FormControl<string[]>([]),
-        street: new FormControl<string | null>(null, [Validators.required]),
-        zip_code: new FormControl<string | null>(null, [Validators.required]),
-        complete_address: new FormControl<string | null>(null),
-        landmark: new FormControl<string | null>(null),
-      })
+      this.buildAddressForm()
     );
   }
 
-  removeFormAddress(index: number) {
-    // TODO: Add a confirmation dialog before removing the form address
+  removeFormAddress(index: number, addressId?: string) {
+    if (this.isEditMode && addressId) {
+      this.deleteAddressFromServer(addressId, index);
+      return;
+    }
+
     (this.addressForm.get('address') as FormArray).removeAt(index);
   }
 
+  upsertCustomerAddress() {
+    let { address } = this.addressForm.value;
+
+    this.addressService
+      .upsertCustomerAddress(
+        this.addressService.formatAddress(address, this.regionList)
+      )
+      .subscribe({
+        next: (data: any) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: data.message,
+          });
+          this.addressForm.disable();
+        },
+        error: (error: TypeError) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+      });
+  }
+
   submitForm() {
-    // TODO: Add a confirmation dialog before submitting the form and find a way to prevent double submission of the form
+    if (this.isEditMode) {
+      this.upsertCustomerAddress();
+      return;
+    }
+
     let { address } = this.addressForm.value;
 
     this.addressService
@@ -289,5 +345,36 @@ export class AddressFormComponent implements OnInit {
           });
         },
       });
+  }
+
+  deleteAddressFromServer(addressId: string, index: number) {
+    this.confirmService.confirm({
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+      header: 'Confirm Delete Address',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      message:
+        'Are you sure you want to DELETE this address from the database?',
+      accept: () => {
+        this.addressService.deleteCustomerAddress(addressId).subscribe({
+          next: (data: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: data.message,
+            });
+            (this.addressForm.get('address') as FormArray).removeAt(index);
+          },
+          error: (error: TypeError) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message,
+            });
+          },
+        });
+      },
+    });
   }
 }

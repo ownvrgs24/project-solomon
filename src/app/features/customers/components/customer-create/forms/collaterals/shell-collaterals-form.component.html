@@ -1,46 +1,68 @@
 <p-tabView>
-    <p-tabPanel *ngFor="let tab of tabs; let i = index" [header]="tab.title" [selected]="i === 0">
-        @switch (tab.value) {
-        @case ('atm_card') {
-        <ng-template pTemplate="content">
-            <app-atm-card [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('bank_check') {
-        <ng-template pTemplate="content">
-            <app-bank-check [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('house_and_lot') {
-        <ng-template pTemplate="content">
-            <app-house-and-lot [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('lot') {
-        <ng-template pTemplate="content">
-            <app-lot [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('item') {
-        <ng-template pTemplate="content">
-            <app-items [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('vehicle') {
-        <ng-template pTemplate="content">
-            <app-vehicle [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @case ('others') {
-        <ng-template pTemplate="content">
-            <app-others [customerId]="customerId ? customerId : null" />
-        </ng-template>
-        }
-        @default {
-        <ng-template pTemplate="content">
-            <!-- <app-atm-card /> -->
-        </ng-template>
-        }
-        }
-    </p-tabPanel>
+  <p-tabPanel
+    *ngFor="let tab of tabs; let i = index"
+    [header]="tab.title"
+    [selected]="i === 0"
+  >
+    @switch (tab.value) { @case ('atm_card') {
+    <ng-template pTemplate="content">
+      <app-atm-card
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('bank_check') {
+    <ng-template pTemplate="content">
+      <app-bank-check
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('house_and_lot') {
+    <ng-template pTemplate="content">
+      <app-house-and-lot
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('lot') {
+    <ng-template pTemplate="content">
+      <app-lot
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('item') {
+    <ng-template pTemplate="content">
+      <app-items
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('vehicle') {
+    <ng-template pTemplate="content">
+      <app-vehicle
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @case ('others') {
+    <ng-template pTemplate="content">
+      <app-others
+        [customerId]="customerId ? customerId : null"
+        [customerId]="customerId ? customerId : null"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      />
+    </ng-template>
+    } @default {
+    <ng-template pTemplate="content"> </ng-template>
+    } }
+  </p-tabPanel>
 </p-tabView>

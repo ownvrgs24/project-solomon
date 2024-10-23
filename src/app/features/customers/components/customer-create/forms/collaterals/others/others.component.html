@@ -1,30 +1,70 @@
-<p-messages />
+<p-messages></p-messages>
 <form [formGroup]="othersFormGroup" (ngSubmit)="submitForm()">
-  <div class="grid grid-flow-row gap-2">
-    <label for="remarks">REMARKS</label>
-    <textarea
-      required
-      [rows]="5"
-      name="remarks"
-      formControlName="remarks"
-      pInputTextarea
-      id="remarks"
-      placeholder="Ex. This is a sample remarks."
-      aria-describedby="remarks-help"
-      toUppercase
-    ></textarea>
+  <ng-container formArrayName="listRemarks">
+    <ng-container
+      *ngFor="
+        let item of othersFormGroup.controls.listRemarks.controls;
+        let i = index
+      "
+    >
+      <ng-container [formGroupName]="i">
+        <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+          <div *ngIf="i !== 0" class="flex justify-end">
+            <p-button
+              (onClick)="
+                removeOtherCollateral(
+                  i,
+                  othersFormGroup
+                    .get('listRemarks')
+                    ?.get(i.toString())
+                    ?.get('id')?.value
+                )
+              "
+              type="button"
+              icon="pi pi-trash"
+              [outlined]="true"
+              severity="danger"
+              pTooltip="Delete this form"
+            />
+          </div>
 
-    @if ( othersFormGroup.get('remarks')?.hasError('required') &&
-    othersFormGroup.get('remarks')?.touched) {
-    <small class="p-error block"> Remarks is required! </small>
-    }
-  </div>
+          <div class="grid grid-flow-row gap-2">
+            <label for="remarks">REMARKS</label>
+            <textarea
+              required
+              [rows]="2"
+              name="remarks"
+              formControlName="remarks"
+              pInputTextarea
+              id="remarks"
+              placeholder="Ex. This is a sample remarks."
+              aria-describedby="remarks-help"
+              toUppercase
+            ></textarea>
 
-  <p-button
-    type="submit"
-    styleClass="my-4"
-    [disabled]="othersFormGroup.invalid || othersFormGroup.disabled"
-    icon="pi pi-save"
-    label="Save"
-  ></p-button>
+            @if ( othersFormGroup.get('remarks')?.hasError('required') &&
+            othersFormGroup.get('remarks')?.touched) {
+            <small class="p-error block"> Remarks is required! </small>
+            }
+          </div>
+        </p-fieldset>
+      </ng-container>
+    </ng-container>
+    <p-button
+      [outlined]="true"
+      [disabled]="othersFormGroup.invalid || othersFormGroup.disabled"
+      (onClick)="initializeOtherCollateralForm()"
+      styleClass="me-2"
+      type="button"
+      icon="pi pi-plus"
+      severity="secondary"
+      label="Add form"
+    ></p-button>
+    <p-button
+      type="submit"
+      [disabled]="othersFormGroup.invalid || othersFormGroup.disabled"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </ng-container>
 </form>

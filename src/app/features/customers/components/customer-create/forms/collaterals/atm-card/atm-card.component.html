@@ -11,7 +11,13 @@
         <p-fieldset [legend]="'Form #' + index" styleClass="my-4">
           <div *ngIf="index !== 0" class="flex justify-end">
             <p-button
-              (onClick)="removeCardForm(index)"
+              (onClick)="
+                removeCardForm(
+                  index,
+                  atmCardFormGroup.get('card')?.get(index.toString())?.get('id')
+                    ?.value
+                )
+              "
               type="button"
               icon="pi pi-trash"
               [outlined]="true"

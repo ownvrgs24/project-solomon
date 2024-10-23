@@ -12,6 +12,14 @@ export class CustomersService {
     return this.http.getRequest('customers');
   }
 
+  fetchCustomerById(id: string) {
+    return this.http.getRequest(`customer/${id}`);
+  }
+
+  updateCustomerPersonalData(data: any) {
+    return this.http.putRequest('customer/update', data);
+  }
+
   registerCustomer(data: any) {
     return this.http.postRequest('customers', data);
   }

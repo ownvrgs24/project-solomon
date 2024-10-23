@@ -1,23 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { LoanService } from '../../../../../shared/services/loan.service';
-import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { TagModule } from 'primeng/tag';
-import { MessagesModule } from 'primeng/messages';
+import { Component, inject, OnInit } from '@angular/core';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ChipModule } from 'primeng/chip';
-import { StatusTagService } from '../../../../../shared/services/status-tag.service';
-import { TooltipModule } from 'primeng/tooltip';
-import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
-import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
+import { ButtonModule } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { PaymentsComponent } from './dialog/payments/payments.component';
-import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { FieldsetModule } from 'primeng/fieldset';
+import { MessagesModule } from 'primeng/messages';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
-import { CapitalComponent } from './dialog/capital/capital.component';
+import { TooltipModule } from 'primeng/tooltip';
+import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
+import { LoanService } from '../../../../../shared/services/loan.service';
+import { StatusTagService } from '../../../../../shared/services/status-tag.service';
+import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { CapitalComponent } from '../amortization-table/dialog/capital/capital.component';
+import { PaymentsComponent } from '../amortization-table/dialog/payments/payments.component';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -60,7 +60,7 @@ export interface Transaction {
 [];
 
 @Component({
-  selector: 'app-ammortization-table',
+  selector: 'app-amortization-table',
   standalone: true,
   imports: [
     TableModule,
@@ -76,11 +76,11 @@ export interface Transaction {
     AvatarModule,
     ToastModule,
   ],
-  templateUrl: './ammortization-table.component.html',
-  styleUrl: './ammortization-table.component.scss',
+  templateUrl: './amortization-table.component.html',
+  styleUrl: './amortization-table.component.scss',
   providers: [MessageService, DialogService],
 })
-export class AmmortizationTableComponent implements OnInit {
+export class AmortizationTableComponent implements OnInit {
   readonly activatedRoute = inject(ActivatedRoute);
   readonly loanService = inject(LoanService);
   readonly messageService = inject(MessageService);

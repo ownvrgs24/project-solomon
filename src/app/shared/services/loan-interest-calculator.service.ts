@@ -1,9 +1,10 @@
 import { inject, Injectable } from '@angular/core';
+
+import { MessageService } from 'primeng/api';
 import {
   Loan,
   Transaction,
-} from '../../features/customers/components/customer-loans/ammortization-table/ammortization-table.component';
-import { MessageService } from 'primeng/api';
+} from '../../features/customers/components/customer-loans/amortization-table/amortization-table.component';
 
 export enum MODE_OF_PAYMENT {
   BI_MONTHLY = 'BI_MONTHLY',

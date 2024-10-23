@@ -12,7 +12,15 @@
           @if (index !== 0) {
           <div class="flex justify-end">
             <p-button
-              (onClick)="removeFormAddress(index)"
+              (onClick)="
+                removeFormAddress(
+                  index,
+                  addressForm
+                    .get('address')
+                    ?.get(index.toString())
+                    ?.get('address_id')?.value
+                )
+              "
               type="button"
               icon="pi pi-trash"
               [outlined]="true"
@@ -193,7 +201,7 @@
     <p-button
       [outlined]="true"
       [disabled]="addressForm.invalid"
-      (onClick)="addAddressForm()"
+      (onClick)="addFormAddress()"
       styleClass="me-2"
       type="button"
       icon="pi pi-plus"

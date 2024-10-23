@@ -1,0 +1,79 @@
+<p-tabView>
+  <p-tabPanel header="Personal" [disabled]="!customerData">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-personal-information-form
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Address" [disabled]="!customerData">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-address-form [isEditMode]="true" [customerData]="customerData" />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Collateral">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-shell-collaterals-form
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Source of Income">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-shell-source-of-income />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Co-Maker">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-shell-co-maker />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Profile Picture">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-profile-picture-form />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Promissory Note">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-promissory-note />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Archives">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-archives />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+
+  <p-tabPanel header="Delinquent Status">
+    <ng-template pTemplate="content">
+      <p-card>
+        <app-delinquent-status />
+      </p-card>
+    </ng-template>
+  </p-tabPanel>
+</p-tabView>

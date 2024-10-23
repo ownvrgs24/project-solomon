@@ -17,5 +17,5 @@ import { SignatoryArrangementComponent } from './signatory-arrangement/signatory
   styleUrl: './shell-co-maker.component.scss',
 })
 export class ShellCoMakerComponent {
-  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) customerId!: string | null;
 }

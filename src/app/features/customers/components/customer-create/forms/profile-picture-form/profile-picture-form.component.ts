@@ -33,7 +33,7 @@ export class ProfilePictureFormComponent {
   imageData: string | null = null;
   hasUploadSucceeded: boolean = false;
 
-  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) customerId!: string | null;
   @ViewChild('fileUpload') fileUpload!: FileUpload;
 
   private imageService = inject(ImageService);

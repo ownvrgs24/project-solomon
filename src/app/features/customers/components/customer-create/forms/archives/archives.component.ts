@@ -22,7 +22,7 @@ import { UploadService } from '../../../../../../shared/services/upload.service'
   providers: [MessageService],
 })
 export class ArchivesComponent {
-  @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) customerId!: string | null;
 
   uploadedFiles: any[] = [];
   files: any[] = [];

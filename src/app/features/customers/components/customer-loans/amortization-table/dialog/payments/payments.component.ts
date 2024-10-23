@@ -17,9 +17,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { UtilsService } from '../../../../../../../shared/services/utils.service';
-import { AmmortizationTableComponent } from '../../ammortization-table.component';
 
 interface PaymentsDialog {
   transaction_date: FormControl<Date | null>;
