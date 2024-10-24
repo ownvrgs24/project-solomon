@@ -1,4 +1,10 @@
-import { Component, inject, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -45,19 +51,29 @@ interface DelinquentStatus {
   styleUrl: './delinquent-status.component.scss',
   providers: [MessageService],
 })
-export class DelinquentStatusComponent {
+export class DelinquentStatusComponent implements OnChanges {
+  @Input({ required: false }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
+
   private confirmationService: ConfirmationService =
     inject(ConfirmationService);
   private customerService: CustomersService = inject(CustomersService);
   private messagesService = inject(MessageService);
-
-  @Input({ required: false }) customerId!: string | null;
 
   blockedPanel: boolean = false;
 
   delinquentStatusForm: FormGroup<DelinquentStatus> = new FormGroup({
     isDelinquent: new FormControl<boolean | null>(null),
   });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      if (this.customerData.client_status === 'DELINQUENT') {
+        this.delinquentStatusForm.get('isDelinquent')?.setValue(true);
+      }
+    }
+  }
 
   delinquentStatusOnChange($event: CheckboxChangeEvent): void {
     // Prevent the checkbox from changing immediately
@@ -89,7 +105,7 @@ export class DelinquentStatusComponent {
   flagCustomerAsDelinquent(): void {
     this.customerService
       .markAsDelinquent({
-        customer_id: this.customerId || '',
+        customer_id: this.customerId || this.customerData?.customer_id,
       })
       .subscribe({
         next: (response: any) => {

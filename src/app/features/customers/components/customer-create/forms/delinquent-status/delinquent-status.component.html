@@ -1,30 +1,43 @@
 <p-messages />
-<p-fieldset styleClass="border border-red-500" legend="Delinquent Account" [toggleable]="false">
-    <form [formGroup]="delinquentStatusForm">
-        <p-checkbox (onChange)="delinquentStatusOnChange($event)" formControlName="isDelinquent"
-            labelStyleClass="text-red-600" [binary]="true" inputId="binary"
-            label="Mark this customer as having a DELINQUENT ACCOUNT" />
-    </form>
+<p-fieldset
+  styleClass="border border-red-500"
+  legend="Delinquent Account"
+  [toggleable]="false"
+>
+  <form [formGroup]="delinquentStatusForm">
+    <p-checkbox
+      (onChange)="delinquentStatusOnChange($event)"
+      formControlName="isDelinquent"
+      labelStyleClass="text-red-600"
+      [binary]="true"
+      inputId="binary"
+      label="Mark this customer as having a DELINQUENT ACCOUNT"
+    />
+  </form>
 </p-fieldset>
-<br>
 
-<p-blockUI [target]="fieldset" [blocked]="!delinquentStatusForm.get('isDelinquent')?.value">
-    <i class="pi pi-lock text-2xl"></i>
+<br />
+
+<p-blockUI
+  [target]="fieldset"
+  [blocked]="!delinquentStatusForm.get('isDelinquent')?.value"
+>
+  <i class="pi pi-lock text-2xl"></i>
 </p-blockUI>
 
 <p-fieldset #fieldset legend="Delinquent Remediation" [toggleable]="false">
-    <p-tabView>
-        <p-tabPanel header="Court Hearings">
-            <app-court-hearing [customerId]="customerId"></app-court-hearing>
-        </p-tabPanel>
-        <p-tabPanel header="Demand Notice">
-            <app-demand-notice [customerId]="customerId"></app-demand-notice>
-        </p-tabPanel>
-        <p-tabPanel header="Reported">
-            <app-reportedly [customerId]="customerId"></app-reportedly>
-        </p-tabPanel>
-        <p-tabPanel header="Other Actions">
-            <app-other-actions [customerId]="customerId"></app-other-actions>
-        </p-tabPanel>
-    </p-tabView>
+  <p-tabView>
+    <p-tabPanel header="Court Hearings">
+      <app-court-hearing [customerId]="customerId"></app-court-hearing>
+    </p-tabPanel>
+    <p-tabPanel header="Demand Notice">
+      <app-demand-notice [customerId]="customerId"></app-demand-notice>
+    </p-tabPanel>
+    <p-tabPanel header="Reported">
+      <app-reportedly [customerId]="customerId"></app-reportedly>
+    </p-tabPanel>
+    <p-tabPanel header="Other Actions">
+      <app-other-actions [customerId]="customerId"></app-other-actions>
+    </p-tabPanel>
+  </p-tabView>
 </p-fieldset>

@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CustomersService } from '../../../../../../../shared/services/customers.service';
 import { Customer } from '../../../../customer-list/customer-list.component';
 import { StatusTagService } from '../../../../../../../shared/services/status-tag.service';
@@ -40,7 +40,10 @@ import { HttpService } from '../../../../../../../shared/services/http.service';
   styleUrl: './customer-list.component.scss',
 })
 export class CustomerListComponent {
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
   @Input({ required: true }) customerId!: string | null;
+  @Output() selectedCustomer = new EventEmitter<any>(); // TODO: Define the type of the emitted value
 
   private readonly customerService = inject(CustomersService);
   public readonly statusTagService = inject(StatusTagService);
@@ -91,7 +94,7 @@ export class CustomerListComponent {
       accept: () => {
         this.customerService
           .linkCustomerCoMaker({
-            customer_id: this.customerId,
+            customer_id: this.customerId || this.customerData?.customer_id,
             comaker_id: customer_id,
           })
           .subscribe({
@@ -101,6 +104,9 @@ export class CustomerListComponent {
                 summary: 'Success',
                 detail: response.message,
               });
+              if (this.isEditMode) {
+                this.selectedCustomer.emit(response);
+              }
             },
             error: (error) => {
               this.messageService.add({

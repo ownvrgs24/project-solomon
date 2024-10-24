@@ -43,7 +43,7 @@
   <p-tabPanel header="Co-Maker">
     <ng-template pTemplate="content">
       <p-card>
-        <app-shell-co-maker />
+        <app-shell-co-maker [isEditMode]="true" [customerData]="customerData" />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -51,7 +51,10 @@
   <p-tabPanel header="Profile Picture">
     <ng-template pTemplate="content">
       <p-card>
-        <app-profile-picture-form />
+        <app-profile-picture-form
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -59,7 +62,10 @@
   <p-tabPanel header="Promissory Note">
     <ng-template pTemplate="content">
       <p-card>
-        <app-promissory-note />
+        <app-promissory-note
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -67,7 +73,7 @@
   <p-tabPanel header="Archives">
     <ng-template pTemplate="content">
       <p-card>
-        <app-archives />
+        <app-archives [isEditMode]="true" [customerData]="customerData" />
       </p-card>
     </ng-template>
   </p-tabPanel>
@@ -75,7 +81,10 @@
   <p-tabPanel header="Delinquent Status">
     <ng-template pTemplate="content">
       <p-card>
-        <app-delinquent-status />
+        <app-delinquent-status
+          [isEditMode]="true"
+          [customerData]="customerData"
+        />
       </p-card>
     </ng-template>
   </p-tabPanel>

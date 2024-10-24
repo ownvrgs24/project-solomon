@@ -12,10 +12,46 @@
   (onUpload)="onUpload($event)"
 >
   <ng-template pTemplate="content">
-    <ul *ngIf="uploadedFiles.length">
-      <li *ngFor="let file of uploadedFiles">
-        {{ file.name }} - {{ file.size }} bytes
-      </li>
-    </ul>
+    @if (uploadedFiles.length) {
+    <p-fieldset legend="Promissory records">
+      <ul>
+        @for (file of uploadedFiles; track file.file_id) {
+        <li>
+          <div class="flex items-center">
+            <p-button
+              class="ml-2"
+              icon="pi pi-trash"
+              [text]="true"
+              severity="danger"
+              pTooltip="Delete file from server"
+              tooltipPosition="left"
+              (click)="deleteFile(file)"
+            />
+
+            <p-divider layout="vertical" />
+            <a
+              pButton
+              icon="pi pi-folder-open"
+              [href]="file.file_path"
+              class="p-button font-bold"
+              [download]="file.name"
+              target="_blank"
+              [text]="true"
+              pTooltip="Download file"
+              tooltipPosition="right"
+            >
+            </a>
+
+            <p-divider layout="vertical" />
+
+            <span class="ml-3">
+              {{ file.name }} {{ file.size ? file.size + "0 bytes" : "" }}
+            </span>
+          </div>
+        </li>
+        }
+      </ul>
+    </p-fieldset>
+    }
   </ng-template>
 </p-fileUpload>

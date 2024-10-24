@@ -1,3 +1,48 @@
+@if (isEditMode) {
+<ng-container>
+  <p-fieldset legend="Linked Co-Maker" styleClass="mb-8">
+    <p-table [value]="comakerData">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Picture</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Contact No.</th>
+          <th>Email Address</th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <p-avatar
+              styleClass="mr-2"
+              shape="circle"
+              size="xlarge"
+              [image]="item.client_picture"
+              (onImageError)="item.client_picture = 'placeholder.png'"
+            />
+          </td>
+          <td>{{ item.fullname }}</td>
+          <td>{{ item.cx_address || "-" }}</td>
+          <td>{{ item.mobile || "-" }}</td>
+          <td>{{ item.email || "-" }}</td>
+          <td>
+            <p-button
+              type="button"
+              icon="pi pi-trash"
+              label="Remove"
+              severity="danger"
+              [outlined]="true"
+              (click)="removeCoMaker(item)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-fieldset>
+</ng-container>
+}
 <p-tabView>
   <p-tabPanel header="Create Profile">
     <ng-template pTemplate="content">
@@ -6,12 +51,21 @@
   </p-tabPanel>
   <p-tabPanel header="Customer List">
     <ng-template pTemplate="content">
-      <app-customer-list [customerId]="customerId" />
+      <app-customer-list
+        [customerId]="customerId"
+        [isEditMode]="isEditMode"
+        [customerData]="customerData"
+        (selectedCustomer)="extractCoMakerData($event)"
+      />
     </ng-template>
   </p-tabPanel>
   <p-tabPanel header="Signatory Arrangement">
     <ng-template pTemplate="content">
-      <app-signatory-arrangement [customerId]="customerId" />
+      <app-signatory-arrangement
+        [customerId]="customerId"
+        [isEditMode]="isEditMode"
+        [customerData]="customerData"
+      />
     </ng-template>
   </p-tabPanel>
 </p-tabView>

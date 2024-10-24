@@ -1,4 +1,11 @@
-import { Component, inject, Input } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -32,8 +39,10 @@ interface Signatory {
   templateUrl: './signatory-arrangement.component.html',
   styleUrl: './signatory-arrangement.component.scss',
 })
-export class SignatoryArrangementComponent {
+export class SignatoryArrangementComponent implements OnInit, OnChanges {
   @Input({ required: true }) customerId!: string | null;
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
 
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
@@ -47,7 +56,17 @@ export class SignatoryArrangementComponent {
   });
 
   ngOnInit(): void {
-    this.signatoryForm.get('customer_id')?.setValue(this.customerId as string);
+    this.signatoryForm
+      .get('customer_id')
+      ?.setValue(this.customerId || (this.customerData?.customer_id as string));
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      this.signatoryForm
+        .get('signatory_arrangement')
+        ?.setValue(this.customerData.cmk_status);
+    }
   }
 
   signatoryOptions: { label: string; value: string }[] = [

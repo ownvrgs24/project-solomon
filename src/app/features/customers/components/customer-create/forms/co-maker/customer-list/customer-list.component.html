@@ -73,7 +73,7 @@
         <td>
           {{ customer.created_at | date : "MMM dd, yyyy hh:mm a" || "-" }}
         </td>
-        <td class="flex gap-2">
+        <td>
           <p-button
             (onClick)="selectAsComaker(customer.customer_id)"
             [outlined]="true"

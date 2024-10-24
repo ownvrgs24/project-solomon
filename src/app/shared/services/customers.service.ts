@@ -28,6 +28,10 @@ export class CustomersService {
     return this.http.postRequest(`customer/link`, data);
   }
 
+  unlinkCustomerCoMaker(id: number) {
+    return this.http.deleteRequest(`customer/unlink/${id}`);
+  }
+
   markAsDelinquent(data: any) {
     return this.http.postRequest(`customer/mark-as-delinquent`, data);
   }

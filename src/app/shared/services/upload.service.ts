@@ -4,10 +4,9 @@ import { Observable } from 'rxjs';
 import { HttpEvent, HttpRequest } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UploadService {
-
   readonly http = inject(HttpService);
 
   saveProfilePicture(data: FormData) {
@@ -16,5 +15,9 @@ export class UploadService {
 
   uploadFiles(data: FormData) {
     return this.http.uploadFile(data);
+  }
+
+  deleteFile(data: any) {
+    return this.http.postRequest(`upload/files/delete`, data);
   }
 }

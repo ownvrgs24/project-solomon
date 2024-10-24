@@ -1,12 +1,23 @@
+<p-messages />
 <p-tabView [activeIndex]="0">
-  <p-messages />
+  @if (isEditMode) {
+  <p-fieldset legend="Current Profile Picture" styleClass="w-fit">
+    <p-image
+      [src]="this.customerData.client_picture"
+      alt="Image"
+      imageClass="object-cover object-top h-72 w-72"
+      [preview]="true"
+      (onImageError)="this.customerData.client_picture = 'placeholder.png'"
+    />
+  </p-fieldset>
+  }
   <p-tabPanel
     header="Camera"
     [leftIcon]="hasUploadSucceeded ? 'pi pi-lock' : 'pi pi-camera'"
     [disabled]="hasUploadSucceeded"
   >
     <ng-template pTemplate="content">
-      <p-fieldset legend="Camera Feed">
+      <p-fieldset legend="Camera Feed" styleClass="w-fit">
         <app-webcam-utility
           [hasUploadSucceeded]="hasUploadSucceeded"
           [customerId]="customerId!"
@@ -15,13 +26,14 @@
       </p-fieldset>
     </ng-template>
   </p-tabPanel>
+
   <p-tabPanel
     header="Desktop"
     [leftIcon]="hasUploadSucceeded ? 'pi pi-lock' : 'pi pi-desktop'"
     [disabled]="hasUploadSucceeded"
   >
     <ng-template pTemplate="content">
-      <p-fieldset legend="Picture Preview">
+      <p-fieldset legend="Upload from local computer" styleClass="w-fit">
         <div class="flex items-center gap-x-4">
           <p-fileUpload
             #fileUpload

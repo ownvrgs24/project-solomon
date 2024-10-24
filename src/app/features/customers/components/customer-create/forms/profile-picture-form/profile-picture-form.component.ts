@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FileUpload, FileUploadModule, UploadEvent } from 'primeng/fileupload';
@@ -9,8 +16,9 @@ import { WebcamUtilityComponent } from '../../../../../../shared/utils/webcam-ut
 import { ImageService } from '../../../../../../shared/utils/image.service';
 import { UploadService } from '../../../../../../shared/services/upload.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
+import { HttpService } from '../../../../../../shared/services/http.service';
+import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-profile-picture-form',
@@ -24,22 +32,27 @@ import { MessagesModule } from 'primeng/messages';
     TooltipModule,
     WebcamUtilityComponent,
     MessagesModule,
+    ImageModule,
   ],
   templateUrl: './profile-picture-form.component.html',
   styleUrl: './profile-picture-form.component.scss',
 })
-export class ProfilePictureFormComponent {
+export class ProfilePictureFormComponent implements OnChanges {
+  @Input({ required: false }) isEditMode: boolean = false;
+  @Input({ required: false }) customerData!: any;
+  @Input({ required: false }) customerId!: string | null;
+
+  @ViewChild('fileUpload') fileUpload!: FileUpload;
+
   messages: Message[] | undefined;
   imageData: string | null = null;
   hasUploadSucceeded: boolean = false;
-
-  @Input({ required: false }) customerId!: string | null;
-  @ViewChild('fileUpload') fileUpload!: FileUpload;
 
   private imageService = inject(ImageService);
   private uploadService = inject(UploadService);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
+  protected readonly http = inject(HttpService);
 
   files: any[] = [];
 
@@ -52,6 +65,13 @@ export class ProfilePictureFormComponent {
         this.imageData = e.target.result;
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes && this.customerData) {
+      this.customerData.client_picture =
+        this.http.rootURL + '/' + this.customerData.client_picture;
     }
   }
 
@@ -107,7 +127,10 @@ export class ProfilePictureFormComponent {
   uploadFileToServer(image: string) {
     const formData = new FormData();
     formData.append('image', this.imageService.base64ToBlob(image));
-    formData.append('customer_id', this.customerId || '');
+    formData.append(
+      'customer_id',
+      this.customerId || this.customerData.customer_id
+    );
     this.uploadService.saveProfilePicture(formData).subscribe({
       next: (response: any) => {
         this.imageData = image;
@@ -117,6 +140,11 @@ export class ProfilePictureFormComponent {
           summary: 'Success',
           detail: response.message,
         });
+
+        if (this.isEditMode) {
+          this.customerData.client_picture =
+            this.http.rootURL + '/' + response.data.client_picture;
+        }
       },
       error: (error) => {
         this.hasUploadSucceeded = false;
