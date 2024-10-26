@@ -17,6 +17,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-customer-update',
@@ -44,6 +45,7 @@ export class CustomerUpdateComponent implements OnInit {
   private readonly customerService = inject(CustomersService);
   readonly activatedRoute = inject(ActivatedRoute);
   private readonly messagesService = inject(MessageService);
+  private readonly userService = inject(UserService);
 
   customerData: any[] = [];
 
@@ -71,4 +73,13 @@ export class CustomerUpdateComponent implements OnInit {
       },
     });
   }
+
+  activeIndexOnChange(event: number) {
+    this.userService.setLocalStorage('activeIndex', event);
+  }
+
+  get activeIndex(): number {
+    return this.userService.getLocalStorage('activeIndex') as number;
+  }
+
 }

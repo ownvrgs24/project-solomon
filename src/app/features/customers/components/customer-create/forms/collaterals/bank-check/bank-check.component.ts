@@ -107,9 +107,10 @@ export class BankCheckComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
-      this.synchronizeBankCheckForm(this.customerData.cl_bank_check);
-      if (this.customerData.cl_bank_check.length === 0) {
+      if (this.customerData.cl_bank_check?.length === 0) {
         this.initializeBankCheckForm();
+      } else {
+        this.synchronizeBankCheckForm(this.customerData.cl_bank_check || []);
       }
     }
   }

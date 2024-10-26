@@ -1,4 +1,7 @@
-<p-tabView>
+<p-tabView
+  (activeIndexChange)="activeIndexOnChange($event)"
+  [activeIndex]="activeIndex"
+>
   <p-tabPanel header="Personal" [disabled]="!customerData">
     <ng-template pTemplate="content">
       <p-card>

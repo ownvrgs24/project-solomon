@@ -1,74 +1,131 @@
 <p-messages />
 <form [formGroup]="courtHearingDetailsForm" (ngSubmit)="submitForm()">
-    <ng-container formArrayName="records">
-        <ng-container *ngFor="let item of courtHearingDetailsForm.controls.records.controls; let i=index">
-            <ng-container [formGroupName]="i">
-                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
-                    <div *ngIf="i !== 0" class="flex justify-end">
-                        <p-button (onClick)="removeCourtHearing(i)" type="button" icon="pi pi-trash" [outlined]="true"
-                            severity="danger" pTooltip="Delete this form" />
-                    </div>
-                    <div class="grid grid-cols-4 gap-4 items-baseline">
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="hearing-date">DATE OF HEARING (mm/yy/dd)</label>
-                            <p-calendar required placeholder="mm/dd/yyyy" formControlName="hearing_date"
-                                styleClass="w-full" iconDisplay="input" [showIcon]="true" inputId="icondisplay"
-                                mask="99/99/9999" slotChar="mm/dd/yyyy" />
-                            @if
-                            (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('hearing_date')?.hasError('required')
-                            && courtHearingDetailsForm.get('records')?.get(i.toString())?.get('hearing_date')?.touched)
-                            {
-                            <small class="p-error block">
-                                Hearing date is required!
-                            </small>
-                            }
-                        </div>
+  <ng-container formArrayName="records">
+    <ng-container
+      *ngFor="
+        let item of courtHearingDetailsForm.controls.records.controls;
+        let i = index
+      "
+    >
+      <ng-container [formGroupName]="i">
+        <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+          <div *ngIf="i !== 0" class="flex justify-end">
+            <p-button
+              (onClick)="
+                removeCourtHearing(
+                  i,
+                  courtHearingDetailsForm
+                    .get('records')
+                    ?.get(i.toString())
+                    ?.get('id')?.value
+                )
+              "
+              type="button"
+              icon="pi pi-trash"
+              [outlined]="true"
+              severity="danger"
+              pTooltip="Delete this form"
+            />
+          </div>
+          <div class="grid grid-cols-4 gap-4 items-baseline">
+            <div class="grid grid-flow-row gap-2">
+              <label for="hearing-date">DATE OF HEARING (mm/yy/dd)</label>
+              <p-calendar
+                required
+                placeholder="mm/dd/yyyy"
+                formControlName="hearing_date"
+                styleClass="w-full"
+                iconDisplay="input"
+                [showIcon]="true"
+                inputId="icondisplay"
+                mask="99/99/9999"
+                slotChar="mm/dd/yyyy"
+              />
+              @if
+              (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('hearing_date')?.hasError('required')
+              &&
+              courtHearingDetailsForm.get('records')?.get(i.toString())?.get('hearing_date')?.touched)
+              {
+              <small class="p-error block"> Hearing date is required! </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="location">LOCATION</label>
-                            <input formControlName="location" pInputText id="location" placeholder="Ex. Manila"
-                                aria-describedby="location-help" pKeyFilter="alpha" toUppercase />
-                            @if
-                            (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('location')?.hasError('required')
-                            && courtHearingDetailsForm.get('records')?.get(i.toString())?.get('location')?.touched)
-                            {
-                            <small class="p-error block">
-                                Location is required!
-                            </small>
-                            }
-                        </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="location">LOCATION</label>
+              <input
+                formControlName="location"
+                pInputText
+                id="location"
+                placeholder="Ex. Manila"
+                aria-describedby="location-help"
+                pKeyFilter="alpha"
+                toUppercase
+              />
+              @if
+              (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('location')?.hasError('required')
+              &&
+              courtHearingDetailsForm.get('records')?.get(i.toString())?.get('location')?.touched)
+              {
+              <small class="p-error block"> Location is required! </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="status">STATUS</label>
-                            <p-dropdown required formControlName="status" styleClass="w-full" [options]="statusOptions"
-                                optionLabel="label" optionValue="value" placeholder="Select status" />
-                            @if
-                            (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('status')?.hasError('required')
-                            && courtHearingDetailsForm.get('records')?.get(i.toString())?.get('status')?.touched)
-                            {
-                            <small class="p-error block">
-                                Status is required!
-                            </small>
-                            }
-                        </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="status">STATUS</label>
+              <p-dropdown
+                required
+                formControlName="status"
+                styleClass="w-full"
+                [options]="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select status"
+              />
+              @if
+              (courtHearingDetailsForm.get('records')?.get(i.toString())?.get('status')?.hasError('required')
+              &&
+              courtHearingDetailsForm.get('records')?.get(i.toString())?.get('status')?.touched)
+              {
+              <small class="p-error block"> Status is required! </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="remarks">REMARKS</label>
-                            <textarea toUppercase formControlName="remarks" name="remarks" pInputTextarea id=" remarks"
-                                placeholder="Enter any additional information" aria-describedby="remarks-help"
-                                cols="3"></textarea>
-                            <small id="remarks-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                    </div>
-                </p-fieldset>
-            </ng-container>
-        </ng-container>
-
-        <p-button [outlined]="true" [disabled]="courtHearingDetailsForm.invalid" (onClick)="addCourtHearing()"
-            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
-        <p-button type="submit" [disabled]="courtHearingDetailsForm.invalid" icon="pi pi-save" label="Save"></p-button>
-
+            <div class="grid grid-flow-row gap-2">
+              <label for="remarks">REMARKS</label>
+              <textarea
+                toUppercase
+                formControlName="remarks"
+                name="remarks"
+                pInputTextarea
+                id=" remarks"
+                placeholder="Enter any additional information"
+                aria-describedby="remarks-help"
+                cols="3"
+              ></textarea>
+              <small id="remarks-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+          </div>
+        </p-fieldset>
+      </ng-container>
     </ng-container>
+
+    <p-button
+      [outlined]="true"
+      [disabled]="courtHearingDetailsForm.invalid"
+      (onClick)="initializeCourtHearingForm()"
+      styleClass="me-2"
+      type="button"
+      icon="pi pi-plus"
+      severity="secondary"
+      label="Add form"
+    ></p-button>
+    <p-button
+      type="submit"
+      [disabled]="courtHearingDetailsForm.invalid"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </ng-container>
 </form>

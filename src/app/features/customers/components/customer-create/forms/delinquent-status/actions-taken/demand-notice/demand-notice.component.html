@@ -1,76 +1,137 @@
 <p-messages />
 <form [formGroup]="demandNoticeForm" (ngSubmit)="submitForm()">
-    <ng-container formArrayName="records">
-        <ng-container *ngFor="let item of demandNoticeForm.controls.records.controls; let i=index">
-            <ng-container [formGroupName]="i">
-                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
-                    <div *ngIf="i !== 0" class="flex justify-end">
-                        <p-button (onClick)="removeDemandNotice(i)" type="button" icon="pi pi-trash" [outlined]="true"
-                            severity="danger" pTooltip="Delete this form" />
-                    </div>
+  <ng-container formArrayName="records">
+    <ng-container
+      *ngFor="
+        let item of demandNoticeForm.controls.records.controls;
+        let i = index
+      "
+    >
+      <ng-container [formGroupName]="i">
+        <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+          <div *ngIf="i !== 0" class="flex justify-end">
+            <p-button
+              (onClick)="
+                removeDemandNotice(
+                  i,
+                  demandNoticeForm.get('records')?.get(i.toString())?.get('id')
+                    ?.value
+                )
+              "
+              type="button"
+              icon="pi pi-trash"
+              [outlined]="true"
+              severity="danger"
+              pTooltip="Delete this form"
+            />
+          </div>
 
-                    <div class="grid grid-cols-4 gap-4 items-baseline">
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="demand_letter_date">DEMAND LETTER DATE (mm/yy/dd)</label>
-                            <p-calendar required placeholder="mm/dd/yyyy" formControlName="demand_letter_date"
-                                styleClass="w-full" iconDisplay="input" [showIcon]="true" inputId="icondisplay"
-                                mask="99/99/9999" slotChar="mm/dd/yyyy" />
-                            @if
-                            (demandNoticeForm.get('records')?.get(i.toString())?.get('demand_letter_date')?.hasError('required')
-                            && demandNoticeForm.get('records')?.get(i.toString())?.get('demand_letter_date')?.touched) {
-                            <small class="p-error block">
-                                Demand letter date is required!
-                            </small>
-                            }
-                        </div>
+          <div class="grid grid-cols-4 gap-4 items-baseline">
+            <div class="grid grid-flow-row gap-2">
+              <label for="demand_letter_date"
+                >DEMAND LETTER DATE (mm/yy/dd)</label
+              >
+              <p-calendar
+                required
+                placeholder="mm/dd/yyyy"
+                formControlName="demand_letter_date"
+                styleClass="w-full"
+                iconDisplay="input"
+                [showIcon]="true"
+                inputId="icondisplay"
+                mask="99/99/9999"
+                slotChar="mm/dd/yyyy"
+              />
+              @if
+              (demandNoticeForm.get('records')?.get(i.toString())?.get('demand_letter_date')?.hasError('required')
+              &&
+              demandNoticeForm.get('records')?.get(i.toString())?.get('demand_letter_date')?.touched)
+              {
+              <small class="p-error block">
+                Demand letter date is required!
+              </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="status">STATUS</label>
-                            <p-dropdown (onChange)="statusOnChange($event, i)" required formControlName="status"
-                                styleClass="w-full" [options]="statusOptions" optionLabel="label" optionValue="value"
-                                placeholder="Select status" />
-                            @if (demandNoticeForm.get('records')?.get(i.toString())?.get('status')?.hasError('required')
-                            && demandNoticeForm.get('records')?.get(i.toString())?.get('status')?.touched) {
-                            <small class="p-error block">
-                                Status is required!
-                            </small>
-                            }
-                        </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="status">STATUS</label>
+              <p-dropdown
+                (onChange)="statusOnChange($event, i)"
+                required
+                formControlName="status"
+                styleClass="w-full"
+                [options]="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select status"
+              />
+              @if
+              (demandNoticeForm.get('records')?.get(i.toString())?.get('status')?.hasError('required')
+              &&
+              demandNoticeForm.get('records')?.get(i.toString())?.get('status')?.touched)
+              {
+              <small class="p-error block"> Status is required! </small>
+              }
+            </div>
 
-                        @if (getSelectedStatus(i) === enum.RETURNED) {
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="returned_date">RETURNED DATE (mm/yy/dd)</label>
-                            <p-calendar required placeholder="mm/dd/yyyy" formControlName="returned_date"
-                                styleClass="w-full" iconDisplay="input" [showIcon]="true" inputId="icondisplay"
-                                mask="99/99/9999" slotChar="mm/dd/yyyy" />
-                            @if
-                            (demandNoticeForm.get('records')?.get(i.toString())?.get('returned_date')?.hasError('required')
-                            && demandNoticeForm.get('records')?.get(i.toString())?.get('returned_date')?.touched) {
-                            <small class="p-error block">
-                                Returned date is required!
-                            </small>
-                            }
-                        </div>
-                        }
+            <div class="grid grid-flow-row gap-2">
+              <label for="returned_date">RETURNED DATE (mm/yy/dd)</label>
+              <p-calendar
+                required
+                placeholder="mm/dd/yyyy"
+                formControlName="returned_date"
+                styleClass="w-full"
+                iconDisplay="input"
+                [showIcon]="true"
+                inputId="icondisplay"
+                mask="99/99/9999"
+                slotChar="mm/dd/yyyy"
+              />
+              @if
+              (demandNoticeForm.get('records')?.get(i.toString())?.get('returned_date')?.hasError('required')
+              &&
+              demandNoticeForm.get('records')?.get(i.toString())?.get('returned_date')?.touched)
+              {
+              <small class="p-error block"> Returned date is required! </small>
+              }
+            </div>
 
-
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="remarks">REMARKS</label>
-                            <textarea toUppercase formControlName="remarks" name="remarks" pInputTextarea id="remarks"
-                                placeholder="Enter any additional information" aria-describedby="remarks-help"
-                                cols="3"></textarea>
-                            <small id="remarks-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                    </div>
-                </p-fieldset>
-            </ng-container>
-        </ng-container>
-
-        <p-button [outlined]="true" [disabled]="demandNoticeForm.invalid" (onClick)="addDemandNotice()"
-            styleClass="me-2" type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
-        <p-button type="submit" [disabled]="demandNoticeForm.invalid" icon="pi pi-save" label="Save"></p-button>
-
+            <div class="grid grid-flow-row gap-2">
+              <label for="remarks">REMARKS</label>
+              <textarea
+                toUppercase
+                formControlName="remarks"
+                name="remarks"
+                pInputTextarea
+                id="remarks"
+                placeholder="Enter any additional information"
+                aria-describedby="remarks-help"
+                cols="3"
+              ></textarea>
+              <small id="remarks-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+          </div>
+        </p-fieldset>
+      </ng-container>
     </ng-container>
+
+    <p-button
+      [outlined]="true"
+      [disabled]="demandNoticeForm.invalid"
+      (onClick)="initializeDemandNoticeForm()"
+      styleClass="me-2"
+      type="button"
+      icon="pi pi-plus"
+      severity="secondary"
+      label="Add form"
+    ></p-button>
+    <p-button
+      type="submit"
+      [disabled]="demandNoticeForm.invalid"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </ng-container>
 </form>

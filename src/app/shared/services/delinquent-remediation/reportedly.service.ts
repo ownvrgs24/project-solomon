@@ -12,4 +12,12 @@ export class ReportedlyService {
     return this.http.postRequest(`remediation/reported`, data);
   }
 
+  updateReportedly(data: any) {
+    return this.http.putRequest(`remediation/reported`, data);
+  }
+
+  deleteReportedly(id: string) {
+    return this.http.deleteRequest(`remediation/reported/${id}`);
+  }
+
 }

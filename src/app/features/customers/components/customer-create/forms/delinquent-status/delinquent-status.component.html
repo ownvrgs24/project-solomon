@@ -28,16 +28,32 @@
 <p-fieldset #fieldset legend="Delinquent Remediation" [toggleable]="false">
   <p-tabView>
     <p-tabPanel header="Court Hearings">
-      <app-court-hearing [customerId]="customerId"></app-court-hearing>
+      <app-court-hearing
+        [customerId]="customerId"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      ></app-court-hearing>
     </p-tabPanel>
     <p-tabPanel header="Demand Notice">
-      <app-demand-notice [customerId]="customerId"></app-demand-notice>
+      <app-demand-notice
+        [customerId]="customerId"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      ></app-demand-notice>
     </p-tabPanel>
     <p-tabPanel header="Reported">
-      <app-reportedly [customerId]="customerId"></app-reportedly>
+      <app-reportedly
+        [customerId]="customerId"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      ></app-reportedly>
     </p-tabPanel>
     <p-tabPanel header="Other Actions">
-      <app-other-actions [customerId]="customerId"></app-other-actions>
+      <app-other-actions
+        [customerId]="customerId"
+        [customerData]="customerData"
+        [isEditMode]="isEditMode"
+      ></app-other-actions>
     </p-tabPanel>
   </p-tabView>
 </p-fieldset>

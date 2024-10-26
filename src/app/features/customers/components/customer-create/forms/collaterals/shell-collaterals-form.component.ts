@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { TabViewModule } from 'primeng/tabview';
 import { AtmCardComponent } from './atm-card/atm-card.component';
 import { BankCheckComponent } from './bank-check/bank-check.component';
@@ -8,6 +8,7 @@ import { LotComponent } from './lot/lot.component';
 import { ItemsComponent } from './items/items.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { OthersComponent } from './others/others.component';
+import { UserService } from '../../../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-shell-collaterals-form',
@@ -27,6 +28,7 @@ import { OthersComponent } from './others/others.component';
   styleUrl: './shell-collaterals-form.component.scss',
 })
 export class ShellCollateralsFormComponent {
+
   @Input({ required: false }) customerId!: string | null;
   @Input({ required: false }) isEditMode: boolean = false;
   @Input({ required: false }) customerData!: any;

@@ -39,6 +39,21 @@
           </td>
         </tr>
       </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5">
+            <p-messages
+              [value]="[
+                {
+                  severity: 'info',
+                  summary: 'No Linked Co-Maker',
+                  detail: 'This customer has no linked Co-Maker.'
+                }
+              ]"
+            ></p-messages>
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
   </p-fieldset>
 </ng-container>

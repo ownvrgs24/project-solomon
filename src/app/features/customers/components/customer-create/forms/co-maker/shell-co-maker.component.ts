@@ -9,7 +9,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { CreateProfileComponent } from './create-profile/create-profile.component';
 import { CustomerListComponent } from '../../../customer-create/forms/co-maker/customer-list/customer-list.component';
 import { SignatoryArrangementComponent } from './signatory-arrangement/signatory-arrangement.component';
-import { Chip, ChipModule } from 'primeng/chip';
 import { FieldsetModule } from 'primeng/fieldset';
 import { HttpService } from '../../../../../../shared/services/http.service';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
@@ -19,6 +18,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-shell-co-maker',
@@ -34,6 +34,7 @@ import { ButtonModule } from 'primeng/button';
     TableModule,
     AvatarModule,
     ButtonModule,
+    MessagesModule,
   ],
   templateUrl: './shell-co-maker.component.html',
   styleUrl: './shell-co-maker.component.scss',

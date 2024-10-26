@@ -12,8 +12,18 @@
   (onUpload)="onUpload($event)"
 >
   <ng-template pTemplate="content">
-    @if (uploadedFiles.length) {
-    <p-fieldset legend="Promissory records">
+    @if (this.uploadedFiles.length === 0) {
+    <p-messages
+      [value]="[
+        {
+          severity: 'info',
+          summary: 'Information',
+          detail: 'No files have been uploaded yet'
+        }
+      ]"
+    />
+    } @if (uploadedFiles.length) {
+    <p-fieldset legend="Archives">
       <ul>
         @for (file of uploadedFiles; track file.file_id) {
         <li>

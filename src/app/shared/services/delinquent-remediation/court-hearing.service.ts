@@ -12,4 +12,12 @@ export class CourtHearingService {
     return this.http.postRequest(`remediation/court-hearing`, data);
   }
 
+  updateCourtHearing(data: any) {
+    return this.http.putRequest(`remediation/court-hearing`, data);
+  }
+
+  deleteCourtHearing(id: string) {
+    return this.http.deleteRequest(`remediation/court-hearing/${id}`);
+  }
+
 }

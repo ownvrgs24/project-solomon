@@ -1,59 +1,112 @@
 <p-messages />
 <form [formGroup]="reportedlyForm" (ngSubmit)="submitForm()">
-    <ng-container formArrayName="records">
-        <ng-container *ngFor="let item of reportedlyForm.controls.records.controls; let i=index">
-            <ng-container [formGroupName]="i">
-                <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
-                    <div *ngIf="i !== 0" class="flex justify-end">
-                        <p-button (onClick)="removeReportedly(i)" type="button" icon="pi pi-trash" [outlined]="true"
-                            severity="danger" pTooltip="Delete this form" />
-                    </div>
+  <ng-container formArrayName="records">
+    <ng-container
+      *ngFor="
+        let item of reportedlyForm.controls.records.controls;
+        let i = index
+      "
+    >
+      <ng-container [formGroupName]="i">
+        <p-fieldset [legend]="'Form #' + i" styleClass="my-4">
+          <div *ngIf="i !== 0" class="flex justify-end">
+            <p-button
+              (onClick)="
+                removeReportedly(
+                  i,
+                  reportedlyForm.get('records')?.get(i.toString())?.get('id')
+                    ?.value
+                )
+              "
+              type="button"
+              icon="pi pi-trash"
+              [outlined]="true"
+              severity="danger"
+              pTooltip="Delete this form"
+            />
+          </div>
 
-                    <div class="grid grid-cols-4 gap-4 items-baseline">
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="date_reported">DATE REPORTED (mm/yy/dd)</label>
-                            <p-calendar required placeholder="mm/dd/yyyy" formControlName="date_reported"
-                                styleClass="w-full" iconDisplay="input" [showIcon]="true" inputId="icondisplay"
-                                mask="99/99/9999" slotChar="mm/dd/yyyy" />
-                            @if
-                            (reportedlyForm.get('records')?.get(i.toString())?.get('date_reported')?.hasError('required')
-                            && reportedlyForm.get('records')?.get(i.toString())?.get('date_reported')?.touched) {
-                            <small class="p-error block">
-                                Date reported is required!
-                            </small>
-                            }
-                        </div>
+          <div class="grid grid-cols-4 gap-4 items-baseline">
+            <div class="grid grid-flow-row gap-2">
+              <label for="date_reported">DATE REPORTED (mm/yy/dd)</label>
+              <p-calendar
+                required
+                placeholder="mm/dd/yyyy"
+                formControlName="date_reported"
+                styleClass="w-full"
+                iconDisplay="input"
+                [showIcon]="true"
+                inputId="icondisplay"
+                mask="99/99/9999"
+                slotChar="mm/dd/yyyy"
+              />
+              @if
+              (reportedlyForm.get('records')?.get(i.toString())?.get('date_reported')?.hasError('required')
+              &&
+              reportedlyForm.get('records')?.get(i.toString())?.get('date_reported')?.touched)
+              {
+              <small class="p-error block"> Date reported is required! </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row gap-2">
-                            <label for="response">RESPONSE</label>
-                            <p-dropdown formControlName="response" styleClass="w-full" id="response"
-                                placeholder="Select a response" optionValue="value" [options]="responseOptions"
-                                optionLabel="label" aria-describedby="response-help"></p-dropdown>
-                            @if (reportedlyForm.get('records')?.get(i.toString())?.get('response')?.hasError('required')
-                            && reportedlyForm.get('records')?.get(i.toString())?.get('response')?.touched) {
-                            <small class="p-error block">
-                                Response is required!
-                            </small>
-                            }
-                        </div>
+            <div class="grid grid-flow-row gap-2">
+              <label for="response">RESPONSE</label>
+              <p-dropdown
+                formControlName="response"
+                styleClass="w-full"
+                id="response"
+                placeholder="Select a response"
+                optionValue="value"
+                [options]="responseOptions"
+                optionLabel="label"
+                aria-describedby="response-help"
+              ></p-dropdown>
+              @if
+              (reportedlyForm.get('records')?.get(i.toString())?.get('response')?.hasError('required')
+              &&
+              reportedlyForm.get('records')?.get(i.toString())?.get('response')?.touched)
+              {
+              <small class="p-error block"> Response is required! </small>
+              }
+            </div>
 
-                        <div class="grid grid-flow-row col-span-2 gap-2">
-                            <label for="remarks">REMARKS</label>
-                            <textarea toUppercase formControlName="remarks" name="remarks" pInputTextarea id="remarks"
-                                placeholder="Enter any additional information" aria-describedby="remarks-help" cols="5">
-                            </textarea>
-                            <small id="remarks-help">
-                                This is a <strong>OPTIONAL</strong> field.
-                            </small>
-                        </div>
-                    </div>
-                </p-fieldset>
-            </ng-container>
-        </ng-container>
-
-        <p-button [outlined]="true" [disabled]="reportedlyForm.invalid" (onClick)="addReportedly()" styleClass="me-2"
-            type="button" icon="pi pi-plus" severity="secondary" label="Add form"></p-button>
-        <p-button type="submit" [disabled]="reportedlyForm.invalid" icon="pi pi-save" label="Save"></p-button>
-
+            <div class="grid grid-flow-row col-span-2 gap-2">
+              <label for="remarks">REMARKS</label>
+              <textarea
+                toUppercase
+                formControlName="remarks"
+                name="remarks"
+                pInputTextarea
+                id="remarks"
+                placeholder="Enter any additional information"
+                aria-describedby="remarks-help"
+                cols="5"
+              >
+              </textarea>
+              <small id="remarks-help">
+                This is a <strong>OPTIONAL</strong> field.
+              </small>
+            </div>
+          </div>
+        </p-fieldset>
+      </ng-container>
     </ng-container>
+
+    <p-button
+      [outlined]="true"
+      [disabled]="reportedlyForm.invalid"
+      (onClick)="initializeReportedlyForm()"
+      styleClass="me-2"
+      type="button"
+      icon="pi pi-plus"
+      severity="secondary"
+      label="Add form"
+    ></p-button>
+    <p-button
+      type="submit"
+      [disabled]="reportedlyForm.invalid"
+      icon="pi pi-save"
+      label="Save"
+    ></p-button>
+  </ng-container>
 </form>

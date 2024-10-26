@@ -70,7 +70,7 @@
           {{ customer.middle_name }} {{ customer.extension_name }}
         </td>
         <td>
-          @for (item of customer.fixed_co_maker; track item.fixed_co_maker) {
+          @for (item of customer.fixed_co_maker; track $index) {
           <p-tag styleClass="mx-1 my-2" icon="pi pi-user" [value]="item" />
           }
         </td>
@@ -79,29 +79,31 @@
         <td>
           {{ customer.created_at | date : "MMM dd, yyyy hh:mm a" || "-" }}
         </td>
-        <td class="flex gap-2">
-          <p-button
-            label="Loan Record"
-            severity="primary"
-            tooltipPosition="top"
-            pTooltip="View loan record"
-            [routerLink]="['../loans-records', customer.customer_id]"
-          ></p-button>
-          <p-button
-            [routerLink]="['../update', customer.customer_id]"
-            icon="pi pi-user-edit"
-            [rounded]="true"
-            severity="info"
-            pTooltip="Edit"
-            tooltipPosition="top"
-          />
-          <p-button
-            tooltipPosition="top"
-            icon="pi pi-print"
-            [rounded]="true"
-            severity="success"
-            pTooltip="Print client information"
-          />
+        <td>
+          <div class="flex gap-2">
+            <p-button
+              label="Loan Record"
+              severity="primary"
+              tooltipPosition="top"
+              pTooltip="View loan record"
+              [routerLink]="['../loans-records', customer.customer_id]"
+            ></p-button>
+            <p-button
+              [routerLink]="['../update', customer.customer_id]"
+              icon="pi pi-user-edit"
+              [rounded]="true"
+              severity="info"
+              pTooltip="Edit"
+              tooltipPosition="top"
+            />
+            <p-button
+              tooltipPosition="top"
+              icon="pi pi-print"
+              [rounded]="true"
+              severity="success"
+              pTooltip="Print client information"
+            />
+          </div>
         </td>
       </tr>
     </ng-template>

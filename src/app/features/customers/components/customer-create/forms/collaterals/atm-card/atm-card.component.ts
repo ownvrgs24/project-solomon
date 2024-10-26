@@ -83,9 +83,6 @@ export class AtmCardComponent implements OnInit, OnChanges {
   @Input({ required: false }) isEditMode: boolean = false;
   @Input({ required: false }) customerData!: any;
 
-  // TODO: Remove the placeholder from the forms
-  // TODO: Add function to send the form data to the API
-
   accountTypes: { value: string; label: string }[] = [
     { value: 'savings', label: 'Savings' },
     { value: 'current', label: 'Current' },
@@ -102,7 +99,7 @@ export class AtmCardComponent implements OnInit, OnChanges {
   private messagesService = inject(MessageService);
   private confirmService = inject(ConfirmationService);
 
-  alphabetWithSpace: RegExp = new RegExp('^[a-zA-Z ]*$');
+  alphaSpaceRegex: RegExp = new RegExp('^[a-zA-Z ]*$');
 
   atmCardFormGroup: FormGroup<{ card: FormArray<FormGroup<CardDetails>> }> =
     new FormGroup({
@@ -141,33 +138,20 @@ export class AtmCardComponent implements OnInit, OnChanges {
     const cardArray = this.atmCardFormGroup.get('card') as FormArray;
     cardArray.clear();
 
-    card.forEach((record: CardData) => {
-      (this.atmCardFormGroup.get('card') as FormArray).push(
-        new FormGroup<CardDetails>({
-          customer_id: new FormControl<string | null>(
-            record.customer_id ?? null
-          ),
-          id: new FormControl<string | null>(record.id ?? null),
-          account_name: new FormControl<string | null>(
-            record.account_name ?? null
-          ),
-          account_number: new FormControl<string | null>(
-            record.account_number ?? null
-          ),
-          card_number: new FormControl<string | null>(
-            record.card_number ?? null
-          ),
-          pin: new FormControl<string | null>(record.pin ?? null),
-          issuing_bank: new FormControl<string | null>(
-            record.issuing_bank ?? null
-          ),
-          account_type: new FormControl<string | null>(
-            record.account_type ?? null
-          ),
-          username: new FormControl<string | null>(record.username ?? null),
-          password: new FormControl<string | null>(record.password ?? null),
-          remarks: new FormControl<string | null>(record.remarks ?? null),
-        })
+    card.forEach((record: CardDetails) => {
+      (cardArray).push(new FormGroup<CardDetails>({
+        customer_id: new FormControl<string | null>(record.customer_id ?? null, [Validators.required]),
+        id: new FormControl<string | null>(record.id ?? null, [Validators.required]),
+        account_name: new FormControl<string | null>(record.account_name ?? null, [Validators.required]),
+        account_number: new FormControl<string | null>(record.account_number ?? null, [Validators.required]),
+        card_number: new FormControl<string | null>(record.card_number ?? null, [Validators.required]),
+        pin: new FormControl<string | null>(record.pin ?? null, [Validators.required]),
+        issuing_bank: new FormControl<string | null>(record.issuing_bank ?? null, [Validators.required]),
+        account_type: new FormControl<string | null>(record.account_type ?? null, [Validators.required]),
+        username: new FormControl<string | null>(record.username ?? null),
+        password: new FormControl<string | null>(record.password ?? null),
+        remarks: new FormControl<string | null>(record.remarks ?? null),
+      })
       );
     });
   }
@@ -190,9 +174,10 @@ export class AtmCardComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
-      this.synchronizeAtmCardRecords(this.customerData.cl_atm_card);
-      if (this.customerData.cl_atm_card.length === 0) {
+      if (this.customerData.cl_atm_card?.length === 0) {
         this.initializeCardForm();
+      } else {
+        this.synchronizeAtmCardRecords(this.customerData.cl_atm_card || []);
       }
     }
   }

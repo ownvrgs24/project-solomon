@@ -24,7 +24,6 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { HttpService } from '../../../../../../shared/services/http.service';
 import { DividerModule } from 'primeng/divider';
-import { LOCATION_UPGRADE_CONFIGURATION } from '@angular/common/upgrade';
 
 @Component({
   selector: 'app-promissory-note',
