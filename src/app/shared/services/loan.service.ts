@@ -18,4 +18,12 @@ export class LoanService {
   loadAmortizationTable(data: any) {
     return this.http.postRequest(`loans/amortization`, data);
   }
+
+  getLoansForReview() {
+    return this.http.getRequest(`loans/on-review`);
+  }
+
+  approveLoan(data: any) {
+    return this.http.putRequest(`loans/approve`, data);
+  }
 }

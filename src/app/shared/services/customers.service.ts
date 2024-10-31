@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpService } from './http.service';
-import { Customer } from '../../features/customers/components/customer-list/customer-list.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CustomersService {
+
+
   readonly http = inject(HttpService);
 
   fetchCustomers() {
@@ -42,5 +43,9 @@ export class CustomersService {
 
   updateCustomerSignatoryArrangement(data: any) {
     return this.http.putRequest(`customer/update-signatory-arrangement`, data);
+  }
+
+  updateCustomerStatus(data: any) {
+    return this.http.putRequest(`customer/update-status`, data);
   }
 }

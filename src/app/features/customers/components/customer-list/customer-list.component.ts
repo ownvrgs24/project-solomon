@@ -68,13 +68,11 @@ export interface Customer {
   providers: [CustomersService],
 })
 export class CustomerListComponent {
-  // TODO: Add pagination in the future
-
-  readonly customerService = inject(CustomersService);
-  public readonly statusTagService = inject(StatusTagService);
+  private readonly customerService = inject(CustomersService);
   private readonly http = inject(HttpService);
-  loading: boolean = true;
+  public readonly statusTagService = inject(StatusTagService);
 
+  loading: boolean = true;
   customers: Customer[] = [];
 
   ngOnInit(): void {

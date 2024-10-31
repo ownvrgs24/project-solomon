@@ -36,15 +36,10 @@ import { PrincipalLoanComponent } from './forms/principal-loan/principal-loan.co
   styleUrl: './customer-create.component.scss',
 })
 export class CustomerCreateComponent {
-  activeIndex: number = 0;
   customerId = signal<string | null>(null);
 
   onCustomerCreated($event: string): void {
     this.customerId.set($event);
-
-    setTimeout(() => {
-      this.activeIndex++;
-    }, 1500);
   }
 
   get isCustomerCreated(): boolean {

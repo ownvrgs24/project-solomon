@@ -60,20 +60,22 @@ export class PromissoryNoteComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes && this.customerData) {
-      this.displayUpdatedFiles(this.customerData);
+      this.displayUpdatedFiles(this.customerData || []);
     }
   }
 
   displayUpdatedFiles(customerData: any) {
     this.uploadedFiles = [];
 
-    customerData?.cx_promissory_note.forEach((file: any) => {
-      this.uploadedFiles.push({
-        ...file,
-        name: file.file_name,
-        file_path: `${this.http.rootURL}/${file.file_path}`,
+    if (customerData?.cx_promissory_note) {
+      customerData.cx_promissory_note.forEach((file: any) => {
+        this.uploadedFiles.push({
+          ...file,
+          name: file.file_name,
+          file_path: `${this.http.rootURL}/${file.file_path}`,
+        });
       });
-    });
+    }
   }
 
   onFileUploadProgress(event: FileProgressEvent, fileUploadForm: FileUpload) {

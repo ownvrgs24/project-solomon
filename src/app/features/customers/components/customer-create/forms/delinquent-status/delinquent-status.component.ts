@@ -3,6 +3,7 @@ import {
   inject,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
 } from '@angular/core';
 import {
@@ -71,35 +72,36 @@ export class DelinquentStatusComponent implements OnChanges {
     if (changes && this.customerData) {
       if (this.customerData.client_status === 'DELINQUENT') {
         this.delinquentStatusForm.get('isDelinquent')?.setValue(true);
+      } else {
+        this.delinquentStatusForm.get('isDelinquent')?.setValue(false);
       }
     }
   }
 
   delinquentStatusOnChange($event: CheckboxChangeEvent): void {
-    // Prevent the checkbox from changing immediately
-    $event.originalEvent?.preventDefault();
-
-    this.confirmationService.confirm({
-      target: $event?.originalEvent?.target as EventTarget,
-      message: 'Are you sure that you want to proceed?',
+    const isDelinquent = $event.checked;
+    this.delinquentStatusForm.get('isDelinquent')?.setValue(isDelinquent);
+    const confirmationConfig = {
       header: 'Confirmation',
+      target: $event?.originalEvent?.target as EventTarget,
       icon: 'pi pi-exclamation-triangle',
       acceptIcon: 'none',
       rejectIcon: 'none',
       rejectButtonStyleClass: 'p-button-text',
+      message: isDelinquent
+        ? 'Are you sure you want to mark this customer as DELINQUENT?'
+        : 'Are you sure you want to mark this customer as ACTIVE?',
       accept: () => {
-        this.delinquentStatusForm.get('isDelinquent')?.setValue(true);
-        if (this.delinquentStatusForm.get('isDelinquent')?.value) {
-          this.flagCustomerAsDelinquent();
-          this.delinquentStatusForm.get('isDelinquent')?.disable();
-          this.blockedPanel = true;
-        }
+        isDelinquent
+          ? this.flagCustomerAsDelinquent()
+          : this.updateCustomerStatus();
       },
       reject: () => {
-        this.delinquentStatusForm.get('isDelinquent')?.setValue(false);
-        this.blockedPanel = false;
+        this.delinquentStatusForm.get('isDelinquent')?.setValue(!isDelinquent);
       },
-    });
+    };
+
+    this.confirmationService.confirm(confirmationConfig);
   }
 
   flagCustomerAsDelinquent(): void {
@@ -119,9 +121,31 @@ export class DelinquentStatusComponent implements OnChanges {
           this.messagesService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to flag customer as delinquent',
+            detail: 'Failed to flag customer as DELINQUENT',
           });
         },
       });
+  }
+
+  updateCustomerStatus(): void {
+    this.customerService.updateCustomerStatus({
+      customer_id: this.customerId || this.customerData?.customer_id,
+      client_status: 'ACTIVE',
+    }).subscribe({
+      next: (response: any) => {
+        this.messagesService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+      },
+      error: () => {
+        this.messagesService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update customer status to ACTIVE',
+        });
+      },
+    });
   }
 }

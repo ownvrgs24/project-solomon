@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class UserService {
 
+
   constructor() { }
 
   setLocalStorage(key: string, value: any) {
@@ -20,5 +21,8 @@ export class UserService {
     return {};
   }
 
+  removeLocalStorage(key: string) {
+    localStorage.removeItem(key);
+  }
 
 }

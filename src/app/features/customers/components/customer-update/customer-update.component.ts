@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { PersonalInformationFormComponent } from '../customer-create/forms/personal-information-form/personal-information-form.component';
 import { PrincipalLoanComponent } from '../customer-create/forms/principal-loan/principal-loan.component';
 import { AddressFormComponent } from '../customer-create/forms/address-form/address-form.component';
@@ -41,7 +41,9 @@ import { UserService } from '../../../../shared/services/user.service';
   templateUrl: './customer-update.component.html',
   styleUrl: './customer-update.component.scss',
 })
-export class CustomerUpdateComponent implements OnInit {
+export class CustomerUpdateComponent implements OnInit, OnDestroy {
+
+
   private readonly customerService = inject(CustomersService);
   readonly activatedRoute = inject(ActivatedRoute);
   private readonly messagesService = inject(MessageService);
@@ -82,4 +84,8 @@ export class CustomerUpdateComponent implements OnInit {
     return this.userService.getLocalStorage('activeIndex') as number;
   }
 
+  ngOnDestroy(): void {
+    console.log('ngOnDestroy');
+    this.userService.removeLocalStorage('activeIndex');
+  }
 }
