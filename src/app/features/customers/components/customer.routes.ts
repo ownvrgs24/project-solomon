@@ -40,7 +40,13 @@ export const routes: Routes = [
       return m.AmortizationTableComponent;
     },
   },
-
+  {
+    path: 'edit-amortization-table/:id/:loan_id',
+    async loadComponent() {
+      const m = await import('./customer-loans/edit-amortization-table/edit-amortization-table.component');
+      return m.EditAmortizationTableComponent;
+    },
+  },
   {
     path: '',
     redirectTo: 'create',

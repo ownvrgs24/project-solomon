@@ -92,7 +92,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item let-i="rowIndex">
-        <tr class="font-mono text-lg">
+        <tr class="font-mono">
           <td>
             <p-tag
               [value]="item.transaction_status"
@@ -105,7 +105,7 @@
           <td>
             <p-chip
               styleClass="w-full justify-center"
-              [label]="item?.transaction_or_number ?? 'n/a'"
+              [label]="item?.transaction_or_number ?? '-'"
             />
           </td>
           <td>

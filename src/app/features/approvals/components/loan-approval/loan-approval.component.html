@@ -16,6 +16,7 @@
       </p-iconField>
 
       <p-button
+        [disabled]="loans.length === 0"
         severity="success"
         icon="pi pi-check"
         label="Approve All Loans"
@@ -52,7 +53,7 @@
         <th>Loan Status</th>
         <th>Profile Picture</th>
         <th>Name</th>
-        <th>Mobile No.</th>
+        <th>Interest Rate</th>
         <th>Mode of Payment</th>
         <th>Loan Opening Date</th>
         <th>Actions</th>
@@ -63,7 +64,7 @@
         <td>{{ rowIndex + 1 }}</td>
         <td>
           <p-tag
-            [value]="loans.loan_status"
+            [value]="loans.loan_status.replace('_', ' ')"
             [severity]="statusTagService.getSeverity(loans.loan_status)"
           />
         </td>
@@ -79,7 +80,7 @@
         <td>
           {{ loans.fullname }}
         </td>
-        <td>{{ loans.cx_detail.mobile_number || "-" }}</td>
+        <td>{{ loans.loan_interest_rate }}%</td>
         <td>
           <p-tag [value]="loans.loan_mode_of_payment.replace('_', ' ')" />
         </td>

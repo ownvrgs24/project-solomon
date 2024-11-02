@@ -19,7 +19,7 @@
     [paginator]="true"
     paginatorPosition="top"
     [value]="customers"
-    [filterDelay]="0"
+    [filterDelay]="500"
     [globalFilterFields]="[
       'last_name',
       'first_name',
@@ -30,7 +30,9 @@
       'fixed_co_maker'
     ]"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rows]="25"
+    [rows]="currentRows"
+    [first]="currentPage * currentRows"
+    (onPage)="onPageChange($event)"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[25, 50, 100]"
     #dt

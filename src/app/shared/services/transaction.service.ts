@@ -10,4 +10,8 @@ export class TransactionService {
   submitTransaction(data: any) {
     return this.http.postRequest('transactions', data);
   }
+
+  updateTransaction(data: any) {
+    return this.http.putRequest('transactions', data);
+  }
 }

@@ -16,6 +16,7 @@
       </p-iconField>
 
       <p-button
+        [disabled]="customers.length === 0"
         severity="success"
         icon="pi pi-check"
         label="Approve All Customers"

@@ -1,20 +1,39 @@
 <div class="card container mx-auto my-4">
-    <p-toolbar>
-        <div class="p-toolbar-group-start">
-            <img title="logo" src="logo-32.png" />
-        </div>
-        <div class="p-toolbar-group-center">
-            <p-menubar [model]="items"></p-menubar>
-        </div>
-        <div class="p-toolbar-group-end">
-            <div class="flex align-items-center gap-2">
-                <p-button [outlined]="true" (onClick)="handleLogout()" class="text-white" [text]="true"
-                    [severity]="'danger'" label="Logout" icon="pi pi-sign-out" />
-            </div>
-        </div>
-    </p-toolbar>
+  <p-toolbar>
+    <div class="p-toolbar-group-start">
+      <img title="logo" src="logo-32.png" />
+    </div>
+    <div class="p-toolbar-group-center">
+      <p-menubar [model]="items" styleClass="menubar-nav">
+        <ng-template pTemplate="item" let-item>
+          <a
+            [routerLink]="item.routerLink"
+            routerLinkActive="bg-primary"
+            [routerLinkActiveOptions]="item.routerLinkActiveOptions"
+            class="p-menuitem-link"
+          >
+            <span [class]="item.icon" class="p-menuitem-icon"></span>
+            <span class="p-menuitem-text">{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </p-menubar>
+    </div>
+    <div class="p-toolbar-group-end">
+      <div class="flex align-items-center gap-2">
+        <p-button
+          [outlined]="true"
+          (onClick)="handleLogout()"
+          class="text-white"
+          [text]="true"
+          [severity]="'danger'"
+          label="Logout"
+          icon="pi pi-sign-out"
+        />
+      </div>
+    </div>
+  </p-toolbar>
 </div>
 
 <div class="container mx-auto">
-    <router-outlet />
+  <router-outlet />
 </div>

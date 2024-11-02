@@ -107,12 +107,12 @@ export class AmortizationTableComponent implements OnInit {
     balanceInterest: number;
     nextPaymentDate?: Date;
   } = {
-    interest: 0,
-    selectedIndex: 0,
-    interestRate: 0,
-    message: '',
-    balanceInterest: 0,
-  };
+      interest: 0,
+      selectedIndex: 0,
+      interestRate: 0,
+      message: '',
+      balanceInterest: 0,
+    };
 
   ngOnInit(): void {
     this.getAmortizationTable();
@@ -175,6 +175,7 @@ export class AmortizationTableComponent implements OnInit {
           .submitTransaction({
             ...data,
             loan_id: this.loanData.loan_id,
+            transaction_status: 'APPROVED',
           })
           .subscribe({
             next: (response: any) => {

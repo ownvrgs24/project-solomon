@@ -1,5 +1,5 @@
-<form [formGroup]="basicInformation">
-  <div class="grid grid-cols-2 gap-4 items-start my-4">
+<form [formGroup]="form">
+  <div class="grid grid-cols-1 gap-4 items-start my-4">
     <div class="grid grid-flow-row gap-2">
       <label for="designation">LAST NAME</label>
       <input
@@ -14,9 +14,8 @@
         pKeyFilter="alpha"
       />
 
-      @if (basicInformation.get('last_name')?.hasError('required') &&
-      basicInformation.get('last_name')?.touched) {
-
+      @if (form.get('last_name')?.hasError('required') &&
+      form.get('last_name')?.touched) {
       <small class="p-error block"> Last name is required! </small>
       }
     </div>
@@ -35,8 +34,8 @@
         pKeyFilter="alpha"
       />
 
-      @if (basicInformation.get('first_name')?.hasError('required') &&
-      basicInformation.get('first_name')?.touched) {
+      @if (form.get('first_name')?.hasError('required') &&
+      form.get('first_name')?.touched) {
 
       <small class="p-error block"> First name is required! </small>
 
@@ -64,7 +63,7 @@
     <div class="grid grid-flow-row gap-2">
       <label for="suffix">SUFFIX</label>
       <p-dropdown
-        formControlName="suffix"
+        formControlName="extension_name"
         styleClass="w-full"
         [options]="suffixList"
         optionLabel="label"

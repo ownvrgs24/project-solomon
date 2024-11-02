@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { UpperCaseInputDirective } from '../../../shared/directives/to-uppercase.directive';
 import { AccountService } from '../../../shared/services/account.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 export interface Account {
   recno: string;
@@ -47,11 +48,14 @@ export interface Account {
 })
 export class AccountListComponent {
 
+
   loading: boolean = true;
   accounts: Account[] = [];
   searchValue!: string;
 
   readonly accountService = inject(AccountService);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly toastService = inject(MessageService);
 
   ngOnInit(): void {
     this.fetchAccounts();
@@ -59,11 +63,14 @@ export class AccountListComponent {
 
   fetchAccounts() {
     this.loading = true;
-    this.accountService.fetchAccounts().subscribe((accounts) => {
-      this.accounts = accounts as Account[];
-      console.log(this.accounts);
-      
-      this.loading = false;
+    this.accountService.fetchAccounts().subscribe({
+      next: (res: any) => {
+        this.accounts = res.data as Account[];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.log(err);
+      }
     });
   }
 
@@ -82,5 +89,26 @@ export class AccountListComponent {
       default:
         return undefined;
     }
+  }
+
+  deleteAccount(account_id: string) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this account?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-primary',
+      rejectButtonStyleClass: 'p-button-secondary p-button-text',
+      accept: () => {
+        this.accountService.deleteAccount(account_id).subscribe({
+          next: (res: any) => {
+            this.toastService.add({ severity: 'success', summary: 'Success', detail: res.message, life: 3000 });
+            this.fetchAccounts();
+          },
+          error: (err) => {
+            this.toastService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete account', life: 3000 });
+          }
+        })
+      }
+    });
   }
 }

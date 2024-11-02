@@ -1,41 +1,97 @@
 <div class="card">
-    <div class="pb-4">
-        <div class="flex items-center justify-between">
-            <p-button icon="pi pi-user-plus" routerLink="../create" label="Create an Account" />
-            <p-iconField iconPosition="left">
-                <p-inputIcon>
-                    <i class="pi pi-search"></i>
-                </p-inputIcon>
-                <input pInputText [(ngModel)]="searchValue" type="text"
-                    (input)="dt.filterGlobal(searchValue, 'contains')" placeholder="Search keyword" toUppercase />
-            </p-iconField>
-        </div>
+  <div class="pb-4">
+    <div class="flex items-center justify-between">
+      <p-button
+        icon="pi pi-user-plus"
+        routerLink="../create"
+        label="Create an Account"
+      />
+      <p-iconField iconPosition="left">
+        <p-inputIcon>
+          <i class="pi pi-search"></i>
+        </p-inputIcon>
+        <input
+          pInputText
+          [(ngModel)]="searchValue"
+          type="text"
+          (input)="dt.filterGlobal(searchValue, 'contains')"
+          placeholder="Search keyword"
+          toUppercase
+        />
+      </p-iconField>
     </div>
+  </div>
 
-    <p-table [paginator]="true" [value]="accounts" [filterDelay]="0"
-        [globalFilterFields]="['last_name', 'first_name', 'middle_name', 'client_status', 'address', 'mobile_number']"
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="10"
-        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" #dt [showCurrentPageReport]="true">
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Role</th>
-                <th>Name</th>
-                <th>Username</th>
-                <th>Contact No.</th>
-                <th>Registration Date</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-customer>
-            <tr>
-                <td>
-                    <p-tag [value]="customer.role" [severity]="getSeverity(customer.role)" />
-                </td>
-                <td>{{ customer.last_name }}, {{ customer.first_name }} {{ customer.middle_name }}
-                    {{customer.extension_name}} </td>
-                <td>{{ customer.username || '-' }}</td>
-                <td>{{ customer.contact_number || '-' }}</td>
-                <td>{{ customer.created_at | date: 'MMM dd, yyyy hh:mm a' || '-' }}</td>
-            </tr>
-        </ng-template>
-    </p-table>
+  <p-table
+    [paginator]="true"
+    [value]="accounts"
+    [filterDelay]="0"
+    [globalFilterFields]="[
+      'last_name',
+      'first_name',
+      'middle_name',
+      'client_status',
+      'address',
+      'mobile_number'
+    ]"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    #dt
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Role</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Contact No.</th>
+        <th>Registration Date</th>
+        <th>Action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-account>
+      <tr>
+        <td>
+          <p-tag
+            [value]="account.role"
+            [severity]="getSeverity(account.role)"
+          />
+        </td>
+        <td>
+          {{ account.last_name }}, {{ account.first_name }}
+          {{ account.middle_name }} {{ account.extension_name }}
+        </td>
+        <td>{{ account.username || "-" }}</td>
+        <td>{{ account.contact_number || "-" }}</td>
+        <td>
+          {{ account.created_at | date : "MMM dd, yyyy hh:mm a" || "-" }}
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-pencil"
+            [text]="true"
+            rounded
+            severity="info"
+            [routerLink]="['../update', account.account_id]"
+          />
+          <p-button
+            icon="pi pi-trash"
+            [text]="true"
+            rounded
+            severity="danger"
+            (onClick)="deleteAccount(account.account_id)"
+          />
+          <p-button
+            icon="pi pi-lock"
+            [text]="true"
+            rounded
+            severity="secondary"
+            [routerLink]="['../change-password', account.account_id]"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

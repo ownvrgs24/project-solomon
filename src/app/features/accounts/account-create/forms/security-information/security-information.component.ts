@@ -1,53 +1,44 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { AbstractControl, FormGroup, FormGroupDirective, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { PasswordModule } from 'primeng/password';
+import { UpperCaseInputDirective } from '../../../../../shared/directives/to-uppercase.directive';
 
 @Component({
   selector: 'app-security-information',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, PasswordModule, DropdownModule, ButtonModule, MultiSelectModule, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    PasswordModule,
+    DropdownModule,
+    ButtonModule,
+    MultiSelectModule,
+    CommonModule,
+    UpperCaseInputDirective
+  ],
   templateUrl: './security-information.component.html',
   styleUrl: './security-information.component.scss'
 })
 export class SecurityInformationComponent implements OnInit {
+  @Input() formGroupName!: string;
+  @Input() editMode: boolean = false;
 
-  securityInformationForm!: FormGroup;
+  private formGroupDirective = inject(FormGroupDirective);
 
-  restrictionList: any[] | undefined;
-
-  roleList: { label: string; value: string | null }[] = [
-    { label: 'Admin', value: 'admin' },
-    { label: 'Encoder', value: 'encoder' },
-    { label: 'Cashier', value: 'cashier' },
-  ];
-
-  constructor(private fb: FormBuilder) { }
+  form!: FormGroup;
 
   ngOnInit() {
-    this.securityInformationForm = this.fb.group({
-      username: [null, Validators.required],
-      password: [null, Validators.required],
-      confirm_password: [null, Validators.required],
-      role: [null, Validators.required],
-      restrictions: [null, Validators.required]
-    }, { validators: this.passwordMatchValidator });
+    this.form = this.formGroupDirective.control.get(this.formGroupName) as FormGroup;
   }
 
-  passwordMatchValidator(form: AbstractControl): { password_mismatch: boolean } | null {
-    const password = form.get('password');
-    const confirmPassword = form.get('confirm_password');
-
-    if (password && confirmPassword && password.value !== confirmPassword.value) {
-      confirmPassword.setErrors({ password_mismatch: true });
-      return { password_mismatch: true };
-    } else {
-      confirmPassword?.setErrors(null);
-      return null;
-    }
-  }
+  roleList: { label: string; value: string | null }[] = [
+    { label: 'Administrator', value: 'ADMINISTRATOR' },
+    { label: 'Encoder', value: 'ENCODER' },
+    { label: 'Cashier', value: 'CASHIER' },
+  ];
 }

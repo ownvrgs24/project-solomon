@@ -1,90 +1,81 @@
-<form [formGroup]="securityInformationForm">
-
-    <div class="grid grid-cols-2 gap-4 items-start my-4">
-
-        <div class="grid grid-flow-row gap-2">
-
-            <label for="username">USERNAME</label>
-
-            <input name="username" formControlName="username" required pInputText id="username"
-                placeholder="Ex. juandelacruz" aria-describedby="username-help" toUppercase pKeyFilter="alphanum" />
-
-            @if (securityInformationForm.get('username')?.hasError('required') &&
-            securityInformationForm.get('username')?.touched) {
-
-            <small class="p-error block">
-                Username is required!
-            </small>
-
-            }
-
-        </div>
-
-        <div class="grid grid-flow-row gap-2 w-full">
-
-            <label for="password">PASSWORD</label>
-
-            <p-password [toggleMask]="true" [inputStyle]="{'width': '100%'}" name="password" formControlName="password"
-                required id="password" placeholder="Ex. ********" aria-describedby="password-help"
-                styleClass="w-full" />
-
-            @if (securityInformationForm.get('password')?.hasError('required') &&
-            securityInformationForm.get('password')?.touched) {
-
-            <small class="p-error block">
-                Password is required!
-            </small>
-
-            }
-
-        </div>
-        <div class="grid grid-flow-row gap-2">
-            <label for="confirm_password">CONFIRM PASSWORD</label>
-            <p-password styleClass="w-full" [inputStyle]="{'width': '100%'}" [toggleMask]="true" name="confirm_password"
-                formControlName="confirm_password" required id="confirm_password" placeholder="Ex. ********"
-                aria-describedby="confirm_password-help" />
-
-            @if (securityInformationForm.get('confirm_password')?.hasError('required') &&
-            securityInformationForm.get('confirm_password')?.touched) {
-            <small class="p-error block">
-                Confirm password is required!
-            </small>
-            }
-
-            @if (securityInformationForm.get('confirm_password')?.hasError('password_mismatch') &&
-            securityInformationForm.get('confirm_password')?.touched) {
-            <small class="p-error block">
-                Passwords do not match.
-            </small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-
-            <label for="role">ROLE</label>
-
-            <p-dropdown formControlName="role" styleClass="w-full" [options]="roleList" optionLabel="label"
-                optionValue="value" placeholder="Select Role" />
-
-            <small id="role-help">
-
-                Please select the role of the user.
-
-            </small>
-
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-
-            <label for="restrictions">RESTRICTIONS</label>
-
-            <p-multiSelect formControlName="restrictions" styleClass="w-full" [options]="restrictionList"
-                optionLabel="label" optionValue="value" placeholder="Select Restrictions"></p-multiSelect>
-
-            <small id="restrictions-help">
-                Please select any restrictions for the user.
-            </small>
-
-        </div>
+<form [formGroup]="form">
+  <div class="grid grid-cols-1 gap-4 items-start my-4">
+    <div class="grid grid-flow-row gap-2">
+      <label for="username">USERNAME</label>
+      <input
+        autocomplete="username"
+        name="username"
+        formControlName="username"
+        required
+        pInputText
+        id="username"
+        placeholder="Ex. juandelacruz"
+        aria-describedby="username-help"
+        pKeyFilter="alphanum"
+      />
+      @if (form.get('username')?.hasError('required') &&
+      form.get('username')?.touched) {
+      <small class="p-error block"> Username is required! </small>
+      }
     </div>
+
+    @if (!editMode) {
+    <div class="grid grid-flow-row gap-2 w-full">
+      <label for="password">PASSWORD</label>
+      <p-password
+        [toggleMask]="true"
+        [inputStyle]="{ width: '100%' }"
+        name="password"
+        formControlName="password"
+        required
+        autocomplete="new-password"
+        id="password"
+        placeholder="Ex. ********"
+        aria-describedby="password-help"
+        styleClass="w-full"
+      />
+
+      @if (form.get('password')?.hasError('required') &&
+      form.get('password')?.touched) {
+      <small class="p-error block"> Password is required! </small>
+      }
+    </div>
+    <div class="grid grid-flow-row gap-2">
+      <label for="confirm_password">CONFIRM PASSWORD</label>
+      <p-password
+        styleClass="w-full"
+        [inputStyle]="{ width: '100%' }"
+        [toggleMask]="true"
+        name="confirm_password"
+        formControlName="confirm_password"
+        required
+        autocomplete="confirm-password"
+        id="confirm_password"
+        placeholder="Ex. ********"
+        aria-describedby="confirm_password-help"
+      />
+
+      @if (form.get('confirm_password')?.hasError('required') &&
+      form.get('confirm_password')?.touched) {
+      <small class="p-error block"> Confirm password is required! </small>
+      } @if (form.hasError('passwordMismatch') &&
+      form.get('confirm_password')?.touched) {
+      <small class="p-error block"> Passwords do not match. </small>
+      }
+    </div>
+    }
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="role">ROLE</label>
+      <p-dropdown
+        formControlName="role"
+        styleClass="w-full"
+        [options]="roleList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Role"
+      />
+      <small id="role-help"> Please select the role of the user. </small>
+    </div>
+  </div>
 </form>

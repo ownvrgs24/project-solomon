@@ -1,26 +1,37 @@
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Input, OnInit } from '@angular/core';
+import { FormGroup, FormGroupDirective, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { KeyFilterModule } from 'primeng/keyfilter';
+import { UpperCaseInputDirective } from '../../../../../shared/directives/to-uppercase.directive';
 
-interface basicInformation {
-  last_name: FormControl<string | null>,
-  first_name: FormControl<string | null>,
-  middle_name: FormControl<string | null>,
-  suffix: FormControl<string | null>,
-  email_address: FormControl<string | null>,
-}
+
 
 @Component({
   selector: 'app-basic-information',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, KeyFilterModule, DropdownModule, ButtonModule],
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    KeyFilterModule,
+    DropdownModule,
+    ButtonModule,
+    UpperCaseInputDirective
+  ],
   templateUrl: './basic-information.component.html',
   styleUrl: './basic-information.component.scss'
 })
-export class BasicInformationComponent {
+export class BasicInformationComponent implements OnInit {
+
+  private formGroupDirective = inject(FormGroupDirective);
+
+  @Input() formGroupName!: string;
+  form!: FormGroup;
+
+  ngOnInit() {
+    this.form = this.formGroupDirective.control.get(this.formGroupName) as FormGroup;
+  }
 
   suffixList: { label: string; value: string | null }[] = [
     { label: 'None', value: null },
@@ -38,11 +49,4 @@ export class BasicInformationComponent {
     { label: 'X', value: 'X' },
   ]
 
-  basicInformation: FormGroup<basicInformation> = new FormGroup<basicInformation>({
-    last_name: new FormControl<string | null>(null, [Validators.required]),
-    first_name: new FormControl<string | null>(null, [Validators.required]),
-    middle_name: new FormControl<string | null>(null),
-    suffix: new FormControl<string | null>(null),
-    email_address: new FormControl<string | null>(null),
-  });
 }

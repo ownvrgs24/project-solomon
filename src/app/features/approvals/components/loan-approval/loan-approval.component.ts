@@ -153,6 +153,7 @@ export class LoanApprovalComponent {
       message: 'Are you sure you want to approve all loans?',
       header: 'Confirmation',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Approve All',
       acceptButtonStyleClass: 'p-button-success p-button-outlined',
       rejectButtonStyleClass: 'p-button-danger p-button-text',
       accept: () => {

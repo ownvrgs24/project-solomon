@@ -1,62 +1,85 @@
-<form [formGroup]="additionalInformationForm">
-
-    <div class="grid grid-cols-2 gap-4 items-start my-4 container ">
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="contact-no">CONTACT NO.</label>
-            <p-inputMask formControlName="contact_number" styleClass="w-full" mask="0999 999 9999"
-                placeholder="0912 345 6789" />
-            @if (additionalInformationForm.get('contact_number')?.hasError('required') &&
-            additionalInformationForm.get('contact_number')?.touched) {
-            <small class="p-error block">
-                Contact number is required!
-            </small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="date-of-birth">DATE OF BIRTH (mm/yy/dd)</label>
-            <p-calendar placeholder="mm/dd/yyyy" formControlName="date_of_birth" styleClass="w-full" iconDisplay="input"
-                [showIcon]="true" inputId="icondisplay" />
-            @if (additionalInformationForm.get('date_of_birth')?.hasError('required') &&
-            additionalInformationForm.get('date_of_birth')?.touched) {
-            <small class="p-error block">
-                Date of birth is required!
-            </small>
-            }
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="age">AGE</label>
-            <input toUppercase [value]="computeAge" pInputText id="age" readonly aria-describedby="age-help" />
-            <small id="age-help">
-                Automatically calculated from <strong>DATE OF BIRTH</strong>.
-            </small>
-        </div>
-
-        <div class="grid grid-flow-row gap-2">
-            <label for="suffix">GENDER</label>
-            <p-dropdown required formControlName="gender" styleClass="w-full" [options]="genderList" optionLabel="label"
-                optionValue="value" placeholder="Select gender" />
-            @if (additionalInformationForm.get('gender')?.hasError('required') &&
-            additionalInformationForm.get('gender')?.touched) {
-            <small class="p-error block">
-                Gender selection is required.
-            </small>
-            }
-        </div>
-
-        <!-- Address -->
-        <div class="grid grid-flow-row gap-2">
-            <label for="address">ADDRESS</label>
-            <input formControlName="address" pInputText id="address" type="text" placeholder="Ex. 1234 Main St."
-                aria-describedby="address-help" toUppercase />
-            @if (additionalInformationForm.get('address')?.hasError('required') &&
-            additionalInformationForm.get('address')?.touched) {
-            <small class="p-error block">
-                Address is required!
-            </small>
-            }
-        </div>
+<form [formGroup]="form">
+  <div class="grid grid-cols-1 gap-4 items-start my-4 container">
+    <div class="grid grid-flow-row gap-2">
+      <label for="contact-no">CONTACT NO.</label>
+      <p-inputMask
+        formControlName="contact_number"
+        styleClass="w-full"
+        mask="0999 999 9999"
+        placeholder="0912 345 6789"
+      />
+      @if (form.get('contact_number')?.hasError('required') &&
+      form.get('contact_number')?.touched) {
+      <small class="p-error block"> Contact number is required! </small>
+      }
     </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="date-of-birth">DATE OF BIRTH (mm/yy/dd)</label>
+      <p-calendar
+        placeholder="mm/dd/yyyy"
+        formControlName="date_of_birth"
+        styleClass="w-full"
+        iconDisplay="input"
+        [showIcon]="true"
+        inputId="icondisplay"
+      />
+      @if (form.get('date_of_birth')?.hasError('required') &&
+      form.get('date_of_birth')?.touched) {
+      <small class="p-error block"> Date of birth is required! </small>
+      } @if (form.get('date_of_birth')?.hasError('underage') &&
+      form.get('date_of_birth')?.touched) {
+      <small class="p-error block"> You must be at least 18 years old! </small>
+      }
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="age">AGE</label>
+      <input
+        toUppercase
+        [value]="computeAge"
+        pInputText
+        id="age"
+        readonly
+        aria-describedby="age-help"
+      />
+      <small id="age-help">
+        Automatically calculated from <strong>DATE OF BIRTH</strong>.
+      </small>
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="suffix">GENDER</label>
+      <p-dropdown
+        required
+        formControlName="gender"
+        styleClass="w-full"
+        [options]="genderList"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select gender"
+      />
+      @if (form.get('gender')?.hasError('required') &&
+      form.get('gender')?.touched) {
+      <small class="p-error block"> Gender selection is required. </small>
+      }
+    </div>
+
+    <div class="grid grid-flow-row gap-2">
+      <label for="address">ADDRESS</label>
+      <input
+        formControlName="address"
+        pInputText
+        id="address"
+        type="text"
+        placeholder="Ex. 1234 Main St."
+        aria-describedby="address-help"
+        toUppercase
+      />
+      @if (form.get('address')?.hasError('required') &&
+      form.get('address')?.touched) {
+      <small class="p-error block"> Address is required! </small>
+      }
+    </div>
+  </div>
 </form>

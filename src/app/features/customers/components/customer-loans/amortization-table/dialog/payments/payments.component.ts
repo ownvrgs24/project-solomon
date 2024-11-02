@@ -106,7 +106,6 @@ export class PaymentsComponent implements OnInit {
   }
 
   validateCollection() {
-    // console.log(transactions[interest.interest.selectedIndex].transaction_date);
     const { interest, collection } = this.paymentsForm.value;
     // FORMULA: balance_interest = interest - collection
     if (collection < interest) {
@@ -156,7 +155,7 @@ export class PaymentsComponent implements OnInit {
       const transaction = {
         ...this.paymentsForm.value,
         balance: latestBalance,
-        transaction_status: 'FOR_REVIEW',
+        transaction_status: 'APPROVED',
       };
       this.ref.close(transaction);
     }
@@ -177,7 +176,7 @@ export class PaymentsComponent implements OnInit {
         this.ref.close({
           ...this.paymentsForm.getRawValue(),
           balance: balance,
-          transaction_status: 'FOR_REVIEW',
+          transaction_status: 'APPROVED',
         });
       },
       reject: () => {

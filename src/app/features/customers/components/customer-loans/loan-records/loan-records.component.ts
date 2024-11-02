@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { FieldsetModule } from 'primeng/fieldset';
+import { AvatarModule } from 'primeng/avatar';
 
 export interface CustomerLoanRecord {
   recno: number;
@@ -24,6 +26,14 @@ export interface CustomerLoanRecord {
   created_at: string;
   updated_at: string;
   cxl_transaction: any[];
+  cx_detail: {
+    client_status: string;
+    last_name: string;
+    first_name: string;
+    middle_name: string;
+    extension_name: string;
+  };
+  fullname: string;
 }
 [];
 
@@ -37,6 +47,8 @@ export interface CustomerLoanRecord {
     ButtonModule,
     RouterModule,
     MessagesModule,
+    FieldsetModule,
+    AvatarModule
   ],
   templateUrl: './loan-records.component.html',
   styleUrl: './loan-records.component.scss',
@@ -66,11 +78,17 @@ export class LoanRecordsComponent implements OnInit {
           if (this.customerLoanRecords.length === 0) {
             this.messageService.add({
               severity: 'warn',
-              summary: 'No records found',
+              summary: 'No loan records are available',
               closable: false,
             });
             return;
           }
+
+          this.customerLoanRecords = this.customerLoanRecords.map((loan) => ({
+            ...loan,
+            fullname: `${loan.cx_detail.last_name || ''}, ${loan.cx_detail.first_name || ''} ${loan.cx_detail.middle_name || ''} ${loan.cx_detail.extension_name || ''}`.trim()
+          }))
+
           this.messageService.add({
             severity: 'success',
             summary: 'Success',

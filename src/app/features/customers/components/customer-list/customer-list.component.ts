@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { CustomersService } from '../../../../shared/services/customers.service';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 import { StatusTagService } from '../../../../shared/services/status-tag.service';
 import { HttpService } from '../../../../shared/services/http.service';
 import { AvatarModule } from 'primeng/avatar';
+import { UserService } from '../../../../shared/services/user.service';
 
 export interface Customer {
   recno: number;
@@ -67,19 +68,39 @@ export interface Customer {
   styleUrl: './customer-list.component.scss',
   providers: [CustomersService],
 })
-export class CustomerListComponent {
+export class CustomerListComponent implements OnInit {
   private readonly customerService = inject(CustomersService);
   private readonly http = inject(HttpService);
   public readonly statusTagService = inject(StatusTagService);
+  private readonly userService = inject(UserService);
 
   loading: boolean = true;
   customers: Customer[] = [];
-
+  currentPage = 0;
+  currentRows = 25;
+  searchValue!: string;
   ngOnInit(): void {
     this.fetchCustomers();
+
+    // Retrieve pagination state from localStorage
+    const savedPage = this.userService.getLocalStorage('customerListPage');
+    const savedRows = this.userService.getLocalStorage('customerListRows');
+
+    if (savedPage) {
+      this.currentPage = isNaN(parseInt(savedPage)) ? 0 : parseInt(savedPage);
+    }
+    if (savedRows) {
+      this.currentRows = isNaN(parseInt(savedRows)) ? 25 : parseInt(savedRows);
+    }
   }
 
-  searchValue!: string;
+  onPageChange(event: any) {
+    // Save to localStorage when page changes
+    this.userService.setLocalStorage('customerListPage', (event.first / event.rows).toString());
+    this.userService.setLocalStorage('customerListRows', event.rows.toString());
+  }
+
+
 
   fetchCustomers() {
     this.customerService.fetchCustomers().subscribe((data) => {

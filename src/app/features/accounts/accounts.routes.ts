@@ -20,6 +20,20 @@ export const routes: Routes = [
         },
     },
     {
+        path: "update/:id",
+        async loadComponent() {
+            const m = await import("./account-update/account-update.component");
+            return m.AccountUpdateComponent;
+        },
+    },
+    {
+        path: "change-password/:id",
+        async loadComponent() {
+            const m = await import("./account-update/form/change-password/change-password.component");
+            return m.ChangePasswordComponent;
+        },
+    },
+    {
         path: "",
         redirectTo: "list",
         pathMatch: "full",
