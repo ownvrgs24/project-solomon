@@ -233,11 +233,10 @@ export class AtmCardComponent implements OnInit, OnChanges {
     this.confirmService.confirm({
       acceptLabel: 'Delete',
       rejectLabel: 'Cancel',
-      header: 'Confirm Delete Address',
+      header: 'Confirm Delete ATM Card',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      message:
-        'Are you sure you want to DELETE this address from the database?',
+      message: 'Are you sure you want to DELETE this ATM card from the database?',
       accept: () => {
         this.atmCardService.deleteAtmCard(id).subscribe({
           next: (response: any) => {

@@ -1,4 +1,4 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -7,20 +7,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { DropdownModule } from 'primeng/dropdown';
-import { FieldsetModule } from 'primeng/fieldset';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
-import { KeyFilterModule } from 'primeng/keyfilter';
-import { TooltipModule } from 'primeng/tooltip';
-import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
-import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CalendarModule } from 'primeng/calendar';
 import { LoanService } from '../../../../../../shared/services/loan.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { MessagesModule } from 'primeng/messages';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { FieldsetModule } from 'primeng/fieldset';
+import { DividerModule } from 'primeng/divider';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 interface PrincipalLoan {
   customer_id: FormControl<string | null>;
@@ -42,20 +39,16 @@ enum MODE_OF_PAYMENT {
   imports: [
     ReactiveFormsModule,
     DropdownModule,
-    KeyFilterModule,
-    TooltipModule,
     InputNumberModule,
-    AsyncPipe,
     CommonModule,
     ButtonModule,
-    DividerModule,
     InputTextModule,
-    FieldsetModule,
-    UpperCaseInputDirective,
-    InputTextareaModule,
     CalendarModule,
     MessagesModule,
     ConfirmDialogModule,
+    FieldsetModule,
+    DividerModule,
+    InputTextareaModule
   ],
   templateUrl: './principal-loan.component.html',
   styleUrl: './principal-loan.component.scss',

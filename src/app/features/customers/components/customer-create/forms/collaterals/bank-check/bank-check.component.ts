@@ -167,11 +167,10 @@ export class BankCheckComponent implements OnInit, OnChanges {
     this.confirmService.confirm({
       acceptLabel: 'Delete',
       rejectLabel: 'Cancel',
-      header: 'Confirm Delete Address',
+      header: 'Confirm Delete Bank Check',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      message:
-        'Are you sure you want to DELETE this address from the database?',
+      message: 'Are you sure you want to DELETE this bank check from the database?',
       accept: () => {
         this.bankCheckService.deleteBankCheck(id).subscribe({
           next: (response: any) => {

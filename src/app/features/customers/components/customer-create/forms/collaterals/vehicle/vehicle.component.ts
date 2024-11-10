@@ -159,11 +159,10 @@ export class VehicleComponent implements OnInit, OnChanges {
     this.confirmService.confirm({
       acceptLabel: 'Delete',
       rejectLabel: 'Cancel',
-      header: 'Confirm Delete Address',
+      header: 'Confirm Delete Vehicle',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      message:
-        'Are you sure you want to DELETE this address from the database?',
+      message: 'Are you sure you want to DELETE this vehicle from the database?',
       accept: () => {
         this.vehicleService.deleteVehicle(id).subscribe({
           next: (response: any) => {

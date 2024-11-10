@@ -168,11 +168,10 @@ export class ItemsComponent implements OnInit, OnChanges {
     this.confirmService.confirm({
       acceptLabel: 'Delete',
       rejectLabel: 'Cancel',
-      header: 'Confirm Delete Address',
+      header: 'Confirm Delete Item',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      message:
-        'Are you sure you want to DELETE this address from the database?',
+      message: 'Are you sure you want to DELETE this item from the database?',
       accept: () => {
         this.itemService.deleteItem(id).subscribe({
           next: (response: any) => {

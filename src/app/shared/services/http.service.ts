@@ -1,6 +1,7 @@
-import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,16 @@ export class HttpService {
   // private BASE_URL: string = 'https://demoapi.dolbenlending.com/api/';
 
   readonly http = inject(HttpClient);
+  private readonly userService = inject(UserService);
 
+  private getAuthHeaders() {
+    const accessToken = this.userService.getToken();
+    return {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    };
+  }
   uploadFile(formData: FormData): Observable<HttpEvent<any>> {
     const req = new HttpRequest(
       'POST',
@@ -25,6 +35,9 @@ export class HttpService {
       {
         reportProgress: true,
         responseType: 'json',
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${this.userService.getToken()}`
+        })
       }
     );
     return this.http.request(req);
@@ -34,6 +47,7 @@ export class HttpService {
     return this.http.post(this.API_URL + apiEndpoint, data, {
       reportProgress: true,
       responseType: 'json',
+      ...this.getAuthHeaders()
     });
   }
 
@@ -41,15 +55,20 @@ export class HttpService {
     return this.http.get(this.API_URL + apiEndpoint, {
       reportProgress: true,
       responseType: 'json',
+      ...this.getAuthHeaders()
     });
   }
 
   deleteRequest(apiEndpoint: string) {
-    return this.http.delete(this.API_URL + apiEndpoint);
+    return this.http.delete(this.API_URL + apiEndpoint, {
+      ...this.getAuthHeaders()
+    });
   }
 
   putRequest(apiEndpoint: string, data: any) {
-    return this.http.put(this.API_URL + apiEndpoint, data);
+    return this.http.put(this.API_URL + apiEndpoint, data, {
+      ...this.getAuthHeaders()
+    });
   }
 
   get rootURL(): string {

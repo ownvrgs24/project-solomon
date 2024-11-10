@@ -2,6 +2,13 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: 'add-loan/:id',
+    async loadComponent() {
+      const m = await import('./customer-add-loan/customer-add-loan.component');
+      return m.CustomerAddLoanComponent;
+    },
+  },
+  {
     path: 'create',
     async loadComponent() {
       const m = await import('./customer-create/customer-create.component');

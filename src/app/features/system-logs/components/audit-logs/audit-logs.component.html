@@ -1,0 +1,33 @@
+<p-table
+  [value]="auditLogs"
+  [rows]="25"
+  [paginator]="true"
+  [rowsPerPageOptions]="[25, 50, 100]"
+  paginatorPosition="top"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Level</th>
+      <th>Message</th>
+      <th>Timestamp</th>
+      <th>Type</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-auditLog>
+    <tr>
+      <td>
+        <p-tag [value]="auditLog.level" [severity]="auditLog.level"></p-tag>
+      </td>
+      <td class="text-wrap max-w-xl leading-loose">
+        {{ auditLog.message | uppercase }}
+      </td>
+      <td>{{ auditLog.timestamp | date : "MMM dd, yyyy hh:mm:ss a" }}</td>
+      <td>
+        <p-tag
+          [value]="auditLog.type || 'NOT SPECIFIED' | uppercase"
+          [severity]="auditLog.type"
+        ></p-tag>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

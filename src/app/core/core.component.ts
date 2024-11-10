@@ -1,23 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLinkActive, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { UserService } from '../shared/services/user.service';
 
 @Component({
   selector: 'app-core',
   standalone: true,
   imports: [MenubarModule, CommonModule, ButtonModule, RouterLinkActive, RouterModule, ToolbarModule],
   templateUrl: './core.component.html',
-  styleUrl: './core.component.scss'
+  styleUrl: './core.component.scss',
 })
+
 export class CoreComponent {
   protected readonly rootRoute = "/core";
 
-  constructor(private router: Router, private confirmationService: ConfirmationService, private messageService: MessageService) { }
+  private readonly router = inject(Router)
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
+  private readonly userService = inject(UserService);
 
   items: MenuItem[] | undefined = [
     {
@@ -74,10 +79,15 @@ export class CoreComponent {
       accept: () => {
         this.router.navigate(['/login']);
         this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: 'You have successfully logged out' });
+        this.userService.removeSession();
       },
       reject: () => {
         this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have cancelled the logout' });
       }
     });
+  }
+
+  ngOnInit(): void {
+    console.log(this.userService.isLoggedIn());
   }
 }

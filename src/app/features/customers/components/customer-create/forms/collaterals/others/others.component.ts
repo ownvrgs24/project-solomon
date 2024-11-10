@@ -145,11 +145,10 @@ export class OthersComponent implements OnInit, OnChanges {
     this.confirmService.confirm({
       acceptLabel: 'Delete',
       rejectLabel: 'Cancel',
-      header: 'Confirm Delete Address',
+      header: 'Confirm Delete Other Collateral',
       acceptButtonStyleClass: 'p-button-danger',
       rejectButtonStyleClass: 'p-button-secondary',
-      message:
-        'Are you sure you want to DELETE this address from the database?',
+      message: 'Are you sure you want to DELETE this other collateral from the database?',
       accept: () => {
         this.otherCollateralService.deleteOtherCollateral(id).subscribe({
           next: (response: any) => {

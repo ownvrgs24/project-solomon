@@ -62,6 +62,8 @@ export class PaymentsComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+
+    console.log(this.dialogConfig.data);
   }
 
   initializeForm(): void {

@@ -105,4 +105,8 @@ export class LoanRecordsComponent implements OnInit {
         },
       });
   }
+  
+  get customerId() {
+    return this.activatedRoute.snapshot.paramMap.get('id');
+  }
 }

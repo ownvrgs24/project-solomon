@@ -53,6 +53,7 @@
         <th>Loan Status</th>
         <th>Profile Picture</th>
         <th>Name</th>
+        <th>Loan Amount</th>
         <th>Interest Rate</th>
         <th>Mode of Payment</th>
         <th>Loan Opening Date</th>
@@ -80,12 +81,17 @@
         <td>
           {{ loans.fullname }}
         </td>
+        <td>{{ loans.loan_amount | currency : "PHP" }}</td>
         <td>{{ loans.loan_interest_rate }}%</td>
         <td>
           <p-tag [value]="loans.loan_mode_of_payment.replace('_', ' ')" />
         </td>
         <td>
-          {{ loans.loan_opening_date | date : "MMM dd, yyyy hh:mm a" || "-" }}
+          {{
+            loans.loan_opening_date
+              ? (loans.loan_opening_date | date : "MMM dd, yyyy hh:mm a")
+              : "-"
+          }}
         </td>
         <td>
           <div class="flex gap-2">

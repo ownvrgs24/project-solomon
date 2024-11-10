@@ -87,4 +87,13 @@
     </ng-template>
   </p-table>
 </div>
+} @else {
+<div class="flex justify-center items-center h-full">
+  <p-button
+    [routerLink]="['../../add-loan', customerId]"
+    severity="primary"
+    label="ADD LOAN"
+    icon="pi pi-plus"
+  ></p-button>
+</div>
 }

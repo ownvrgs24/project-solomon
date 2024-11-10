@@ -268,6 +268,7 @@ export class AddressFormComponent implements OnInit, OnChanges {
         this.customerId || this.customerData.customer_id,
         [Validators.required]
       ),
+      // address_id: new FormControl<string | null>(null),
       region: new FormControl<string | null>(null, [Validators.required]),
       province: new FormControl<string | null>(null, [Validators.required]),
       province_list: new FormControl<string[]>([]),

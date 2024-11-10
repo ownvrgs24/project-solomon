@@ -56,6 +56,10 @@ export class CapitalComponent {
     transaction_remarks: new FormControl<string | null>(null),
   });
 
+  ngOnInit(): void {
+    console.log(this.dialogConfig.data);
+  }
+
   submitCapitalForm() {
     const { data } = this.dialogConfig;
 

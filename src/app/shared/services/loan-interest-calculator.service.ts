@@ -96,10 +96,7 @@ export class LoanInterestCalculatorService {
 
   oddCheckerHelper(data: Transaction[]): boolean {
     return (
-      data.filter((t) => t.payment !== undefined && t.payment > 0).length %
-        2 !==
-      0
-    );
+      data.filter((t) => t.payment !== undefined && t.payment > 0).length % 2 !== 0);
   }
 
   // Helper to calculate projected interest
@@ -157,9 +154,6 @@ export class LoanInterestCalculatorService {
         detail:
           'Start date cannot be in the future! Please wait for the start date to arrive.',
       });
-      throw new Error(
-        'Start date cannot be in the future! Please wait for the start date to arrive.'
-      );
     }
 
     // Swap if start date is greater than end date
