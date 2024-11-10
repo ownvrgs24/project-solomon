@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-edit-amortization-table',
@@ -38,13 +39,13 @@ import { TransactionService } from '../../../../../shared/services/transaction.s
     FormsModule,
     InputNumberModule,
     CalendarModule,
+    MessagesModule
   ],
   templateUrl: './edit-amortization-table.component.html',
   styleUrl: './edit-amortization-table.component.scss',
   providers: [MessageService],
 })
 export class EditAmortizationTableComponent implements OnInit {
-
 
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly loanService = inject(LoanService);
@@ -64,22 +65,32 @@ export class EditAmortizationTableComponent implements OnInit {
 
   getAmortizationTable() {
     const loanId = this.activatedRoute.snapshot.paramMap.get('loan_id');
-    this.loanService.loadAmortizationTable({ loan_id: loanId }).subscribe({
-      next: (response: any) => {
-        this.amortizationTable = this.mapTransactionDates(response.data.transactions);
-        this.clonedAmortizationTable = JSON.parse(JSON.stringify(this.amortizationTable)); // Deep copy
-        this.customerData = response.data.customer;
-        this.loanData = response.data.loan;
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.message,
-        });
-      },
-      complete: () => { },
-    });
+    
+    this.loanService.loadAmortizationTable({ loan_id: loanId })
+      .subscribe({
+        next: (response: any) => {
+          this.amortizationTable = this.mapTransactionDates(response.data.transactions);
+          this.clonedAmortizationTable = JSON.parse(JSON.stringify(this.amortizationTable)); // Deep copy
+          this.customerData = response.data.customer;
+          this.loanData = response.data.loan;
+
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warning',
+            detail: 'Note: Editing of transactions will not auto compute data.',
+            closable: false,
+          });
+
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message,
+          });
+        },
+        complete: () => { },
+      });
   }
 
   mapTransactionDates(transactions: any): AmortizationTable[] {
@@ -110,6 +121,8 @@ export class EditAmortizationTableComponent implements OnInit {
               detail: response.message,
             });
             (this.amortizationTable as any)[event.index] = response.data;
+            // Update the cloned table to reflect the committed changes
+            this.clonedAmortizationTable[event.index] = { ...response.data };
           },
           error: (error) => {
             this.messageService.add({
@@ -121,13 +134,12 @@ export class EditAmortizationTableComponent implements OnInit {
         })
       },
       reject: () => {
-        // Restore the original data from cloned table
-        this.amortizationTable[event.index] = { ...this.clonedAmortizationTable[event.index] };
-
+        // Restore the previous value from the cloned table
+        (this.amortizationTable as any)[event.index] = { ...this.clonedAmortizationTable[event.index] };
         this.messageService.add({
           severity: 'info',
           summary: 'Info',
-          detail: 'Edit has been cancelled'
+          detail: 'Edit has been cancelled and previous value restored'
         });
       }
     });
@@ -137,13 +149,13 @@ export class EditAmortizationTableComponent implements OnInit {
     // Check if index exists and is valid
     if (event.index === undefined || event.index === null) return;
 
-    // Restore the original data from cloned table
-    this.amortizationTable[event.index] = { ...this.clonedAmortizationTable[event.index] };
+    // Restore the previous value from the cloned table
+    (this.amortizationTable as any)[event.index] = { ...this.clonedAmortizationTable[event.index] };
 
     this.messageService.add({
       severity: 'info',
       summary: 'Info',
-      detail: 'Edit has been cancelled'
+      detail: 'Edit has been cancelled and previous value restored'
     });
   }
 }

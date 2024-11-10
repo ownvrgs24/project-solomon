@@ -7,6 +7,7 @@ import { MenubarModule } from 'primeng/menubar';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UserService } from '../shared/services/user.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-core',
@@ -18,11 +19,12 @@ import { UserService } from '../shared/services/user.service';
 
 export class CoreComponent {
   protected readonly rootRoute = "/core";
-
-  private readonly router = inject(Router)
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
+
 
   items: MenuItem[] | undefined = [
     {
@@ -77,9 +79,19 @@ export class CoreComponent {
       rejectButtonStyleClass: 'p-button-text',
       acceptButtonStyleClass: 'p-button-text p-button-danger',
       accept: () => {
-        this.router.navigate(['/login']);
-        this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: 'You have successfully logged out' });
-        this.userService.removeSession();
+        this.authService.userLogout().subscribe({
+          next: (res: any) => {
+            this.router.navigate(['/login']).then(() => {
+              this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: res.message });
+            });
+          },
+          complete: () => {
+            this.userService.removeSession();
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while logging out' });
+          }
+        });
       },
       reject: () => {
         this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have cancelled the logout' });
@@ -87,7 +99,5 @@ export class CoreComponent {
     });
   }
 
-  ngOnInit(): void {
-    console.log(this.userService.isLoggedIn());
-  }
+  ngOnInit(): void { }
 }

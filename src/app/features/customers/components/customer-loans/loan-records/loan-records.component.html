@@ -64,6 +64,7 @@
         <td>{{ loan.loan_remarks || "-" }}</td>
         <td>
           <p-button
+            [disabled]="loan.loan_status === 'FOR_REVIEW'"
             [routerLink]="['./', loan.loan_id]"
             severity="success"
             label="SELECT"
@@ -72,6 +73,7 @@
             class="mr-2"
           ></p-button>
           <p-button
+            [disabled]="loan.loan_status === 'FOR_REVIEW'"
             [routerLink]="[
               '../../edit-amortization-table',
               loan.customer_id,

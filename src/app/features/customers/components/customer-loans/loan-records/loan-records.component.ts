@@ -6,7 +6,7 @@ import { TagModule } from 'primeng/tag';
 import { StatusTagService } from '../../../../../shared/services/status-tag.service';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
+import { Messages, MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
@@ -93,9 +93,24 @@ export class LoanRecordsComponent implements OnInit {
             severity: 'success',
             summary: 'Success',
             detail: response.message,
-            closable: false,
+            closable: true,
+            life: 3000,
           });
+
+          const forReviewLoans = this.customerLoanRecords.filter(
+            (loan) => loan.loan_status === 'FOR_REVIEW'
+          );
+
+          if (forReviewLoans.length > 0) {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'For Review',
+              detail: 'Some loans are currently under review. Please wait for approval. Thank you.',
+              closable: false,
+            });
+          }
         },
+
         error: () => {
           this.messageService.add({
             severity: 'error',
@@ -105,7 +120,7 @@ export class LoanRecordsComponent implements OnInit {
         },
       });
   }
-  
+
   get customerId() {
     return this.activatedRoute.snapshot.paramMap.get('id');
   }
