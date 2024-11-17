@@ -49,6 +49,18 @@ export class UserService {
     return this.getSession()?.user_name;
   }
 
+  getAccountId() {
+    return this.getSession()?.account_id;
+  }
+
+  getFullName() {
+    return this.getSession()?.full_name;
+  }
+
+  getEmail() {
+    return this.getSession()?.email_address;
+  }
+
   getToken() {
     return this.getSession()?.token;
   }

@@ -79,19 +79,7 @@ export class CoreComponent {
       rejectButtonStyleClass: 'p-button-text',
       acceptButtonStyleClass: 'p-button-text p-button-danger',
       accept: () => {
-        this.authService.userLogout().subscribe({
-          next: (res: any) => {
-            this.router.navigate(['/login']).then(() => {
-              this.messageService.add({ severity: 'success', summary: 'Confirmed', detail: res.message });
-            });
-          },
-          complete: () => {
-            this.userService.removeSession();
-          },
-          error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while logging out' });
-          }
-        });
+        this.authService.userLogout();
       },
       reject: () => {
         this.messageService.add({ severity: 'info', summary: 'Rejected', detail: 'You have cancelled the logout' });

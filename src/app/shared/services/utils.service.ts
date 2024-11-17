@@ -4,11 +4,11 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class UtilsService {
-  constructor() {}
+  constructor() { }
 
-  computeAge(birthdate: Date): number {
+  computeAge(birthday: Date): number {
     const today = new Date();
-    const birthDate = new Date(birthdate);
+    const birthDate = new Date(birthday);
     let age = today.getFullYear() - birthDate.getFullYear();
     const month = today.getMonth() - birthDate.getMonth();
 

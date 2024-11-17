@@ -5,11 +5,13 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // console.log(`Request is on its way to ${req.url}`);
+  console.log(`Request is on its way to ${req.url}`);
   const userService = inject(UserService);
   const authService = inject(AuthService);
+  const router = inject(Router);
   const confirmationService = inject(ConfirmationService);
   const token = userService.getToken();
 
@@ -40,6 +42,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             message: 'Session Expired, Your session has expired. Please login again.',
             closeOnEscape: false,
             rejectVisible: false,
+            acceptVisible: true,
             accept: () => {
               authService.userLogout();
             },
@@ -61,13 +64,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 };
 
-
 export const apiExceptions = (url: string): boolean => {
   return tokenExceptions.some((exceptions) => url.endsWith(exceptions));
 }
 
 export const tokenExceptions: string[] = [
   "/api/auth/login",
+  "/api/auth/logout",
   "/api/regions",
   "/provinces",
   "/cities-municipalities",

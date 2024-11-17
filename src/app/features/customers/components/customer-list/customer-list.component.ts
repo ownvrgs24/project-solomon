@@ -15,6 +15,7 @@ import { StatusTagService } from '../../../../shared/services/status-tag.service
 import { HttpService } from '../../../../shared/services/http.service';
 import { AvatarModule } from 'primeng/avatar';
 import { UserService } from '../../../../shared/services/user.service';
+import { CustomerDetailsService } from '../../../../shared/services/reports/customer-details.service';
 
 export interface Customer {
   recno: number;
@@ -69,10 +70,12 @@ export interface Customer {
   providers: [CustomersService],
 })
 export class CustomerListComponent implements OnInit {
+
   private readonly customerService = inject(CustomersService);
   private readonly http = inject(HttpService);
   public readonly statusTagService = inject(StatusTagService);
   private readonly userService = inject(UserService);
+  private readonly reportsService = inject(CustomerDetailsService);
 
   loading: boolean = true;
   customers: Customer[] = [];
@@ -125,5 +128,9 @@ export class CustomerListComponent implements OnInit {
 
       this.loading = false;
     });
+  }
+
+  printClientInformation(customer: any) {
+    this.reportsService.createCustomerDataSheetReport(customer);
   }
 }

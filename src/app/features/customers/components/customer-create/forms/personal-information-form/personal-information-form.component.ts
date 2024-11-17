@@ -124,7 +124,7 @@ export class PersonalInformationFormComponent implements OnChanges {
     if (changes && this.customerData) {
       this.personalInformationForm.patchValue({
         ...this.customerData,
-        date_of_birth: new Date(this.customerData.date_of_birth),
+        date_of_birth: this.customerData.date_of_birth ? new Date(this.customerData.date_of_birth) : null,
       });
     }
   }
