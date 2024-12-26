@@ -6,6 +6,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './shared/utils/auth.interceptor';
+import { DatePipe } from '@angular/common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    DatePipe,
     ConfirmationService,
     MessageService,
   ]

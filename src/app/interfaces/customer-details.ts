@@ -17,11 +17,11 @@ export interface CustomerDetails {
 
     cx_address: CustomerAddress[];
 
-    soi_employment: CustomerSourceOfIncomeEmployment[];
-    soi_pension_fund: CustomerSourceOfIncomePensionFund[];
-    soi_business_owner: CustomerSourceOfIncomeBusinessOwner[];
-    soi_self_employed: CustomerSourceOfIncomeSelfEmployed[];
-    soi_other: CustomerSourceOfIncomeOther[];
+    soi_employment: CustomerSourceOfIncomeEmployment;
+    soi_pension_fund: CustomerSourceOfIncomePensionFund;
+    soi_business_owner: CustomerSourceOfIncomeBusinessOwner;
+    soi_self_employed: CustomerSourceOfIncomeSelfEmployed;
+    soi_other: CustomerSourceOfIncomeOther;
 
     cl_atm_card: CustomerCollateralATMCard[];
     cl_bank_check: CustomerCollateralBankCheck[];
@@ -186,37 +186,14 @@ export interface CustomerCollateralItem {
 }
 
 export interface CustomerCollateralVehicle {
-    recno: number;
-    customer_id: string;
-    id: string;
-    attachment_id: string;
-    vehicle_type: string;
-    vehicle_brand: string;
-    vehicle_model: string;
-    vehicle_color: string;
-    vehicle_plate: string;
-    vehicle_chassis: string;
-    vehicle_engine: string;
-    vehicle_serial: string;
-    vehicle_year: string;
-    vehicle_value: number;
-    vehicle_status: string;
-    date_acquired: Date;
-    remarks?: string;
-    created_at: Date;
-    updated_at: Date;
+    vehicle_details: string;
+    official_receipt: string;
+    certificate_of_registration: string;
+    remarks: string;
 }
 
 export interface CustomerCollateralOther {
-    recno: number;
-    customer_id: string;
-    id: string;
-    attachment_id: string;
-    monetary_value: number;
-    date_acquired: Date;
-    remarks?: string;
-    created_at: Date;
-    updated_at: Date;
+    remarks: string;
 }
 
 // End of Collateral

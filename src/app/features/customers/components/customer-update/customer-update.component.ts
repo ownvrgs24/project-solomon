@@ -15,16 +15,15 @@ import { TabViewModule } from 'primeng/tabview';
 import { CustomersService } from '../../../../shared/services/customers.service';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-customer-update',
   standalone: true,
   imports: [
     PersonalInformationFormComponent,
-    PrincipalLoanComponent,
     AddressFormComponent,
     ShellCollateralsFormComponent,
     ShellSourceOfIncomeComponent,
@@ -37,6 +36,7 @@ import { UserService } from '../../../../shared/services/user.service';
     TabViewModule,
     CardModule,
     CommonModule,
+    MessagesModule,
   ],
   templateUrl: './customer-update.component.html',
   styleUrl: './customer-update.component.scss',
@@ -85,7 +85,6 @@ export class CustomerUpdateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('ngOnDestroy');
     this.userService.removeLocalStorage('activeIndex');
   }
 }

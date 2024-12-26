@@ -20,11 +20,8 @@ import { AccountService } from '../../../shared/services/account.service';
     ButtonModule,
     FieldsetModule,
     InputTextModule,
-    BasicInformationComponent,
-    AdditionalInformationComponent,
-    SecurityInformationComponent,
     AccountCreateComponent
-  ],
+],
   templateUrl: './account-update.component.html',
   styleUrl: './account-update.component.scss'
 })
