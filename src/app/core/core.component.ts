@@ -25,6 +25,13 @@ export class CoreComponent {
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
 
+  public userDetails: {
+    fullName: string,
+    role: string
+  } = {
+      fullName: this.userService.getFullName(),
+      role: this.userService.getRole()
+    }
 
   items: MenuItem[] | undefined = [
     {

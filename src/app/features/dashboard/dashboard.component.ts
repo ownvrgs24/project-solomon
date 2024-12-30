@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
         { figure: data.disbursed_loan, label: 'Disbursed Loan', icon: 'pi pi-money-bill', isCurrency: true, iconColor: 'amber' },
         { figure: data.customers, label: 'Customers', icon: 'pi pi-users', isCurrency: false, iconColor: 'primary' },
         { figure: data.transactions, label: 'Transactions', icon: 'pi pi-file', isCurrency: false, iconColor: 'white' },
-        { figure: data.delinquent_count, label: 'Delinquent Count', icon: 'pi pi-exclamation-triangle', isCurrency: false, iconColor: 'red' },
+        { figure: data.delinquent_count, label: 'Delinquent Loans', icon: 'pi pi-exclamation-triangle', isCurrency: false, iconColor: 'red' },
       ])
     );
   }

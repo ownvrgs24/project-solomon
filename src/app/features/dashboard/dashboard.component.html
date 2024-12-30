@@ -1,18 +1,20 @@
 <div class="grid grid-cols-4 gap-4">
-    <ng-container *ngIf="dashboardItems$ | async as items">
-        <p-card *ngFor="let item of items">
-            <div class="grid grid-flow-row gap-y-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-lg">{{ item.label }}</span>
-                    <i [class]="item.icon + ' text-lg text-' + item.iconColor + '-500'"></i>
-                </div>
-                <div class="text-xl font-bold">
-                    {{ item.isCurrency ? (item.figure | currency : 'PHP') : item.figure }}
-                </div>
-            </div>
-            <p-footer>
-                <small>As of {{ dateNow | date: 'MMMM dd, yyyy'}}</small>
-            </p-footer>
-        </p-card>
-    </ng-container>
+  <ng-container *ngIf="dashboardItems$ | async as items">
+    <p-card *ngFor="let item of items">
+      <div class="grid grid-flow-row gap-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-lg">{{ item.label }}</span>
+          <i
+            [class]="item.icon + ' text-lg text-' + item.iconColor + '-500'"
+          ></i>
+        </div>
+        <div class="text-xl font-bold">
+          {{ item.isCurrency ? (item.figure | currency : "PHP") : item.figure }}
+        </div>
+      </div>
+      <p-footer>
+        <small>As of {{ dateNow | date : "MMMM dd, yyyy" }}</small>
+      </p-footer>
+    </p-card>
+  </ng-container>
 </div>

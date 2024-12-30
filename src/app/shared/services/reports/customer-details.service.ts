@@ -309,9 +309,9 @@ export class CustomerDetailsService {
               [{ text: "Email Address", bold: true }, data.email_address ?? "-"],
               [{ text: "Date of Birth", bold: true }, data.date_of_birth ? this.datePipe.transform(data.date_of_birth, 'longDate')?.toString() : "-"],
               [{ text: "Client Status", bold: true }, data.client_status?.replace(/_/g, " ") ?? "-"],
-              [{ text: "Co-Makers", bold: true }, coMakerTextEntries.length > 0 ? { ul: coMakerTextEntries.map((item) => item.text) } : "-"],
-              [{ text: "Co-Maker Override/Status", bold: true }, data.cmk_status ?? "-"],
-              [{ text: "Address", bold: true }, addressDisplayInfo.length > 0 ? { ul: addressDisplayInfo.map((item) => item.text) } : "-"],
+              [{ text: "Co-Makers", bold: true }, coMakerTextEntries.length > 0 ? { ol: coMakerTextEntries.map((item) => item.text) } : "-"],
+              [{ text: "Co-Maker Override/Status", bold: true }, data.cmk_status?.replace(/_/g, " ") ?? "-"],
+              [{ text: "Address", bold: true }, addressDisplayInfo.length > 0 ? { ol: addressDisplayInfo.map((item) => item.text) } : "-"],
 
               [{ text: "PRINCIPAL LOAN DATA", bold: true, fontSize: 10, marginBottom: 5, marginTop: 15, color: 'green' }, ""],
               [
