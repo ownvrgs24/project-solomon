@@ -9,6 +9,25 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'monthly-report',
+        async loadComponent() {
+            const m = await import('./monthly-reports/monthly-reports.component');
+            return m.MonthlyReportsComponent;
+        }
+    },
+    {
+        path: 'annual-report',
+        async loadComponent() {
+            const m = await import('./annual-reports/annual-reports.component');
+            return m.AnnualReportsComponent;
+        }
+    },
+    {
+        path: "**",
+        redirectTo: "daily-report",
+        pathMatch: "full",
+    },
+    {
         path: "",
         redirectTo: "daily-report",
         pathMatch: "full",

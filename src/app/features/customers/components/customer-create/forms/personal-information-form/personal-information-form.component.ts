@@ -124,9 +124,11 @@ export class PersonalInformationFormComponent implements OnChanges {
     if (changes && this.customerData) {
       this.personalInformationForm.patchValue({
         ...this.customerData,
-        date_of_birth: this.customerData.date_of_birth ? new Date(this.customerData.date_of_birth) : null,
+        date_of_birth: this.customerData?.date_of_birth ? new Date(this.customerData?.date_of_birth) : null,
       });
     }
+    console.log(this.customerData);
+  
   }
 
   get computeAge(): number {
@@ -136,6 +138,9 @@ export class PersonalInformationFormComponent implements OnChanges {
 
   updatePersonalInformation(): void {
     const { value } = this.personalInformationForm;
+
+    console.log(value);
+    
     this.customerService
       .updateCustomerPersonalData({
         ...value,

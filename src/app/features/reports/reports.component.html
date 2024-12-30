@@ -1,3 +1,14 @@
-<a routerLink="/daily-report" class="p-button font-bold"> Daily Report </a>
-<a routerLink="/daily-report" class="p-button font-bold"> Monthly Report </a>
-<a routerLink="/daily-report" class="p-button font-bold"> Annual Report </a>
+<p-fieldset legend="Select Actions" [toggleable]="false">
+  <div class="flex flex-row gap-4">
+    <p-button routerLink="daily-report"> Daily Report </p-button>
+    <p-button routerLink="monthly-report"> Monthly Report </p-button>
+    <p-button routerLink="annual-report"> Annual Report </p-button>
+    <p-button routerLink="delinquent-loan-report">
+      Delinquent Loan Report
+    </p-button>
+  </div>
+</p-fieldset>
+
+<section class="mx-auto my-6">
+  <router-outlet />
+</section>
