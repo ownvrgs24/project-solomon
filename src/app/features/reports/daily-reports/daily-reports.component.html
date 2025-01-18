@@ -1,45 +1,96 @@
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-3 gap-4">
+  <p-fieldset legend="DAILY TRANSACTION" [toggleable]="false">
+    <p-table
+      [value]="[
+        {
+          code: 'P001',
+          name: 'Product 1',
+          category: 'Category 1',
+          quantity: 10
+        },
+        {
+          code: 'P002',
+          name: 'Product 2',
+          category: 'Category 2',
+          quantity: 20
+        },
+        {
+          code: 'P003',
+          name: 'Product 3',
+          category: 'Category 3',
+          quantity: 30
+        },
+        {
+          code: 'P004',
+          name: 'Product 4',
+          category: 'Category 4',
+          quantity: 40
+        }
+      ]"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>{{ product.code }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.category }}</td>
+          <td>{{ product.quantity }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-fieldset>
+
   <p-fieldset legend="EXPENSES" [toggleable]="false">
     <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
-      <div class="grid grid-flow-row gap-2 mb-4">
-        <label for="expense_amount">EXPENSES AMOUNT</label>
-        <p-inputNumber
-          formControlName="expense_amount"
-          required
-          id="expense_amount"
-          placeholder="Ex. 1000"
-          currency="PHP"
-          aria-describedby="expense_amount-help"
-          styleClass="w-full"
-          mode="currency"
-        />
-        @if (expenseForm.get('expense_amount')?.hasError('required') &&
-        expenseForm.get('expense_amount')?.touched) {
-        <small class="p-error block"> Expense Amount is required! </small>
-        }
-      </div>
+      <div class="grid grid-flow-col gap-4 items-baseline">
+        <div class="grid grid-flow-row gap-2 mb-4">
+          <label for="expense_amount">EXPENSES AMOUNT</label>
+          <p-inputNumber
+            formControlName="expense_amount"
+            required
+            id="expense_amount"
+            placeholder="Ex. 1000"
+            currency="PHP"
+            aria-describedby="expense_amount-help"
+            styleClass="w-full"
+            mode="currency"
+          />
+          @if (expenseForm.get('expense_amount')?.hasError('required') &&
+          expenseForm.get('expense_amount')?.touched) {
+          <small class="p-error block"> Expense Amount is required! </small>
+          }
+        </div>
 
-      <div class="grid grid-flow-row gap-2 mb-4">
-        <label for="expense_detail">EXPENSES DESCRIPTION</label>
-        <input
-          formControlName="expense_detail"
-          required
-          pInputText
-          id="expense_detail"
-          placeholder="Ex. ELECTRIC BILL"
-          aria-describedby="expense_detail-help"
-          toUppercase
-        />
-        @if (expenseForm.get('expense_detail')?.hasError('required') &&
-        expenseForm.get('expense_detail')?.touched) {
-        <small class="p-error block"> Expense Details is required! </small>
-        }
+        <div class="grid grid-flow-row gap-2 mb-4">
+          <label for="expense_detail">EXPENSES DESCRIPTION</label>
+          <input
+            formControlName="expense_detail"
+            required
+            pInputText
+            id="expense_detail"
+            placeholder="Ex. ELECTRIC BILL"
+            aria-describedby="expense_detail-help"
+            toUppercase
+          />
+          @if (expenseForm.get('expense_detail')?.hasError('required') &&
+          expenseForm.get('expense_detail')?.touched) {
+          <small class="p-error block"> Expense Details is required! </small>
+          }
+        </div>
       </div>
 
       <p-button
         [disabled]="expenseForm.invalid"
         type="submit"
-        label="Add to list"
+        label="SAVE EXPENSE"
       ></p-button>
     </form>
 
@@ -72,7 +123,7 @@
 
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="2">Empty List</td>
+            <td colspan="3">Empty List</td>
           </tr>
         </ng-template>
       </p-table>
@@ -82,7 +133,7 @@
   <p-fieldset legend="CASH ON HAND" [toggleable]="false">
     <form [formGroup]="cashOnHandForm" (ngSubmit)="saveCashOnHand()">
       <div class="grid grid-flow-row gap-2 mb-4">
-        <label for="cash_amount">CASH ON HAND AMOUNT</label>
+        <label for="cash_amount">ENTER CASH ON HAND AMOUNT</label>
         <p-inputNumber
           formControlName="cash_amount"
           required
@@ -99,10 +150,24 @@
         }
       </div>
       <p-button
-        [disabled]="cashOnHandForm.invalid"
+        [disabled]="
+          cashOnHandForm.invalid ||
+          cashOnHandForm.pristine ||
+          cashOnHandForm.disabled
+        "
         type="submit"
-        label="Save Cash on Hand"
+        class="me-4"
+        label="SAVE CASH ON HAND"
       ></p-button>
+      @if (!cashOnHandForm.get('is_locked')?.value) {
+      <p-button
+        (onClick)="lockCashOnHand()"
+        type="button"
+        icon="pi pi-lock"
+        severity="danger"
+        label="LOCK CASH ON HAND"
+      ></p-button>
+      }
     </form>
   </p-fieldset>
 </div>

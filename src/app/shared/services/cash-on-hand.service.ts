@@ -15,4 +15,8 @@ export class CashOnHandService {
   addCashOnHand(data: any) {
     return this.http.postRequest(`reports/cash-on-hand`, data);
   }
+
+  updateCashOnHand(data: any) {
+    return this.http.putRequest(`reports/cash-on-hand`, data);
+  }
 }

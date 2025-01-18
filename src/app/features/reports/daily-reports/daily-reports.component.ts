@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { ExpenseService } from '../../../shared/services/expense.service';
 import { DividerModule } from 'primeng/divider';
 import { CashOnHandService } from '../../../shared/services/cash-on-hand.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 interface ExpenseForm {
   expense_detail: FormControl<string | null>;
@@ -17,8 +18,10 @@ interface ExpenseForm {
 }
 
 interface CashOnHandForm {
+  cash_id: FormControl<string | null>;
   cash_detail: FormControl<string | null>;
   cash_amount: FormControl<number | null>;
+  is_locked: FormControl<boolean | null>;
 }
 
 @Component({
@@ -40,7 +43,8 @@ interface CashOnHandForm {
 })
 export class DailyReportsComponent {
 
-
+  private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
   private readonly expenseService = inject(ExpenseService);
   private readonly cashOnHandService = inject(CashOnHandService);
 
@@ -62,14 +66,43 @@ export class DailyReportsComponent {
   });
 
   cashOnHandForm: FormGroup = new FormGroup<CashOnHandForm>({
-    cash_detail: new FormControl<string | null>("Cash on Hand"),
+    cash_id: new FormControl<string | null>(null),
+    cash_detail: new FormControl<string | null>('cash_on_hand'),
     cash_amount: new FormControl<number | null>(null),
+    is_locked: new FormControl<boolean | null>(false),
   });
+
+  lockCashOnHand() {
+    this.confirmationService.confirm({
+      header: 'Lock Cash on Hand',
+      message: 'Are you sure you want to lock cash on hand?',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.cashOnHandForm.disable();
+        this.cashOnHandService.updateCashOnHand({
+          ...this.cashOnHandForm.value,
+          is_locked: true
+        }).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cash on hand locked' });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to lock cash on hand' });
+          }
+        });
+      }
+    });
+  }
 
   getCashOnHand() {
     this.cashOnHandService.retrieveCashOnHand().subscribe({
       next: (res: any) => {
         this.cashOnHandForm.patchValue(res.data || {});
+        if (res.data?.is_locked) {
+          this.cashOnHandForm.disable();
+          this.messageService.add({ severity: 'info', summary: 'Info', detail: 'Cash on hand is locked' });
+        }
       },
       error: (error) => {
         console.error(error);
@@ -82,9 +115,10 @@ export class DailyReportsComponent {
       next: () => {
         this.getExpenses();
         this.expenseForm.reset();
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expense saved' });
       },
       error: (error) => {
-        console.error(error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to save expense' });
       }
     });
   }
@@ -95,7 +129,7 @@ export class DailyReportsComponent {
         this.expenseList = res;
       },
       error: (error) => {
-        console.error(error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to retrieve expenses' });
       }
     });
   }
@@ -104,23 +138,31 @@ export class DailyReportsComponent {
     this.cashOnHandService.addCashOnHand(this.cashOnHandForm.value).subscribe({
       next: () => {
         this.getCashOnHand();
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cash on hand saved' });
       },
-      error: (error) => {
-        console.error(error);
-      }
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to save cash on hand' });
+      },
     });
   }
 
   deleteExpense(id: any) {
-    this.expenseService.deleteExpense(id).subscribe({
-      next: () => {
-        this.getExpenses();
+    this.confirmationService.confirm({
+      header: 'Delete Expense',
+      message: 'Are you sure you want to delete this expense?',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.expenseService.deleteExpense(id).subscribe({
+          next: () => {
+            this.getExpenses();
+            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Expense deleted' });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete expense' });
+          }
+        });
       },
-      error: (error) => {
-        console.error(error);
-      }
     });
   }
-
-
 } 

@@ -154,6 +154,7 @@ export class LoanInterestCalculatorService {
         detail:
           'Start date cannot be in the future! Please wait for the start date to arrive.',
       });
+      return { months: 0, days: 0 };
     }
 
     // Swap if start date is greater than end date
