@@ -18,7 +18,7 @@ interface ExpenseForm {
 }
 
 interface CashOnHandForm {
-  cash_id: FormControl<string | null>;
+  cash_id?: FormControl<string | null>;
   cash_detail: FormControl<string | null>;
   cash_amount: FormControl<number | null>;
   is_locked: FormControl<boolean | null>;
