@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoanService } from '../../../../../shared/services/loan.service';
-import { AmortizationTable, Customer, Loan, Transaction } from '../amortization-table/amortization-table.component';
+import { AmortizationTable, Customer, PrincipalLoan, Transaction } from '../amortization-table/amortization-table.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
@@ -57,7 +57,7 @@ export class EditAmortizationTableComponent implements OnInit {
   amortizationTable!: AmortizationTable[];
   clonedAmortizationTable!: AmortizationTable[];
   customerData!: Customer;
-  loanData!: Loan;
+  loanData!: PrincipalLoan;
 
   ngOnInit(): void {
     this.getAmortizationTable();
@@ -65,7 +65,7 @@ export class EditAmortizationTableComponent implements OnInit {
 
   getAmortizationTable() {
     const loanId = this.activatedRoute.snapshot.paramMap.get('loan_id');
-    
+
     this.loanService.loadAmortizationTable({ loan_id: loanId })
       .subscribe({
         next: (response: any) => {

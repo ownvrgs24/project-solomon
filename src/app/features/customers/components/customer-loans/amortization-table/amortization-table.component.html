@@ -23,13 +23,25 @@
 
     <p-fieldset legend="Amount Due Interest">
       <div class="flex flex-col gap-4">
+        @if (actualInterestData.interest !== 0) {
         <div class="text-green-400 text-3xl font-bold font-mono">
           {{ actualInterestData.interest | currency : "PHP" }}
         </div>
         <p>{{ actualInterestData.message }}</p>
+        <p>
+          Next Due Date:
+          {{
+            amortizationTable[actualInterestData.selectedIndex].transaction_date
+              | date : "MMMM dd, yyyy"
+          }}
+          to
+          {{ actualInterestData.nextPaymentDate | date : "MMMM dd, yyyy" }}
+        </p>
+        }
         <p-button
+          styleClass="w-full"
           severity="success"
-          label="Compute the next due interest"
+          label="COMPUTE NEXT DUE DATE"
           outlined="true"
           icon="pi pi-sync"
           [disabled]="actualInterestData.interest !== 0"

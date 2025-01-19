@@ -12,7 +12,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { LoanInterestCalculatorService } from '../../../../../shared/services/loan-interest-calculator.service';
+import { LoanInterestCalculatorService } from '../../../../../shared/services/computations/loan-interest-calculator.service';
 import { LoanService } from '../../../../../shared/services/loan.service';
 import { StatusTagService } from '../../../../../shared/services/status-tag.service';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
@@ -21,8 +21,9 @@ import { PaymentsComponent } from '../amortization-table/dialog/payments/payment
 
 export interface AmortizationTable {
   customer: Customer;
-  loan: Loan;
+  loan: PrincipalLoan;
   transactions: Transaction[];
+  transaction_date: Date;
 }
 
 export interface Customer {
@@ -30,7 +31,7 @@ export interface Customer {
   customer_id: string;
 }
 
-export interface Loan {
+export interface PrincipalLoan {
   loan_id: string;
   loan_mode_of_payment: string;
   loan_interest_rate: number;
@@ -38,17 +39,18 @@ export interface Loan {
 }
 
 export interface Transaction {
-  transaction_date: string;
+  transaction_date: Date;
   balance: number;
+  payment: number;
+  capital: number;
   transaction_status: string;
   transaction_id: string;
   recno?: number;
   loan_id?: string;
   transaction_or_number?: number;
   balance_interest?: number;
+  loan_status: string;
   interest?: number;
-  payment?: number;
-  capital?: number;
   collection?: number;
   change?: number;
   is_interest_applied?: boolean;
@@ -58,6 +60,15 @@ export interface Transaction {
   updated_at?: string;
 }
 [];
+
+export interface ActualInterestData {
+  interest: number;
+  selectedIndex: number;
+  interestRate: number;
+  message: string;
+  balanceInterest: number;
+  nextPaymentDate?: Date;
+}
 
 @Component({
   selector: 'app-amortization-table',
@@ -93,43 +104,36 @@ export class AmortizationTableComponent implements OnInit {
 
   amortizationTable!: AmortizationTable[];
   customerData!: Customer;
-  loanData!: Loan;
+  loanData!: PrincipalLoan;
 
   currentDate: Date = new Date();
 
   ref: DynamicDialogRef | undefined;
 
-  actualInterestData: {
-    interest: number;
-    selectedIndex: number;
-    interestRate: number;
-    message: string;
-    balanceInterest: number;
-    nextPaymentDate?: Date;
-  } = {
-      interest: 0,
-      selectedIndex: 0,
-      interestRate: 0,
-      message: '',
-      balanceInterest: 0,
-    };
+  actualInterestData: ActualInterestData = {
+    interest: 0,
+    selectedIndex: 0,
+    interestRate: 0,
+    message: '',
+    balanceInterest: 0,
+  };
 
   ngOnInit(): void {
     this.getAmortizationTable();
   }
 
   calculateNextDueInterest() {
-    this.actualInterestData =
-      this.loanInterestCalculator.computeNextProjectedInterest(
-        this.loanData,
-        this.amortizationTable as unknown as Transaction[]
-      );
+    // this.actualInterestData =
+    //   this.loanInterestCalculator.computeNextProjectedInterest(
+    //     this.loanData,
+    //     this.amortizationTable as unknown as Transaction[]
+    //   );
 
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Next Due Interest',
-      detail: this.actualInterestData.message,
-    });
+    // this.messageService.add({
+    //   severity: 'info',
+    //   summary: 'Next Due Interest',
+    //   detail: `Next Due Date is ${this.actualInterestData.nextPaymentDate?.toDateString()} with an interest of ${this.actualInterestData.interest}`,
+    // });
   }
 
   getAmortizationTable() {
@@ -148,7 +152,7 @@ export class AmortizationTableComponent implements OnInit {
         });
       },
       complete: () => {
-        this.actualInterestData = this.loanInterestCalculator.calculateInterest(
+        this.loanInterestCalculator.computeLoanInterest(
           this.loanData,
           this.amortizationTable as unknown as Transaction[]
         );
