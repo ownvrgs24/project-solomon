@@ -1,188 +1,96 @@
-<p-toast [position]="'top-center'" />
-<div class="grid grid-cols-4 gap-4">
-  @if (customerData) {
-  <div class="col-span-1 gap-4 flex flex-col">
-    <p-fieldset legend="Customer Details">
-      <div class="flex items-center gap-5">
-        <p-avatar
-          [label]="customerData.fullname.charAt(0)"
-          size="xlarge"
-          shape="square"
-        />
-        <div class="text-xl font-semibold">{{ customerData.fullname }}</div>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset legend="Balance Interest">
-      <div class="flex flex-col gap-4">
-        <div class="text-red-500 text-3xl font-bold font-mono">
-          {{ actualInterestData.balanceInterest | currency : "PHP" }}
-        </div>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset legend="Amount Due Interest">
-      <div class="flex flex-col gap-4">
-        @if (actualInterestData.interest !== 0) {
-        <div class="text-green-400 text-3xl font-bold font-mono">
-          {{ actualInterestData.interest | currency : "PHP" }}
-        </div>
-        <p>{{ actualInterestData.message }}</p>
-        <p>
-          Next Due Date:
+<p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
+  <p-table [value]="amortizationTable" styleClass="p-datatable-gridlines">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Status</th>
+        <th>Transaction Date</th>
+        <th>OR No.</th>
+        <th>Balance Interest</th>
+        <th>Interest</th>
+        <th>Payment</th>
+        <th>Capital</th>
+        <th>Balance</th>
+        <th>Collection</th>
+        <th>Change</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr class="font-mono">
+        <td>
+          <p-tag
+            [value]="item.transaction_status"
+            [severity]="
+              statusTagService.getStatusLabel(item.transaction_status)
+            "
+          />
+        </td>
+        <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
+        <td>
+          {{ item?.transaction_or_number ?? "-" }}
+        </td>
+        <td>
           {{
-            amortizationTable[actualInterestData.selectedIndex].transaction_date
-              | date : "MMMM dd, yyyy"
+            item?.balance_interest == null || item?.balance_interest === 0
+              ? "-"
+              : (item?.balance_interest | currency : "PHP")
           }}
-          to
-          {{ actualInterestData.nextPaymentDate | date : "MMMM dd, yyyy" }}
-        </p>
-        }
-        <p-button
-          styleClass="w-full"
-          severity="success"
-          label="COMPUTE NEXT DUE DATE"
-          outlined="true"
-          icon="pi pi-sync"
-          [disabled]="actualInterestData.interest !== 0"
-          (onClick)="calculateNextDueInterest()"
-        ></p-button>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset legend="Loan Details">
-      <div class="grid grid-cols-2 gap-4 text-lg">
-        <div>Interest</div>
-        <div class="font-semibold">{{ loanData.loan_interest_rate }} %</div>
-
-        <div>Mode of Payment</div>
-        <div class="font-semibold">{{ loanData.loan_mode_of_payment }}</div>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset legend="Actions">
-      <div class="flex flex-col gap-4">
-        <p-button
-          (onClick)="addCapital()"
-          styleClass="w-full"
-          severity="secondary"
-          size="large"
-          label="ADD CAPITAL"
-          [outlined]="true"
-        ></p-button>
-        <p-button
-          (onClick)="payDueObligation()"
-          styleClass="w-full"
-          severity="primary"
-          size="large"
-          label="PAY"
-        ></p-button>
-      </div>
-    </p-fieldset>
-  </div>
-  }
-
-  <p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
-    <p-table
-      [value]="amortizationTable"
-      styleClass="p-datatable-gridlines"
-      editMode="row"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Status</th>
-          <th>Transaction Date</th>
-          <th>OR No.</th>
-          <th>Balance Interest</th>
-          <th>Interest</th>
-          <th>Payment</th>
-          <th>Capital</th>
-          <th>Balance</th>
-          <th>Collection</th>
-          <th>Change</th>
-          <th>Actions</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-item let-i="rowIndex">
-        <tr class="font-mono">
-          <td>
-            <p-tag
-              [value]="item.transaction_status"
-              [severity]="
-                statusTagService.getStatusLabel(item.transaction_status)
-              "
-            />
-          </td>
-          <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
-          <td>
-            <p-chip
-              styleClass="w-full justify-center"
-              [label]="item?.transaction_or_number ?? '-'"
-            />
-          </td>
-          <td>
-            {{
-              item?.balance_interest == null || item?.balance_interest === 0
-                ? "-"
-                : (item?.balance_interest | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.interest == null || item.interest === 0
-                ? "-"
-                : (item?.interest | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.payment == null || item.payment === 0
-                ? "-"
-                : (item?.payment | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.capital == null || item.capital === 0
-                ? "-"
-                : (item?.capital | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.balance == null || item.balance === 0
-                ? "-"
-                : (item?.balance | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.collection == null || item.collection === 0
-                ? "-"
-                : (item?.collection | currency : "PHP")
-            }}
-          </td>
-          <td>
-            {{
-              item.change == null || item.change === 0
-                ? "-"
-                : (item?.change | currency : "PHP")
-            }}
-          </td>
-          <td>
-            <p-button
-              [rounded]="true"
-              [text]="true"
-              severity="danger"
-              [disabled]="i !== amortizationTable.length - 1 || i === 0"
-              icon="pi pi-trash"
-              pTooltip="Void Transaction (Delete)"
-              tooltipPosition="top"
-              tooltipStyleClass="text-center"
-            />
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </p-fieldset>
-</div>
+        </td>
+        <td>
+          {{
+            item.interest == null || item.interest === 0
+              ? "-"
+              : (item?.interest | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.payment == null || item.payment === 0
+              ? "-"
+              : (item?.payment | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.capital == null || item.capital === 0
+              ? "-"
+              : (item?.capital | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.balance == null || item.balance === 0
+              ? "-"
+              : (item?.balance | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.collection == null || item.collection === 0
+              ? "-"
+              : (item?.collection | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.change == null || item.change === 0
+              ? "-"
+              : (item?.change | currency : "PHP")
+          }}
+        </td>
+        <td>
+          <p-button
+            [rounded]="true"
+            [text]="true"
+            severity="danger"
+            [disabled]="i !== amortizationTable.length - 1 || i === 0"
+            icon="pi pi-trash"
+            pTooltip="Void Transaction (Delete)"
+            tooltipPosition="top"
+            tooltipStyleClass="text-center"
+          />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-fieldset>

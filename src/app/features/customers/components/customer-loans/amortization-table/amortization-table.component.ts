@@ -18,6 +18,7 @@ import { StatusTagService } from '../../../../../shared/services/status-tag.serv
 import { TransactionService } from '../../../../../shared/services/transaction.service';
 import { CapitalComponent } from '../amortization-table/dialog/capital/capital.component';
 import { PaymentsComponent } from '../amortization-table/dialog/payments/payments.component';
+import { LoanComputationService } from './services/loan-computation.service';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -92,57 +93,32 @@ export interface ActualInterestData {
   providers: [MessageService, DialogService],
 })
 export class AmortizationTableComponent implements OnInit {
-  readonly activatedRoute = inject(ActivatedRoute);
-  readonly loanService = inject(LoanService);
-  readonly messageService = inject(MessageService);
-  private readonly loanInterestCalculator = inject(
-    LoanInterestCalculatorService
-  );
+
   public readonly statusTagService = inject(StatusTagService);
-  public readonly dialogService = inject(DialogService);
-  private transactionService = inject(TransactionService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly loanService = inject(LoanService);
+  private readonly messageService = inject(MessageService);
+  private readonly loanComputationService = inject(LoanComputationService);
 
   amortizationTable!: AmortizationTable[];
   customerData!: Customer;
   loanData!: PrincipalLoan;
 
-  currentDate: Date = new Date();
-
-  ref: DynamicDialogRef | undefined;
-
-  actualInterestData: ActualInterestData = {
-    interest: 0,
-    selectedIndex: 0,
-    interestRate: 0,
-    message: '',
-    balanceInterest: 0,
-  };
-
   ngOnInit(): void {
-    this.getAmortizationTable();
+    this.fetchAmortizationData();
   }
 
-  calculateNextDueInterest() {
-    // this.actualInterestData =
-    //   this.loanInterestCalculator.computeNextProjectedInterest(
-    //     this.loanData,
-    //     this.amortizationTable as unknown as Transaction[]
-    //   );
-
-    // this.messageService.add({
-    //   severity: 'info',
-    //   summary: 'Next Due Interest',
-    //   detail: `Next Due Date is ${this.actualInterestData.nextPaymentDate?.toDateString()} with an interest of ${this.actualInterestData.interest}`,
-    // });
+  populateLoanInformation(data: any): void {
+    this.amortizationTable = data.data.transactions;
+    this.customerData = data.data.customer;
+    this.loanData = data.data.loan;
   }
 
-  getAmortizationTable() {
+  fetchAmortizationData() {
     const loanId = this.activatedRoute.snapshot.paramMap.get('loan_id');
     this.loanService.loadAmortizationTable({ loan_id: loanId }).subscribe({
       next: (response: any) => {
-        this.amortizationTable = response.data.transactions;
-        this.customerData = response.data.customer;
-        this.loanData = response.data.loan;
+        this.populateLoanInformation(response);
       },
       error: (error) => {
         this.messageService.add({
@@ -152,98 +128,12 @@ export class AmortizationTableComponent implements OnInit {
         });
       },
       complete: () => {
-        this.loanInterestCalculator.computeLoanInterest(
-          this.loanData,
-          this.amortizationTable as unknown as Transaction[]
-        );
-      },
-    });
-  }
-
-  payDueObligation() {
-    this.ref = this.dialogService.open(PaymentsComponent, {
-      header: 'PAY DUE OBLIGATION',
-      width: '40%',
-      draggable: true,
-      data: {
-        customer: this.customerData,
-        loan: this.loanData,
-        transactions: this.amortizationTable,
-        interest: this.actualInterestData,
-      },
-    });
-
-    this.ref.onClose.subscribe((data: AmortizationTable) => {
-      if (data) {
-        this.transactionService
-          .submitTransaction({
-            ...data,
-            loan_id: this.loanData.loan_id,
-            transaction_status: 'APPROVED',
-          })
-          .subscribe({
-            next: (response: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: response.message,
-              });
-            },
-            error: (error) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.message,
-              });
-            },
-            complete: () => {
-              this.amortizationTable.push(data);
-            },
-          });
+        this.calculateInterestAccumulation(this.amortizationTable as unknown as Transaction[], this.loanData as unknown as PrincipalLoan);
       }
     });
   }
 
-  addCapital() {
-    this.ref = this.dialogService.open(CapitalComponent, {
-      header: 'ADD CAPITAL',
-      width: '40%',
-      draggable: true,
-      data: {
-        customer: this.customerData,
-        loan: this.loanData,
-        transactions: this.amortizationTable,
-        interest: this.actualInterestData,
-      },
-    });
-
-    this.ref.onClose.subscribe((data: AmortizationTable) => {
-      if (data) {
-        this.transactionService
-          .submitTransaction({
-            ...data,
-            loan_id: this.loanData.loan_id,
-          })
-          .subscribe({
-            next: (response: any) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: response.message,
-              });
-            },
-            error: (error) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error.message,
-              });
-            },
-            complete: () => {
-              this.amortizationTable.push(data);
-            },
-          });
-      }
-    });
+  private calculateInterestAccumulation(transaction: Transaction[], loanData: PrincipalLoan): void {
+    this.loanComputationService.calculateInterestAccumulation(transaction, loanData);
   }
 }

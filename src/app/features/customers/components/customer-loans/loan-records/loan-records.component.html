@@ -66,10 +66,7 @@
           <p-button
             [disabled]="loan.loan_status === 'FOR_REVIEW'"
             [routerLink]="['./', loan.loan_id]"
-            severity="success"
             label="SELECT"
-            [text]="true"
-            [outlined]="true"
             class="mr-2"
           ></p-button>
           <p-button
@@ -79,10 +76,8 @@
               loan.customer_id,
               loan.loan_id
             ]"
-            severity="info"
+            severity="secondary"
             label="EDIT"
-            [text]="true"
-            [outlined]="true"
           ></p-button>
         </td>
       </tr>
