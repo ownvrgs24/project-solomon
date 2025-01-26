@@ -12,13 +12,13 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { LoanInterestCalculatorService } from '../../../../../shared/services/computations/loan-interest-calculator.service';
 import { LoanService } from '../../../../../shared/services/loan.service';
 import { StatusTagService } from '../../../../../shared/services/status-tag.service';
-import { TransactionService } from '../../../../../shared/services/transaction.service';
 import { CapitalComponent } from '../amortization-table/dialog/capital/capital.component';
 import { PaymentsComponent } from '../amortization-table/dialog/payments/payments.component';
-import { LoanComputationService } from './services/loan-computation.service';
+import { LoanComputationService, LoanRepaymentAnalysis, TRANSACTION_STATUS } from './services/loan-computation.service';
+import { MODE_OF_PAYMENT } from './services/loan-computation-date-difference.service';
+import { TransactionService } from '../../../../../shared/services/transaction.service';
 
 export interface AmortizationTable {
   customer: Customer;
@@ -56,6 +56,7 @@ export interface Transaction {
   change?: number;
   is_interest_applied?: boolean;
   is_deleted?: boolean;
+  is_payment?: boolean;
   transaction_remarks?: string;
   created_at?: string;
   updated_at?: string;
@@ -87,6 +88,7 @@ export interface ActualInterestData {
     FieldsetModule,
     AvatarModule,
     ToastModule,
+    TooltipModule,
   ],
   templateUrl: './amortization-table.component.html',
   styleUrl: './amortization-table.component.scss',
@@ -99,10 +101,23 @@ export class AmortizationTableComponent implements OnInit {
   private readonly loanService = inject(LoanService);
   private readonly messageService = inject(MessageService);
   private readonly loanComputationService = inject(LoanComputationService);
+  private readonly dialogService = inject(DialogService);
+  private readonly transactionService = inject(TransactionService);
 
   amortizationTable!: AmortizationTable[];
   customerData!: Customer;
   loanData!: PrincipalLoan;
+  public loanRepaymentData: LoanRepaymentAnalysis = {
+    interest: 0,
+    selectedIndex: 0,
+    loan_interest_rate: 0,
+    days: 0,
+    months: 0,
+    isDelinquent: false,
+    loan_mode_of_payment: MODE_OF_PAYMENT.BI_MONTHLY,
+    find_upper_payment_bracket_index: 0,
+    paid_in_advance: false,
+  };
 
   ngOnInit(): void {
     this.fetchAmortizationData();
@@ -128,12 +143,96 @@ export class AmortizationTableComponent implements OnInit {
         });
       },
       complete: () => {
-        this.calculateInterestAccumulation(this.amortizationTable as unknown as Transaction[], this.loanData as unknown as PrincipalLoan);
+        this.loanRepaymentData = this.loanComputationService.calculateInterestAccumulation(
+          this.amortizationTable as unknown as Transaction[],
+          this.loanData as unknown as PrincipalLoan
+        );
+
+        console.table(this.loanRepaymentData);
       }
     });
   }
 
-  private calculateInterestAccumulation(transaction: Transaction[], loanData: PrincipalLoan): void {
-    this.loanComputationService.calculateInterestAccumulation(transaction, loanData);
+  openPaymentDialog(): void {
+    const ref: DynamicDialogRef = this.dialogService.open(PaymentsComponent, {
+      header: 'Payment Due',
+      data: {
+        ...this.loanRepaymentData,
+        transactions: this.amortizationTable as unknown as Transaction[],
+      },
+      width: '50%',
+      styleClass: 'dialog',
+      draggable: true,
+      closeOnEscape: true,
+    });
+
+    ref.onClose.subscribe((data: Transaction) => {
+      if (data) {
+        this.transactionService.submitTransaction(
+          {
+            ...data,
+            loan_id: this.loanData.loan_id,
+            transaction_status: TRANSACTION_STATUS.APPROVED,
+            is_payment: true,
+          }
+        ).subscribe({
+          next: (response: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: response.message,
+            });
+            this.amortizationTable.push(response.data);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message,
+            });
+          },
+        });
+      }
+    });
+  }
+
+  openCapitalDialog(): void {
+    const ref: DynamicDialogRef = this.dialogService.open(CapitalComponent, {
+      header: 'Add Capital',
+      data: {
+        ...this.loanRepaymentData,
+        transactions: this.amortizationTable as unknown as Transaction[],
+      },
+      width: '50%',
+      styleClass: 'dialog',
+      draggable: true,
+      closeOnEscape: true,
+    });
+
+    ref.onClose.subscribe((data: Transaction) => {
+      if (data) {
+        this.transactionService.submitTransaction({
+          ...data,
+          loan_id: this.loanData.loan_id,
+        }).subscribe({
+          next: (response: any) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: response.message,
+            });
+
+            this.amortizationTable.push(response.data);
+          },
+          error: (error) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: error.message,
+            });
+          },
+        })
+      }
+    });
   }
 }

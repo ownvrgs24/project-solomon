@@ -15,12 +15,42 @@
     </p-fieldset>
 
     <p-fieldset legend="Loan Details">
-      <div class="grid grid-cols-2 gap-4 text-lg">
-        <div>Interest</div>
-        <div class="font-semibold">{{ loanData.loan_interest_rate }} %</div>
+      <div class="grid grid-cols-1 gap-4 text-lg">
+        <p-fieldset legend="Select Interest" [toggleable]="false">
+          <form [formGroup]="formGroup">
+            <div class="flex flex-row gap-2 items-center">
+              @for (item of customerInterestRates; track item.key) {
+              <p-radioButton
+                (ngModelChange)="handleCustomerInterestOnChange($event)"
+                [inputId]="item.key"
+                [value]="item.value"
+                formControlName="selectedInterestRate"
+              />
+              <label [for]="item.key" class="ml-2">
+                {{ item.label }}
+              </label>
+              }
+            </div>
+          </form>
+        </p-fieldset>
 
-        <div>Mode of Payment</div>
-        <div class="font-semibold">{{ loanData.loan_mode_of_payment }}</div>
+        <p-fieldset legend="Loan Details" [toggleable]="false">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <div>Current Interest</div>
+              <div class="font-semibold">
+                {{ loanData.loan_interest_rate }} %
+              </div>
+            </div>
+
+            <div>
+              <div>Mode of Payment</div>
+              <div class="font-semibold">
+                {{ loanData.loan_mode_of_payment }}
+              </div>
+            </div>
+          </div>
+        </p-fieldset>
       </div>
     </p-fieldset>
   </div>

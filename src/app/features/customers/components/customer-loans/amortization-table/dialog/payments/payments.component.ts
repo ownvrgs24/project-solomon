@@ -17,8 +17,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { UpperCaseInputDirective } from '../../../../../../../shared/directives/to-uppercase.directive';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { UtilsService } from '../../../../../../../shared/services/utils.service';
+import { LoanComputationDateDifferenceService } from '../../services/loan-computation-date-difference.service';
+import { TooltipModule } from 'primeng/tooltip';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 interface PaymentsDialog {
   transaction_date: FormControl<Date | null>;
@@ -30,6 +33,7 @@ interface PaymentsDialog {
   collection: FormControl<number | null>;
   is_interest_applied: FormControl<boolean | null>;
   transaction_remarks: FormControl<string | null>;
+  custom_interest_rate: FormControl<number | null>;
 }
 
 @Component({
@@ -48,29 +52,95 @@ interface PaymentsDialog {
     InputNumberModule,
     DividerModule,
     UpperCaseInputDirective,
+    TooltipModule,
+    RadioButtonModule
   ],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.scss',
 })
 export class PaymentsComponent implements OnInit {
+
   public readonly dialogConfig = inject(DynamicDialogConfig);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly utilityService = inject(UtilsService);
   private ref = inject(DynamicDialogRef);
+  private computeDateDifference = inject(LoanComputationDateDifferenceService);
+  private messageService = inject(MessageService);
+
 
   paymentsForm: FormGroup = new FormGroup({});
+  minDate: Date | undefined;
+  maxDate: Date | undefined;
+
+
 
   ngOnInit(): void {
     this.initializeForm();
 
     console.log(this.dialogConfig.data);
+    this.minDate = this.transactionDateRange.startDate;
+    this.maxDate = this.transactionDateRange.endDate;
+
+    this.paymentsForm.get('transaction_date')?.setValue(this.transactionDateRange.endDate);
+
+    const { balance_interest } = this.dialogConfig.data.transactions[this.dialogConfig.data.find_upper_payment_bracket_index];
+
+    if (balance_interest > 0) {
+      this.paymentsForm.get('interest')?.setValue(
+        this.dialogConfig.data.interest + this.dialogConfig.data.transactions[this.dialogConfig.data.selectedIndex].balance_interest
+      );
+    }
+  }
+
+  getNextPaymentDueDate(): Date {
+    return this.computeDateDifference.getNextDueDate(
+      this.dialogConfig.data.transactions[this.dialogConfig.data.find_upper_payment_bracket_index].transaction_date,
+      this.dialogConfig.data.loan_mode_of_payment
+    );
+  }
+
+  removeDateRangeValidation() {
+    this.minDate = undefined;
+    this.maxDate = undefined;
+
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Info',
+      detail: 'Date range validation removed.',
+      closable: true,
+      life: 5000,
+    })
+  }
+
+  refreshDateRangeValidation() {
+    this.minDate = this.transactionDateRange.startDate;
+    this.maxDate = this.transactionDateRange.endDate;
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Info',
+      detail: 'Date range validation refreshed.',
+      closable: true,
+      life: 5000,
+    })
+  }
+
+  get transactionDateRange(): {
+    startDate: Date;
+    endDate: Date;
+  } {
+    return {
+      startDate: new Date(this.dialogConfig.data.transactions[this.dialogConfig.data.selectedIndex].transaction_date),
+      endDate: this.computeDateDifference.getNextDueDate(
+        this.dialogConfig.data.transactions[this.dialogConfig.data.find_upper_payment_bracket_index].transaction_date,
+        this.dialogConfig.data.loan_mode_of_payment
+      ),
+    }
   }
 
   initializeForm(): void {
-    const { interest } = this.dialogConfig.data;
+    const { interest, loan_interest_rate } = this.dialogConfig.data;
 
-    const computed_interest =
-      (interest?.balanceInterest || 0) + (interest?.interest || 0);
+    const computed_interest = (interest?.balanceInterest || 0) + (interest || 0);
 
     const paymentsDialog: PaymentsDialog = {
       transaction_date: new FormControl(
@@ -84,6 +154,7 @@ export class PaymentsComponent implements OnInit {
       change: new FormControl(null, [Validators.required]),
       collection: new FormControl(null, [Validators.required]),
       is_interest_applied: new FormControl(true, [Validators.required]),
+      custom_interest_rate: new FormControl(loan_interest_rate),
       transaction_remarks: new FormControl(''),
     };
 
@@ -102,10 +173,12 @@ export class PaymentsComponent implements OnInit {
     } else {
       const { interest } = this.dialogConfig.data;
       const computed_interest =
-        (interest?.balanceInterest || 0) + (interest?.interest || 0);
+        (interest?.balanceInterest || 0) + (interest || 0);
       this.paymentsForm.get('interest')?.setValue(computed_interest);
     }
   }
+
+
 
   validateCollection() {
     const { interest, collection } = this.paymentsForm.value;
@@ -114,24 +187,14 @@ export class PaymentsComponent implements OnInit {
       const balance_interest = interest - collection;
       this.paymentsForm.get('balance_interest')?.setValue(balance_interest);
     } else {
-      const { interest } = this.dialogConfig.data;
       this.paymentsForm.get('balance_interest')?.setValue(0);
-      this.paymentsForm
-        .get('transaction_date')
-        ?.setValue(new Date(interest?.nextPaymentDate || new Date()));
-      this.paymentsForm.get('transaction_date')?.enable();
     }
 
-    const isCollectionValid =
-      collection !== null &&
-      this.paymentsForm.get('collection')?.valid &&
-      (collection ?? 0) > (interest ?? 0);
+    const isCollectionValid = collection !== null && this.paymentsForm.get('collection')?.valid && (collection ?? 0) > (interest ?? 0);
 
     if (isCollectionValid) {
       this.paymentsForm.get('payment')?.enable();
-      this.paymentsForm
-        .get('payment')
-        ?.setValue((collection ?? 0) - (interest ?? 0));
+      this.paymentsForm.get('payment')?.setValue((collection ?? 0) - (interest ?? 0));
     } else {
       this.paymentsForm.get('payment')?.disable();
       this.paymentsForm.get('payment')?.setValue(0);
@@ -143,21 +206,17 @@ export class PaymentsComponent implements OnInit {
 
   payDueObligation() {
     const { balance_interest, payment } = this.paymentsForm.getRawValue();
-    const { transactions, interest } = this.dialogConfig.data;
-    const selectedIndex = interest.selectedIndex;
+    const { transactions, selectedIndex } = this.dialogConfig.data;
 
     if (balance_interest > 0) {
-      this.hasBalanceInterest(
-        balance_interest,
-        transactions[selectedIndex].balance
-      );
+      this.hasBalanceInterest(balance_interest, transactions[selectedIndex].balance);
     } else {
-      const latestBalance: number =
-        transactions[selectedIndex].balance - payment;
+      const latestBalance: number = transactions[selectedIndex].balance - payment;
       const transaction = {
         ...this.paymentsForm.value,
         balance: latestBalance,
         transaction_status: 'APPROVED',
+        is_payment: true,
       };
       this.ref.close(transaction);
     }
@@ -178,6 +237,7 @@ export class PaymentsComponent implements OnInit {
         this.ref.close({
           ...this.paymentsForm.getRawValue(),
           balance: balance,
+          interest: this.paymentsForm.get('collection')?.value,
           transaction_status: 'APPROVED',
         });
       },

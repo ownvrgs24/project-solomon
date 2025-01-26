@@ -26,4 +26,8 @@ export class LoanService {
   approveLoan(data: any) {
     return this.http.putRequest(`loans/approve`, data);
   }
+
+  updateLoan(data: any) {
+    return this.http.putRequest(`loans/update`, data);
+  }
 }

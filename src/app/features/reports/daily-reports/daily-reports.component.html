@@ -1,53 +1,141 @@
-<div class="grid grid-cols-3 gap-4">
-  <p-fieldset legend="DAILY TRANSACTION" [toggleable]="false">
-    <p-table
-      [value]="[
-        {
-          code: 'P001',
-          name: 'Product 1',
-          category: 'Category 1',
-          quantity: 10
-        },
-        {
-          code: 'P002',
-          name: 'Product 2',
-          category: 'Category 2',
-          quantity: 20
-        },
-        {
-          code: 'P003',
-          name: 'Product 3',
-          category: 'Category 3',
-          quantity: 30
-        },
-        {
-          code: 'P004',
-          name: 'Product 4',
-          category: 'Category 4',
-          quantity: 40
-        }
-      ]"
-      [tableStyle]="{ 'min-width': '50rem' }"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Code</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Quantity</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-product>
-        <tr>
-          <td>{{ product.code }}</td>
-          <td>{{ product.name }}</td>
-          <td>{{ product.category }}</td>
-          <td>{{ product.quantity }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </p-fieldset>
+<p-fieldset legend="ACTIONS" [toggleable]="false">
+  <p-button
+    icon="pi pi-print"
+    severity="contrast"
+    label="GENERATE DAILY REPORT"
+    (onClick)="generateDailyReport()"
+  ></p-button>
+</p-fieldset>
 
+<p-fieldset styleClass="mt-4" legend="TRANSACTION TODAY" [toggleable]="false">
+  <p-table
+    [paginator]="true"
+    paginatorPosition="top"
+    [value]="transactionList"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="currentRows"
+    [first]="currentPage * currentRows"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    #dt
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>STATUS</th>
+        <th>TRANSACTION DATE</th>
+        <th>CLIENT NAME</th>
+        <th>OR NO.</th>
+        <th>BALANCE INTEREST</th>
+        <th class="border-gray-500 border-2">INTEREST</th>
+        <th class="border-gray-500 border-2">PAYMENT</th>
+        <th class="border-gray-500 border-2">CAPITAL</th>
+        <th class="border-gray-500 border-2">BALANCE</th>
+        <th>COLLECTION</th>
+        <th>CHANGE</th>
+        <th>CREATED AT</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr>
+        <td>
+          <div class="flex items-center gap-2">
+            <!-- <pre>{{ i }}</pre> -->
+            <p-tag
+              [value]="item.transaction_status.replace('_', ' ').toUpperCase()"
+              [severity]="
+                statusTagService.getStatusLabel(item.transaction_status)
+              "
+            />
+            @if(item.transaction_remarks){
+            <p-button
+              [severity]="'secondary'"
+              [text]="true"
+              [rounded]="true"
+              icon="pi pi-info-circle"
+              [pTooltip]="item.transaction_remarks"
+              tooltipPosition="bottom"
+            ></p-button>
+            }
+          </div>
+        </td>
+        <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
+        <td>
+          {{ item.cxl_principal_loan.cx_detail.last_name }},
+          {{ item.cxl_principal_loan.cx_detail.first_name }}
+          {{ item.cxl_principal_loan.cx_detail.middle_name }}
+          {{ item.cxl_principal_loan.cx_detail.extension_name }}
+        </td>
+        <td>
+          {{ item?.transaction_or_number ?? "-" }}
+        </td>
+        <td>
+          {{
+            item?.balance_interest == null || item?.balance_interest === 0
+              ? "-"
+              : (item?.balance_interest | currency : "PHP")
+          }}
+        </td>
+        <td class="border-gray-500 border-2">
+          {{
+            item.interest == null || item.interest === 0
+              ? "-"
+              : (item?.interest | currency : "PHP")
+          }}
+        </td>
+        <td class="border-gray-500 border-2">
+          {{
+            item.payment == null || item.payment === 0
+              ? "-"
+              : (item?.payment | currency : "PHP")
+          }}
+        </td>
+        <td class="border-gray-500 border-2">
+          {{
+            item.capital == null || item.capital === 0
+              ? "-"
+              : (item?.capital | currency : "PHP")
+          }}
+        </td>
+        <td class="border-gray-500 border-2">
+          {{
+            item.balance == null || item.balance === 0
+              ? "-"
+              : (item?.balance | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.collection == null || item.collection === 0
+              ? "-"
+              : (item?.collection | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{
+            item.change == null || item.change === 0
+              ? "-"
+              : (item?.change | currency : "PHP")
+          }}
+        </td>
+        <td>
+          {{ item.created_at | date : "MMM dd, yyyy hh:mm a" }}
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="9" class="text-center p-4">
+          <div class="flex flex-column align-items-center">
+            <span> No transaction records are available for today </span>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-fieldset>
+<div class="grid grid-cols-3 gap-4 mt-4">
   <p-fieldset legend="EXPENSES" [toggleable]="false">
     <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
       <div class="grid grid-flow-col gap-4 items-baseline">

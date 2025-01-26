@@ -11,6 +11,34 @@ import { ExpenseService } from '../../../shared/services/expense.service';
 import { DividerModule } from 'primeng/divider';
 import { CashOnHandService } from '../../../shared/services/cash-on-hand.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ReportsService } from './services/daily-reports.service';
+import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
+import { StatusTagService } from '../../../shared/services/status-tag.service';
+import { PrintingExportService } from './services/printing-export.service';
+
+interface TransactionTable {
+  transaction_id: string
+  loan_id: string
+  transaction_date: string
+  coverage_start_date: any
+  coverage_end_date: any
+  transaction_or_number: any
+  balance_interest: number
+  interest: number
+  payment: number
+  capital: number
+  balance: number
+  collection: number
+  change: number
+  is_interest_applied: boolean
+  is_payment: boolean
+  is_deleted: boolean
+  transaction_status: string
+  transaction_remarks: string
+  created_at: string
+  updated_at: string
+}
 
 interface ExpenseForm {
   expense_detail: FormControl<string | null>;
@@ -36,7 +64,9 @@ interface CashOnHandForm {
     InputNumberModule,
     ButtonModule,
     TableModule,
-    DividerModule
+    DividerModule,
+    TooltipModule,
+    TagModule,
   ],
   templateUrl: './daily-reports.component.html',
   styleUrl: './daily-reports.component.scss'
@@ -47,6 +77,9 @@ export class DailyReportsComponent {
   private readonly confirmationService = inject(ConfirmationService);
   private readonly expenseService = inject(ExpenseService);
   private readonly cashOnHandService = inject(CashOnHandService);
+  private readonly reports = inject(ReportsService);
+  public readonly statusTagService = inject(StatusTagService);
+  private printingExportService = inject(PrintingExportService);
 
   expenseList: {
     expense_id: string
@@ -54,11 +87,11 @@ export class DailyReportsComponent {
     expense_amount: number
   }[] = [];
 
+  transactionList: TransactionTable[] = [];
+  dailyReportSummary: any = {};
 
-  ngOnInit(): void {
-    this.getExpenses();
-    this.getCashOnHand();
-  }
+  currentPage = 0;
+  currentRows = 5;
 
   expenseForm: FormGroup<ExpenseForm> = new FormGroup<ExpenseForm>({
     expense_detail: new FormControl<string | null>(null),
@@ -71,6 +104,13 @@ export class DailyReportsComponent {
     cash_amount: new FormControl<number | null>(null),
     is_locked: new FormControl<boolean | null>(false),
   });
+
+  ngOnInit(): void {
+    this.getExpenses();
+    this.getCashOnHand();
+    this.getTransactionToday();
+    this.getDailyReport();
+  }
 
   lockCashOnHand() {
     this.confirmationService.confirm({
@@ -164,5 +204,38 @@ export class DailyReportsComponent {
         });
       },
     });
+  }
+
+  getTransactionToday() {
+    this.reports.getTodayTransactions().subscribe({
+      next: (res: any) => {
+        this.transactionList = res.data;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  getDailyReport() {
+    this.reports.getDailyReport().subscribe({
+      next: (res: any) => {
+        this.dailyReportSummary = res.data;
+
+        this.printingExportService.compileCashReleaseData(this.dailyReportSummary.cash_release);
+        this.printingExportService.compileExpensesData(this.dailyReportSummary.expenses);
+        this.printingExportService.compileCashChangeData(this.dailyReportSummary.cash_changes);
+        this.printingExportService.compileCashCollectionData(this.dailyReportSummary.cash_collection);
+        this.printingExportService.compileCashOnHandData(this.dailyReportSummary.cash_on_hand);
+
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
+
+  generateDailyReport() {
+    this.printingExportService.createComprehensiveDailyReport();
   }
 } 

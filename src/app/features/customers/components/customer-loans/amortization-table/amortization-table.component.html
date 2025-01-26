@@ -1,29 +1,58 @@
+<p-fieldset legend="ACTIONS" styleClass="mb-4" [toggleable]="false">
+  <div class="grid grid-flow-col-dense justify-start gap-4">
+    <p-button label="PAYMENT DUE" (onClick)="openPaymentDialog()"></p-button>
+    <p-button label="ADD CAPITAL" (onClick)="openCapitalDialog()"></p-button>
+  </div>
+</p-fieldset>
+
+<p-messages />
+
 <p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
-  <p-table [value]="amortizationTable" styleClass="p-datatable-gridlines">
+  <p-table
+    [value]="amortizationTable"
+    styleClass="p-datatable-gridlines p-datatable-sm"
+  >
     <ng-template pTemplate="header">
       <tr>
-        <th>Status</th>
-        <th>Transaction Date</th>
-        <th>OR No.</th>
-        <th>Balance Interest</th>
-        <th>Interest</th>
-        <th>Payment</th>
-        <th>Capital</th>
-        <th>Balance</th>
-        <th>Collection</th>
-        <th>Change</th>
-        <th>Actions</th>
+        <th>STATUS</th>
+        <th>TRANSACTION DATE</th>
+        <th>OR NO.</th>
+        <th>BALANCE INTEREST</th>
+        <th class="border-gray-500 border-2">INTEREST</th>
+        <th class="border-gray-500 border-2">PAYMENT</th>
+        <th class="border-gray-500 border-2">CAPITAL</th>
+        <th class="border-gray-500 border-2">BALANCE</th>
+        <th>COLLECTION</th>
+        <th>CHANGE</th>
+        <th>ACTIONS</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item let-i="rowIndex">
-      <tr class="font-mono">
+      <tr
+        [ngClass]="{
+          'border-l-emerald-500 border-l-4': i === loanRepaymentData.find_upper_payment_bracket_index,
+        }"
+      >
         <td>
-          <p-tag
-            [value]="item.transaction_status"
-            [severity]="
-              statusTagService.getStatusLabel(item.transaction_status)
-            "
-          />
+          <div class="flex items-center gap-2">
+            <pre>{{ i }}</pre>
+            <p-tag
+              [value]="item.transaction_status.replace('_', ' ').toUpperCase()"
+              [severity]="
+                statusTagService.getStatusLabel(item.transaction_status)
+              "
+            />
+            @if(item.transaction_remarks){
+            <p-button
+              [severity]="'secondary'"
+              [text]="true"
+              [rounded]="true"
+              icon="pi pi-info-circle"
+              [pTooltip]="item.transaction_remarks"
+              tooltipPosition="bottom"
+            ></p-button>
+            }
+          </div>
         </td>
         <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
         <td>
@@ -36,28 +65,28 @@
               : (item?.balance_interest | currency : "PHP")
           }}
         </td>
-        <td>
+        <td class="border-gray-500 border-2">
           {{
             item.interest == null || item.interest === 0
               ? "-"
               : (item?.interest | currency : "PHP")
           }}
         </td>
-        <td>
+        <td class="border-gray-500 border-2">
           {{
             item.payment == null || item.payment === 0
               ? "-"
               : (item?.payment | currency : "PHP")
           }}
         </td>
-        <td>
+        <td class="border-gray-500 border-2">
           {{
             item.capital == null || item.capital === 0
               ? "-"
               : (item?.capital | currency : "PHP")
           }}
         </td>
-        <td>
+        <td class="border-gray-500 border-2">
           {{
             item.balance == null || item.balance === 0
               ? "-"

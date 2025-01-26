@@ -1,19 +1,41 @@
 <form [formGroup]="paymentsForm" (ngSubmit)="payDueObligation()">
-  <p-fieldset legend="Payment form">
+  <p-fieldset legend="Form Options" [toggleable]="true" [collapsed]="false">
+    <div class="flex flex-row gap-2 items-center">
+      <p-button
+        icon="pi pi-trash"
+        severity="danger"
+        size="small"
+        [outlined]="true"
+        label="Remove Date Range Validation"
+        (onClick)="removeDateRangeValidation()"
+      ></p-button>
+
+      <p-button
+        icon="pi pi-refresh"
+        label="Refresh Date Range Validation"
+        size="small"
+        [outlined]="true"
+        (onClick)="refreshDateRangeValidation()"
+      ></p-button>
+    </div>
+  </p-fieldset>
+
+  <p-fieldset legend="Form" [toggleable]="false" [collapsed]="false">
     <div class="flex flex-col gap-4 items-start my-4">
       <div class="grid grid-cols-2 gap-4 w-full items-start">
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="date-of-birth">Transaction Date</label>
           <p-calendar
+            [minDate]="minDate"
+            [maxDate]="maxDate"
             placeholder="mm/dd/yyyy"
             formControlName="transaction_date"
             styleClass="w-full"
             iconDisplay="input"
-            [showIcon]="false"
+            [showIcon]="true"
             inputId="icondisplay"
             mask="99/99/9999"
             slotChar="mm/dd/yyyy"
-            [touchUI]="true"
           />
           @if ( paymentsForm.get('transaction_date')?.hasError('required') &&
           paymentsForm.get('transaction_date')?.touched ) {
@@ -40,7 +62,13 @@
       </div>
 
       <div class="grid grid-flow-row gap-2 w-full">
-        <label for="collection">Collection</label>
+        <label
+          for="collection"
+          pTooltip="Tendered Amount"
+          tooltipPosition="left"
+        >
+          Collection
+        </label>
         <p-inputNumber
           formControlName="collection"
           id="collection"
@@ -51,6 +79,7 @@
           (keyup)="validateCollection()"
           [autofocus]="true"
         ></p-inputNumber>
+
         @if ( paymentsForm.get('collection')?.hasError('required') &&
         paymentsForm.get('collection')?.touched ) {
         <small class="p-error block"> Collection is required! </small>
@@ -88,7 +117,7 @@
       </div>
 
       <div class="grid grid-flow-row gap-2 w-full">
-        <label for="payment">Payment</label>
+        <label for="payment">Payment Amount</label>
         <p-inputNumber
           formControlName="payment"
           id="payment"

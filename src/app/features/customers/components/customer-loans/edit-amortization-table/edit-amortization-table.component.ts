@@ -15,11 +15,12 @@ import { StatusTagService } from '../../../../../shared/services/status-tag.serv
 import { ToastModule } from 'primeng/toast';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
 import { MessagesModule } from 'primeng/messages';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
   selector: 'app-edit-amortization-table',
@@ -39,7 +40,9 @@ import { MessagesModule } from 'primeng/messages';
     FormsModule,
     InputNumberModule,
     CalendarModule,
-    MessagesModule
+    MessagesModule,
+    RadioButtonModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './edit-amortization-table.component.html',
   styleUrl: './edit-amortization-table.component.scss',
@@ -59,8 +62,39 @@ export class EditAmortizationTableComponent implements OnInit {
   customerData!: Customer;
   loanData!: PrincipalLoan;
 
+  formGroup!: FormGroup;
+
   ngOnInit(): void {
     this.getAmortizationTable();
+  }
+
+  public customerInterestRates = [
+    { key: '0', label: '6%', value: 6 },
+    { key: '1', label: '8%', value: 8 }
+  ];
+
+  handleCustomerInterestOnChange($event: any) {
+    this.loanService.updateLoan({
+      loan_id: this.loanData.loan_id,
+      loan_interest_rate: $event,
+    }).subscribe({
+      next: (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+
+        this.loanData = response.data;
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.message,
+        });
+      },
+    });
   }
 
   getAmortizationTable() {
@@ -79,6 +113,10 @@ export class EditAmortizationTableComponent implements OnInit {
             summary: 'Warning',
             detail: 'Note: Editing of transactions will not auto compute data.',
             closable: false,
+          });
+
+          this.formGroup = new FormGroup({
+            selectedInterestRate: new FormControl(this.loanData.loan_interest_rate),
           });
 
         },

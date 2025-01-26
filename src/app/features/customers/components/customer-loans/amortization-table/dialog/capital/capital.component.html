@@ -1,18 +1,39 @@
+<p-toast position="bottom-center" />
+
 <form [formGroup]="capitalForm" (ngSubmit)="submitCapitalForm()">
+  <p-fieldset legend="Form Options" [toggleable]="true" [collapsed]="false">
+    <div class="flex flex-row gap-2 items-center">
+      <p-button
+        icon="pi pi-trash"
+        severity="danger"
+        size="small"
+        [outlined]="true"
+        label="Remove Date Range Validation"
+        (onClick)="removeDateRangeValidation()"
+      ></p-button>
+
+      <p-button
+        icon="pi pi-refresh"
+        label="Refresh Date Range Validation"
+        size="small"
+        [outlined]="true"
+        (onClick)="refreshDateRangeValidation()"
+      ></p-button>
+    </div>
+  </p-fieldset>
   <p-fieldset legend="Form">
     <div class="flex flex-col gap-4 items-start my-4">
       <div class="grid grid-flow-row gap-2 w-full">
         <label for="date-of-birth">Transaction Date</label>
         <p-calendar
+          [minDate]="minDate"
+          [maxDate]="maxDate"
           placeholder="mm/dd/yyyy"
           formControlName="transaction_date"
           styleClass="w-full"
           iconDisplay="input"
-          [showIcon]="false"
-          inputId="icondisplay"
           mask="99/99/9999"
           slotChar="mm/dd/yyyy"
-          [touchUI]="true"
         />
         @if ( capitalForm.get('transaction_date')?.hasError('required') &&
         capitalForm.get('transaction_date')?.touched ) {

@@ -79,7 +79,11 @@
         <td [width]="250">{{ customer.address }}</td>
         <td>{{ customer.mobile_number || "-" }}</td>
         <td>
-          {{ customer.created_at ? (customer.created_at | date : "MMM dd, yyyy hh:mm a") : "-" }}
+          {{
+            customer.created_at
+              ? (customer.created_at | date : "MMM dd, yyyy hh:mm a")
+              : "-"
+          }}
         </td>
         <td>
           <div class="flex gap-2">
