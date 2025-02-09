@@ -40,7 +40,6 @@
       <tr>
         <td>
           <div class="flex items-center gap-2">
-            <!-- <pre>{{ i }}</pre> -->
             <p-tag
               [value]="item.transaction_status.replace('_', ' ').toUpperCase()"
               [severity]="
@@ -126,7 +125,7 @@
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="9" class="text-center p-4">
+        <td colspan="12" class="text-center p-4">
           <div class="flex flex-column align-items-center">
             <span> No transaction records are available for today </span>
           </div>

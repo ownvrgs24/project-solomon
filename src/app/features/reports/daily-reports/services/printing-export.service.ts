@@ -65,7 +65,7 @@ export interface CashOnHand {
   updated_at: string
   is_deleted: boolean
   is_locked: boolean
-}
+}[]
 
 @Injectable({
   providedIn: 'root'

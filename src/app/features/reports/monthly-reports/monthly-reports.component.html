@@ -1,1 +1,27 @@
-<p>monthly-reports works!</p>
+<p-fieldset legend="Monthly Report Form" [toggleable]="false">
+  <form [formGroup]="monthlyReportsForm" (ngSubmit)="submitMonthlyReport()">
+    <div class="flex flex-row gap-4 items-end">
+      <div class="grid grid-flow-row gap-2">
+        <label for="account_name">SELECT A MONTH</label>
+        <p-calendar
+          view="month"
+          dateFormat="mm/yy"
+          placeholder="Please Select Month"
+          formControlName="selected_month"
+          [monthNavigator]="true"
+          inline="true"
+        />
+        @if (monthlyReportsForm.get('selected_month')?.hasError('required') &&
+        monthlyReportsForm.get('selected_month')?.touched) {
+        <small class="p-error block"> Month is required! </small>
+        }
+      </div>
+    </div>
+    <p-button
+      styleClass="mt-4"
+      [disabled]="monthlyReportsForm.invalid"
+      label="Generate Report"
+      type="submit"
+    ></p-button>
+  </form>
+</p-fieldset>

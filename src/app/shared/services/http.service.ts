@@ -27,6 +27,7 @@ export class HttpService {
       }
     };
   }
+  
   uploadFile(formData: FormData): Observable<HttpEvent<any>> {
     const req = new HttpRequest(
       'POST',
