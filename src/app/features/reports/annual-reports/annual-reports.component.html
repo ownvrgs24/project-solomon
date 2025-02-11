@@ -1,1 +1,28 @@
-<p>annual-reports works!</p>
+<p-fieldset legend="Annual Report Form" [toggleable]="false">
+  <form [formGroup]="annualReportsForm" (ngSubmit)="getAnnualReport()">
+    <div class="flex flex-row gap-4 items-end">
+      <div class="grid grid-flow-row gap-2">
+        <label for="account_name">SELECT A YEAR</label>
+        <p-calendar
+          view="year"
+          dateFormat="yy"
+          placeholder="Please Select Year"
+          formControlName="selected_year"
+          [yearNavigator]="true"
+          inline="true"
+          [maxDate]="maxDate"
+        />
+        @if (annualReportsForm.get('selected_year')?.hasError('required') &&
+        annualReportsForm.get('selected_year')?.touched) {
+        <small class="p-error block"> Year is required! </small>
+        }
+      </div>
+    </div>
+    <p-button
+      styleClass="mt-4"
+      [disabled]="annualReportsForm.invalid"
+      label="Generate Report"
+      type="submit"
+    ></p-button>
+  </form>
+</p-fieldset>

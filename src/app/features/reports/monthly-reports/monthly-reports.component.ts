@@ -27,15 +27,16 @@ interface MonthlyReportsForm {
   styleUrl: './monthly-reports.component.scss'
 })
 export class MonthlyReportsComponent {
-  private readonly reports = inject(MonthlyReportService);
+  private readonly monthlyReportService = inject(MonthlyReportService);
   private readonly printing = inject(PrintingExportService);
+  public readonly maxDate = new Date();
 
   monthlyReportsForm: FormGroup<MonthlyReportsForm> = new FormGroup<MonthlyReportsForm>({
     selected_month: new FormControl<Date | null>(new Date(), [Validators.required]),
   });
 
   submitMonthlyReport() {
-    this.reports.getMonthlyReport(this.monthlyReportsForm.value).subscribe({
+    this.monthlyReportService.getMonthlyReport(this.monthlyReportsForm.value).subscribe({
       next: (res: any) => {
         const { selected_month } = this.monthlyReportsForm.value;
         const {

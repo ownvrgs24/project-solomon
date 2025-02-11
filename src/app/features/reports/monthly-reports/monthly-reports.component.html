@@ -10,6 +10,7 @@
           formControlName="selected_month"
           [monthNavigator]="true"
           inline="true"
+          [maxDate]="maxDate"
         />
         @if (monthlyReportsForm.get('selected_month')?.hasError('required') &&
         monthlyReportsForm.get('selected_month')?.touched) {

@@ -36,7 +36,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (error.status === 401 && error.error.message === "Token has expired") {
           confirmationService.confirm({
             header: 'Session Expired',
-            icon: '',
             acceptButtonStyleClass: 'p-button-success w-full',
             acceptLabel: 'Okay, I understand',
             message: 'Session Expired, Your session has expired. Please login again.',
