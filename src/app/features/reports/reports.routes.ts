@@ -23,6 +23,10 @@ export const routes: Routes = [
         }
     },
     {
+        path: "delinquent-report",
+
+    },
+    {
         path: "**",
         redirectTo: "daily-report",
         pathMatch: "full",

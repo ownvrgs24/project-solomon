@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { PrincipalLoan, Transaction } from '../amortization-table.component';
 import { LoanComputationDateDifferenceService, MODE_OF_PAYMENT } from './loan-computation-date-difference.service';
-import { MessageService } from 'primeng/api';
 
 export enum TRANSACTION_STATUS {
   FOR_REVIEW = 'FOR_REVIEW',
@@ -81,21 +80,8 @@ export class LoanComputationService {
         interest = this.calculateInterest(latestBalance, loan_interest_rate, loan_mode_of_payment as MODE_OF_PAYMENT);
 
         console.log('Interest: ', interest);
-
       }
     }
-    // If the payment bracket is incomplete, compute the partial bracket interest. Applicable only for bi-monthly payments.
-
-
-    // console.log(this.computeDateDifference.getNextDueDate(
-    //   transactionData[upperBracketIndex].transaction_date,
-    //   loan_mode_of_payment as MODE_OF_PAYMENT)
-    // );
-
-
-
-    // console.log(this.computeDateDifference.getNextDueDate(transaction_date, loan_mode_of_payment as MODE_OF_PAYMENT));
-
     return {
       interest: parseFloat(interest.toFixed(2)),
       selectedIndex,
@@ -218,7 +204,7 @@ export class LoanComputationService {
    */
   checkDelinquencyStatus(days: number, month: number, modeOfPayment: MODE_OF_PAYMENT): boolean {
     if (modeOfPayment === MODE_OF_PAYMENT.BI_MONTHLY) {
-      return days > 15;
+      return days > 15 || month >= 1;
     }
 
     if (modeOfPayment === MODE_OF_PAYMENT.MONTHLY) {

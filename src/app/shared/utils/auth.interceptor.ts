@@ -11,7 +11,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   console.log(`Request is on its way to ${req.url}`);
   const userService = inject(UserService);
   const authService = inject(AuthService);
-  const router = inject(Router);
   const confirmationService = inject(ConfirmationService);
   const token = userService.getToken();
 
@@ -34,22 +33,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(authHeaderRequest).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && error.error.message === "Token has expired") {
+
+          authService.userLogout(); // Clear user data on logout
+
           confirmationService.confirm({
             header: 'Session Expired',
             acceptButtonStyleClass: 'p-button-success w-full',
-            acceptLabel: 'Okay, I understand',
+            acceptLabel: 'Login',
             message: 'Session Expired, Your session has expired. Please login again.',
             closeOnEscape: false,
             rejectVisible: false,
             acceptVisible: true,
-            accept: () => {
-              authService.userLogout();
-            },
-            reject: () => {
-              authService.userLogout();
-            }
           });
         }
+
         return throwError(() => error);
       })
     );

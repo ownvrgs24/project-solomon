@@ -36,19 +36,21 @@ export class LoanComputationDateDifferenceService {
     }
 
     // Default calculation for MONTHLY
-    const monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+    let monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
     let daysDiff = end.getDate() - start.getDate();
+
     if (daysDiff < 0) {
+      monthsDiff -= 1;
       const previousMonth = new Date(end.getFullYear(), end.getMonth() - 1, start.getDate());
       daysDiff = Math.floor((end.getTime() - previousMonth.getTime()) / (1000 * 60 * 60 * 24));
     }
+
     return {
       months: monthsDiff,
       days: daysDiff,
       paid_in_advance: false,
     };
   }
-
   getNextDueDate(transactionDate: Date, modeOfPayment: MODE_OF_PAYMENT): Date {
     const date = new Date(transactionDate);
     switch (modeOfPayment) {
@@ -61,5 +63,5 @@ export class LoanComputationDateDifferenceService {
     }
     return date;
   }
-
 }
+

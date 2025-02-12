@@ -129,6 +129,19 @@ export class AmortizationTableComponent implements OnInit {
     this.loanData = data.data.loan;
   }
 
+  /**
+   * Fetches the amortization data for a loan and processes it.
+   * 
+   * This method retrieves the loan ID from the activated route's snapshot and uses the loan service to load the amortization table.
+   * It subscribes to the response and handles the following:
+   * - On success, it populates the loan information.
+   * - On error, it displays an error message.
+   * - On completion, it calculates the interest accumulation and checks if the loan is delinquent.
+   * 
+   * If the loan is delinquent, it displays a delinquent message and updates the loan status to delinquent by:
+   * - Adjusting the transaction date based on the loan's mode of payment (monthly or bi-monthly).
+   * - Calling the loan service to update the loan status and subscribing to the response to handle success and error messages.
+   */
   fetchAmortizationData() {
     const loanId = this.activatedRoute.snapshot.paramMap.get('loan_id');
     this.loanService.loadAmortizationTable({ loan_id: loanId }).subscribe({
@@ -148,7 +161,54 @@ export class AmortizationTableComponent implements OnInit {
           this.loanData as unknown as PrincipalLoan
         );
 
-        console.table(this.loanRepaymentData);
+        console.log(this.loanRepaymentData);
+    
+        
+        // Check if the loan is delinquent
+        if (this.loanRepaymentData.isDelinquent) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Delinquent',
+            detail: 'This loan is delinquent, please pay immediately!',
+            closable: false,
+          });
+
+          let { transaction_date } = this.amortizationTable[this.loanRepaymentData.selectedIndex];
+
+          transaction_date = new Date(transaction_date);
+
+          if (this.loanRepaymentData.loan_mode_of_payment === MODE_OF_PAYMENT.MONTHLY) {
+            // If the loan is monthly, add 30 days to the transaction date
+            transaction_date.setDate(transaction_date.getDate() + 30);
+          }
+
+          if (this.loanRepaymentData.loan_mode_of_payment === MODE_OF_PAYMENT.BI_MONTHLY) {
+            // If the loan is bi-monthly, add 15 days to the transaction date
+            transaction_date.setDate(transaction_date.getDate() + 15);
+          }
+
+          // Update the loan status to delinquent
+          this.loanService.updateLoanStatusToDelinquent({
+            loan_id: this.loanData.loan_id,
+            date_marked_as_delinquent: transaction_date,
+          }).subscribe({
+            next: (response: any) => {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Warning',
+                detail: response.message,
+                life: 3000,
+              });
+            },
+            error: (error) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: error.message,
+              });
+            },
+          });
+        }
       }
     });
   }
