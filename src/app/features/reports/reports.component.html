@@ -1,14 +1,14 @@
-<p-fieldset legend="Select Action" [toggleable]="false">
-  <div class="flex flex-row gap-4">
-    <p-button routerLink="daily-report"> Daily Report </p-button>
-    <p-button routerLink="monthly-report"> Monthly Report </p-button>
-    <p-button routerLink="annual-report"> Annual Report </p-button>
-    <p-button routerLink="delinquent-report">
-      Delinquent Loan Report
-    </p-button>
-  </div>
-</p-fieldset>
+<p-tabMenu [model]="items">
+  <ng-template pTemplate="item" let-item>
+    <a [routerLink]="item.routerLink" class="p-menuitem-link">
+      <span [class]="item.icon"></span>
+      <span class="ml-2">
+        {{ item.label }}
+      </span>
+    </a>
+  </ng-template>
+</p-tabMenu>
 
 <section class="mx-auto my-6">
-  <router-outlet />
+  <router-outlet></router-outlet>
 </section>

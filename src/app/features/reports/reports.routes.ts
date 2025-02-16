@@ -24,7 +24,10 @@ export const routes: Routes = [
     },
     {
         path: "delinquent-report",
-
+        async loadComponent() {
+            const m = await import('./delinquent-reports/delinquent-reports.component');
+            return m.DelinquentReportsComponent;
+        },
     },
     {
         path: "**",

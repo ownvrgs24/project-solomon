@@ -1,9 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpService } from '../../../../shared/services/http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DelinquentReportService {
 
-  constructor() { }
+  readonly http = inject(HttpService);
+
+  getDelinquentReport() {
+    return this.http.getRequest('reports/delinquent');
+  }
 }
