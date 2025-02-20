@@ -7,7 +7,7 @@ import { UserService } from './user.service';
   providedIn: 'root',
 })
 export class HttpService {
-  protected BASE_URL: string = 'https://gzzv9ww4-8000.asse.devtunnels.ms';
+  protected BASE_URL: string = 'http://localhost:8000';
 
   protected API_URL: string = `${this.BASE_URL}/api/`;
 
