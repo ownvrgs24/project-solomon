@@ -39,6 +39,10 @@ export class StatusTagService {
     | 'contrast'
     | undefined {
     switch (status) {
+      case 'ACTIVE':
+        return 'success';
+      case 'PAID':
+        return 'success';
       case 'FOR_REVIEW':
         return 'contrast';
       case 'FOR_DELETION':
@@ -49,6 +53,8 @@ export class StatusTagService {
         return 'success';
       case 'REJECTED':
         return 'warning';
+      case 'DELINQUENT':
+        return 'danger';
       default:
         return undefined;
     }

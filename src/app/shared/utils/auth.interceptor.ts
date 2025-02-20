@@ -5,7 +5,6 @@ import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   console.log(`Request is on its way to ${req.url}`);

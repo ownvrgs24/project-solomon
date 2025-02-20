@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Table, TableModule } from 'primeng/table';
 import { CustomersService } from '../../../../shared/services/customers.service';
 import { IconFieldModule } from 'primeng/iconfield';
 import { FormsModule } from '@angular/forms';
@@ -71,6 +71,7 @@ export interface Customer {
 })
 export class CustomerListComponent implements OnInit {
 
+
   private readonly customerService = inject(CustomersService);
   private readonly http = inject(HttpService);
   public readonly statusTagService = inject(StatusTagService);
@@ -82,8 +83,13 @@ export class CustomerListComponent implements OnInit {
   currentPage = 0;
   currentRows = 25;
   searchValue!: string;
+
+  @ViewChild('dt') dt!: Table;
+
   ngOnInit(): void {
     this.fetchCustomers();
+
+
 
     // Retrieve pagination state from localStorage
     const savedPage = this.userService.getLocalStorage('customerListPage');
@@ -103,6 +109,9 @@ export class CustomerListComponent implements OnInit {
     this.userService.setLocalStorage('customerListRows', event.rows.toString());
   }
 
+  handleModelChange() {
+    this.userService.setLocalStorage('searchValue', this.searchValue);
+  }
 
 
   fetchCustomers() {
@@ -126,7 +135,14 @@ export class CustomerListComponent implements OnInit {
         };
       });
 
-      this.loading = false;
+      this.loading = false
+
+      // Retrieve search value from localStorage
+      const savedSearchValue = this.userService.getLocalStorage('searchValue');
+      if (savedSearchValue) {
+        this.searchValue = savedSearchValue;
+        this.dt.filterGlobal(savedSearchValue, 'contains');
+      }
     });
   }
 

@@ -109,6 +109,22 @@ export class LoanRecordsComponent implements OnInit {
               closable: false,
             });
           }
+
+          if (this.hasNoOutstandingLoans) {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'No Outstanding Loans',
+              detail: 'The customer has no outstanding loans.',
+              closable: false,
+            });
+          } else {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Outstanding Loans',
+              detail: 'The customer has outstanding loans.',
+              closable: false,
+            });
+          }
         },
 
         error: () => {
@@ -123,5 +139,11 @@ export class LoanRecordsComponent implements OnInit {
 
   get customerId() {
     return this.activatedRoute.snapshot.paramMap.get('id');
+  }
+
+  get hasNoOutstandingLoans() {
+    return this.customerLoanRecords.every(
+      (loan) => loan.loan_status === 'PAID'
+    );
   }
 }

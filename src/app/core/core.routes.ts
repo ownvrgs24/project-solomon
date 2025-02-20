@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { accessControlGuard } from '../shared/guards/auth.guard';
 
 export const coreRoutes: Routes = [
     {
@@ -10,6 +11,10 @@ export const coreRoutes: Routes = [
         loadChildren: async () => {
             const m = await import("../features/dashboard/dashboard.routes");
             return m.routes;
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR", "CASHIER", "ENCODER"]
         }
     },
     {
@@ -21,7 +26,11 @@ export const coreRoutes: Routes = [
         loadChildren: async () => {
             const m = await import("../features/approvals/approvals.routes");
             return m.routes;
-        }
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR"]
+        },
     },
     {
         path: "accounts",
@@ -32,7 +41,11 @@ export const coreRoutes: Routes = [
         loadChildren: async () => {
             const m = await import("../features/accounts/accounts.routes");
             return m.routes;
-        }
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR"]
+        },
     },
     {
         path: "customers",
@@ -43,7 +56,11 @@ export const coreRoutes: Routes = [
         async loadChildren() {
             const m = await import("../features/customers/components/customer.routes");
             return m.routes;
-        }
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR", "ENCODER", "CASHIER"]
+        },
     },
     {
         path: "reports",
@@ -54,7 +71,11 @@ export const coreRoutes: Routes = [
         loadChildren: async () => {
             const m = await import("../features/reports/reports.routes");
             return m.routes;
-        }
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR", "CASHIER"]
+        },
     },
     {
         path: "system-logs",
@@ -65,7 +86,11 @@ export const coreRoutes: Routes = [
         loadChildren: async () => {
             const m = await import("../features/system-logs/system-logs.routes");
             return m.routes;
-        }
+        },
+        canActivate: [accessControlGuard],
+        data: {
+            allowedRoles: ["ADMINISTRATOR"]
+        },
     },
     {
         path: "",

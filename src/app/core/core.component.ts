@@ -30,7 +30,7 @@ export class CoreComponent {
     role: string
   } = {
       fullName: this.userService.getFullName(),
-      role: this.userService.getRole()
+      role: this.userService.getUserRole()
     }
 
   items: MenuItem[] | undefined = [
@@ -94,5 +94,8 @@ export class CoreComponent {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log(this.userService.getUserRole());
+
+  }
 }

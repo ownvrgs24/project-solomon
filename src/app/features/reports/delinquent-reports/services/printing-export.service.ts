@@ -85,15 +85,26 @@ export class PrintingExportService {
           table: {
             widths: ["*", "auto", "*"],
             body: [
-              [{ text: 'Outstanding Balance', fontSize: 8, bold: true }, ':', { text: this.utilsService.currencyFormatter(element.delinquency_data.balance), fontSize: 8, }],
+              [{ text: 'Delinquent Since', fontSize: 8, bold: true }, ':', { text: this.datePipe.transform(element.delinquency_data.date_marked_as_delinquent, 'MMMM dd, yyyy'), fontSize: 8, }],
+              [{ text: 'Balance', fontSize: 8, bold: true }, ':', { text: this.utilsService.currencyFormatter(element.delinquency_data.balance), fontSize: 8, }],
               [{ text: 'Interest', fontSize: 8, bold: true }, ':', { text: this.utilsService.currencyFormatter(element.delinquency_data.interest), fontSize: 8, }],
-              [{ text: 'Past Due Date', fontSize: 8, bold: true }, ':', { text: this.datePipe.transform(element.delinquency_data.date_marked_as_delinquent, 'MMMM dd, yyyy'), fontSize: 8, }],
+              [{ text: 'Total', fontSize: 8, bold: true }, ':', { text: this.utilsService.currencyFormatter((element.delinquency_data.balance || 0) + (element.delinquency_data.interest || 0)), fontSize: 8, color: 'red', bold: true }],
             ],
           },
           layout: 'lightHorizontalLines',
           style: "defaultStyle",
-        }
+        },
       ]), // Add the data here
+
+      // Overall Total sum all the balance and interest of the delinquent accounts using reduce
+      [{ marginTop: 5, text: "Total Delinquent Accounts", colSpan: 6, alignment: "right", fontSize: 12, bold: true }, {}, {}, {}, {}, {}, {
+        alignment: "right",
+        marginTop: 5,
+        text: this.utilsService.currencyFormatter(data.reduce((acc, curr) => acc + (curr.delinquency_data.balance || 0) + (curr.delinquency_data.interest || 0), 0)),
+        fontSize: 12,
+        bold: true,
+        color: 'red',
+      }],
     ];
 
     this.templateReportGeneratorService.open({
@@ -102,7 +113,6 @@ export class PrintingExportService {
         { text: "16 KAUFFMAN ST., GORDON HEIGHTS, OLONGAPO CITY, ZAMBALES", style: "subtitle", alignment: "center", },
         { text: "DELINQUENCY REPORT", color: "red", bold: true, alignment: "center", fontSize: 16, margin: [0, 0, 0, 0] },
         { text: `As of ${reportMonth} ${reportYear}`, alignment: "center", fontSize: 8, margin: [0, 0, 0, 5], italics: true },
-
         {
           table: {
             widths: ["*", "*", "*", "auto", "auto", "auto", "*"],

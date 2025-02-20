@@ -1,125 +1,231 @@
-<p-fieldset legend="ACTIONS" styleClass="mb-4" [toggleable]="false">
-  <div class="grid grid-flow-col-dense justify-start gap-4">
-    <p-button label="PAYMENT DUE" (onClick)="openPaymentDialog()"></p-button>
-    <p-button label="ADD CAPITAL" (onClick)="openCapitalDialog()"></p-button>
-  </div>
-</p-fieldset>
-
 <p-messages />
+<p-confirmDialog />
 
-<p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
-  <p-table
-    [value]="amortizationTable"
-    styleClass="p-datatable-gridlines p-datatable-sm"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>STATUS</th>
-        <th>TRANSACTION DATE</th>
-        <th>OR NO.</th>
-        <th>BALANCE INTEREST</th>
-        <th class="border-gray-500 border-2">INTEREST</th>
-        <th class="border-gray-500 border-2">PAYMENT</th>
-        <th class="border-gray-500 border-2">CAPITAL</th>
-        <th class="border-gray-500 border-2">BALANCE</th>
-        <th>COLLECTION</th>
-        <th>CHANGE</th>
-        <th>ACTIONS</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item let-i="rowIndex">
-      <tr
-        [ngClass]="{
-          'border-l-emerald-500 border-l-4': i === loanRepaymentData.find_upper_payment_bracket_index,
+<div class="grid grid-cols-4 gap-4">
+  @if (customerData) {
+  <div>
+    <p-fieldset legend="Customer Information" [toggleable]="false">
+      <p-avatar
+        [image]="customerData.client_picture"
+        size="xlarge"
+        shape="circle"
+        (onImageError)="customerData.client_picture = 'placeholder.png'"
+        styleClass="mb-3"
+      />
+
+      <h1 class="text-2xl font-bold mb-3">
+        {{ customerData.fullname }}
+      </h1>
+
+      <ul class="text-balance">
+        <li>
+          <span class="font-bold">Email Address:</span>
+          {{ customerData.email_address || "N/A" }}
+        </li>
+        <li>
+          <span class="font-bold">Mobile Number:</span>
+          {{ customerData.mobile_number || "N/A" }}
+        </li>
+        <li>
+          <span class="font-bold">Telephone Number:</span>
+          {{ customerData.telephone_number || "N/A" }}
+        </li>
+        <li>
+          <span class="font-bold">Gender: </span>
+          {{ customerData.gender || "N/A" }}
+        </li>
+      </ul>
+    </p-fieldset>
+
+    <p-fieldset legend="Loan Information" [toggleable]="false">
+      <ul class="text-balance">
+        <li>
+          <span class="font-bold">Interest Rate:</span>
+          {{ loanData.loan_interest_rate }}%
+        </li>
+        <li>
+          <span class="font-bold">Mode of Payment:</span>
+          {{ loanData.loan_mode_of_payment.replaceAll("_", " ") }}
+        </li>
+      </ul>
+    </p-fieldset>
+
+    @if (loanRepaymentData.isDelinquent) {
+    <p-fieldset legend="Delinquency Information" [toggleable]="false">
+      <p class="text-red-600 font-bold text-lg">
+        This <strong>ACCOUNT</strong> is <strong>DELINQUENT</strong> for
+        <br />
+        <strong class="text-2xl">
+          {{ loanRepaymentData.months }} months &
+          {{ loanRepaymentData.days }} days
+        </strong>
+        <br />
+        Please please pay immediately! Thank you!
+      </p>
+
+      <p-divider></p-divider>
+
+      <h1 class="text-2xl font-mono font-extrabold">
+        Accumulated Interest:
+        {{ utils.currencyFormatter(loanRepaymentData.interest) }}
+      </h1>
+    </p-fieldset>
+    }
+
+    <p-blockUI [target]="pnl" [blocked]="loanData.loan_status === 'PAID'">
+      <span class="font-bold text-base">
+        <i class="pi pi-lock mr-2"></i> Loan is fully PAID. No more transactions
+        can be made.
+      </span>
+    </p-blockUI>
+
+    <p-blockUI [target]="pnl" [blocked]="!isTransactionPermitted">
+      <span class="font-bold text-base">
+        <i class="pi pi-lock mr-2"></i>
+        Transaction is not permitted.
+      </span>
+    </p-blockUI>
+
+    <p-panel #pnl styleClass="mt-4">
+      <div class="grid grid-flow-row gap-4 w-full">
+        <p-button
+          [label]="'PAY ' + utils.currencyFormatter(loanRepaymentData.interest)"
+          [size]="'large'"
+          (onClick)="openPaymentDialog()"
+          severity="success"
+          icon="pi pi-dollar"
+          styleClass="w-full"
+        ></p-button>
+        <p-button
+          label="ADD CAPITAL"
+          [size]="'large'"
+          (onClick)="openCapitalDialog()"
+          severity="secondary"
+          icon="pi pi-plus"
+          styleClass="w-full"
+        ></p-button>
+      </div>
+    </p-panel>
+  </div>
+  }
+
+  <p-fieldset class="col-span-3" legend="Amortization Table a.k.a Index Card">
+    <p-table
+      [value]="amortizationTable"
+      styleClass="p-datatable-gridlines p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>STATUS</th>
+          <th>TRANSACTION DATE</th>
+          <th>OR NO.</th>
+          <th>BALANCE INTEREST</th>
+          <th class="border-gray-500 border-2">INTEREST</th>
+          <th class="border-gray-500 border-2">PAYMENT</th>
+          <th class="border-gray-500 border-2">CAPITAL</th>
+          <th class="border-gray-500 border-2">BALANCE</th>
+          <th>COLLECTION</th>
+          <th>CHANGE</th>
+          <th>ACTIONS</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-i="rowIndex">
+        <tr
+          [ngClass]="{
+          'border-r-emerald-500 border-r-2': i === loanRepaymentData.find_upper_payment_bracket_index,
         }"
-      >
-        <td>
-          <div class="flex items-center gap-2">
-            <pre>{{ i }}</pre>
-            <p-tag
-              [value]="item.transaction_status.replace('_', ' ').toUpperCase()"
-              [severity]="
-                statusTagService.getStatusLabel(item.transaction_status)
-              "
-            />
-            @if(item.transaction_remarks){
+        >
+          <td>
+            <div class="flex items-center gap-2">
+              <!-- <pre>{{ i }}</pre> -->
+              <p-tag
+                [value]="
+                  item.transaction_status.replace('_', ' ').toUpperCase()
+                "
+                [severity]="
+                  statusTagService.getStatusLabel(item.transaction_status)
+                "
+              />
+              @if(item.transaction_remarks){
+              <p-button
+                [severity]="'secondary'"
+                [text]="true"
+                [rounded]="true"
+                icon="pi pi-info-circle"
+                [pTooltip]="item.transaction_remarks"
+                tooltipPosition="bottom"
+              ></p-button>
+              }
+            </div>
+          </td>
+          <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
+          <td>
+            {{ item?.transaction_or_number ?? "-" }}
+          </td>
+          <td>
+            {{
+              item?.balance_interest == null || item?.balance_interest === 0
+                ? "-"
+                : (item?.balance_interest | currency : "PHP")
+            }}
+          </td>
+          <td class="border-gray-500 border-2">
+            {{
+              item.interest == null || item.interest === 0
+                ? "-"
+                : (item?.interest | currency : "PHP")
+            }}
+          </td>
+          <td class="border-gray-500 border-2">
+            {{
+              item.payment == null || item.payment === 0
+                ? "-"
+                : (item?.payment | currency : "PHP")
+            }}
+          </td>
+          <td class="border-gray-500 border-2">
+            {{
+              item.capital == null || item.capital === 0
+                ? "-"
+                : (item?.capital | currency : "PHP")
+            }}
+          </td>
+          <td class="border-gray-500 border-2">
+            {{
+              item.balance == null || item.balance === 0
+                ? "-"
+                : (item?.balance | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{
+              item.collection == null || item.collection === 0
+                ? "-"
+                : (item?.collection | currency : "PHP")
+            }}
+          </td>
+          <td>
+            {{
+              item.change == null || item.change === 0
+                ? "-"
+                : (item?.change | currency : "PHP")
+            }}
+          </td>
+          <td>
             <p-button
-              [severity]="'secondary'"
-              [text]="true"
               [rounded]="true"
-              icon="pi pi-info-circle"
-              [pTooltip]="item.transaction_remarks"
-              tooltipPosition="bottom"
-            ></p-button>
-            }
-          </div>
-        </td>
-        <td>{{ item.transaction_date | date : "MMMM dd, yyyy" }}</td>
-        <td>
-          {{ item?.transaction_or_number ?? "-" }}
-        </td>
-        <td>
-          {{
-            item?.balance_interest == null || item?.balance_interest === 0
-              ? "-"
-              : (item?.balance_interest | currency : "PHP")
-          }}
-        </td>
-        <td class="border-gray-500 border-2">
-          {{
-            item.interest == null || item.interest === 0
-              ? "-"
-              : (item?.interest | currency : "PHP")
-          }}
-        </td>
-        <td class="border-gray-500 border-2">
-          {{
-            item.payment == null || item.payment === 0
-              ? "-"
-              : (item?.payment | currency : "PHP")
-          }}
-        </td>
-        <td class="border-gray-500 border-2">
-          {{
-            item.capital == null || item.capital === 0
-              ? "-"
-              : (item?.capital | currency : "PHP")
-          }}
-        </td>
-        <td class="border-gray-500 border-2">
-          {{
-            item.balance == null || item.balance === 0
-              ? "-"
-              : (item?.balance | currency : "PHP")
-          }}
-        </td>
-        <td>
-          {{
-            item.collection == null || item.collection === 0
-              ? "-"
-              : (item?.collection | currency : "PHP")
-          }}
-        </td>
-        <td>
-          {{
-            item.change == null || item.change === 0
-              ? "-"
-              : (item?.change | currency : "PHP")
-          }}
-        </td>
-        <td>
-          <p-button
-            [rounded]="true"
-            [text]="true"
-            severity="danger"
-            [disabled]="i !== amortizationTable.length - 1 || i === 0"
-            icon="pi pi-trash"
-            pTooltip="Void Transaction (Delete)"
-            tooltipPosition="top"
-            tooltipStyleClass="text-center"
-          />
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</p-fieldset>
+              [text]="true"
+              severity="danger"
+              [disabled]="i !== amortizationTable.length - 1 || i === 0"
+              icon="pi pi-trash"
+              pTooltip="Void Transaction (Delete)"
+              tooltipPosition="top"
+              tooltipStyleClass="text-center"
+              (onClick)="revokeTransaction(i)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-fieldset>
+</div>

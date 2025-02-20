@@ -34,4 +34,8 @@ export class LoanService {
   updateLoanStatusToDelinquent(data: any) {
     return this.http.putRequest(`loans/mark-as-delinquent`, data);
   }
+
+  updateLoanStatusToPaid(data: any) {
+    return this.http.putRequest(`loans/mark-as-paid`, data);
+  }
 }

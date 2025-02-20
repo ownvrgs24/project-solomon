@@ -11,6 +11,7 @@
         (input)="dt.filterGlobal(searchValue, 'contains')"
         placeholder="Search keyword"
         toUppercase
+        (ngModelChange)="handleModelChange()"
       />
     </p-iconField>
   </div>

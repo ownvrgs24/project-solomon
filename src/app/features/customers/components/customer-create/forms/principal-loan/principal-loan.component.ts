@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -18,6 +18,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FieldsetModule } from 'primeng/fieldset';
 import { DividerModule } from 'primeng/divider';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { UpperCaseInputDirective } from '../../../../../../shared/directives/to-uppercase.directive';
+import { RouterModule } from '@angular/router';
 
 interface PrincipalLoan {
   customer_id: FormControl<string | null>;
@@ -48,7 +50,8 @@ enum MODE_OF_PAYMENT {
     ConfirmDialogModule,
     FieldsetModule,
     DividerModule,
-    InputTextareaModule
+    InputTextareaModule,
+    UpperCaseInputDirective,
   ],
   templateUrl: './principal-loan.component.html',
   styleUrl: './principal-loan.component.scss',
@@ -58,6 +61,7 @@ export class PrincipalLoanComponent implements OnInit {
   readonly loanService = inject(LoanService);
   readonly messagesService = inject(MessageService);
   readonly confirmationService = inject(ConfirmationService);
+  private readonly router = inject(RouterModule);
 
   @Input({ required: true }) customerId!: string | null;
 
@@ -69,6 +73,7 @@ export class PrincipalLoanComponent implements OnInit {
   ];
 
   principalLoanFormGroup!: FormGroup<PrincipalLoan>;
+  maxDate: Date | null | undefined = new Date();
 
   ngOnInit(): void {
     this.principalLoanFormGroup = new FormGroup({

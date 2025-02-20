@@ -1,6 +1,17 @@
 <p-messages />
 
-@if (customerLoanRecords.length > 0) {
+@if (customerLoanRecords.length === 0) {
+<div class="flex justify-center items-center">
+  <p-button
+    [routerLink]="['../../add-loan', customerId]"
+    severity="success"
+    label="APPLY FOR LOAN"
+    icon="pi pi-arrow-right"
+    styleClass="w-full"
+    [size]="'large'"
+  />
+</div>
+} @else {
 <div class="grid grid-cols-4 gap-4">
   <p-fieldset legend="Customer Details" class="col-span-1">
     <div class="flex flex-col gap-4">
@@ -28,6 +39,14 @@
         Registered on:
         {{ customerLoanRecords[0].created_at | date : "MMM dd, yyyy" }}
       </div>
+      <p-button
+        [routerLink]="['../../add-loan', customerId]"
+        severity="success"
+        label="APPLY FOR LOAN"
+        icon="pi pi-arrow-right"
+        styleClass="w-full"
+        [disabled]="!hasNoOutstandingLoans"
+      ></p-button>
     </div>
   </p-fieldset>
 
@@ -35,6 +54,7 @@
     <ng-template pTemplate="header">
       <tr>
         <th>Status</th>
+        <th>Account Standing</th>
         <th>Repayment Schedule</th>
         <th>Opening Date</th>
         <th>Principal Amount</th>
@@ -47,13 +67,24 @@
       <tr>
         <td>
           <p-tag
+            class="mr-2"
             [value]="loan.loan_status"
             [severity]="statusTagService.getStatusLabel(loan.loan_status)"
           />
         </td>
         <td>
+          @if (loan.date_marked_as_delinquent) {
           <p-tag
-            [value]="loan.loan_mode_of_payment"
+            [value]="'DELINQUENT'"
+            [severity]="statusTagService.getStatusLabel('DELINQUENT')"
+          />
+          }
+        </td>
+        <td>
+          <p-tag
+            [value]="
+              loan.loan_mode_of_payment.toUpperCase().replaceAll('_', ' ')
+            "
             [severity]="statusTagService.getSeverity(loan.loan_mode_of_payment)"
           />
         </td>
@@ -66,8 +97,9 @@
           <p-button
             [disabled]="loan.loan_status === 'FOR_REVIEW'"
             [routerLink]="['./', loan.loan_id]"
-            label="SELECT"
+            label="VIEW"
             class="mr-2"
+            icon="pi pi-eye"
           ></p-button>
           <p-button
             [disabled]="loan.loan_status === 'FOR_REVIEW'"
@@ -77,20 +109,13 @@
               loan.loan_id
             ]"
             severity="secondary"
-            label="EDIT AMORTIZATION TABLE"
+            label="EDIT TABLE"
+            icon="pi pi-pencil"
           ></p-button>
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
-} @else {
-<div class="flex justify-center items-center h-full">
-  <p-button
-    [routerLink]="['../../add-loan', customerId]"
-    severity="primary"
-    label="ADD LOAN"
-    icon="pi pi-plus"
-  ></p-button>
-</div>
+
 }

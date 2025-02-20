@@ -73,6 +73,7 @@
           inputId="loan_opening_date"
           mask="99/99/9999"
           slotChar="mm/dd/yyyy"
+          [maxDate]="maxDate"
         ></p-calendar>
         @if (
         principalLoanFormGroup.get('loan_opening_date')?.hasError('required') &&

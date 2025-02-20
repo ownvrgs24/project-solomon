@@ -33,7 +33,6 @@ interface PaymentsDialog {
   collection: FormControl<number | null>;
   is_interest_applied: FormControl<boolean | null>;
   transaction_remarks: FormControl<string | null>;
-  custom_interest_rate: FormControl<number | null>;
 }
 
 @Component({
@@ -77,7 +76,6 @@ export class PaymentsComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
 
-    console.log(this.dialogConfig.data);
     this.minDate = this.transactionDateRange.startDate;
     this.maxDate = this.transactionDateRange.endDate;
 
@@ -90,13 +88,8 @@ export class PaymentsComponent implements OnInit {
         this.dialogConfig.data.interest + this.dialogConfig.data.transactions[this.dialogConfig.data.selectedIndex].balance_interest
       );
     }
-  }
 
-  getNextPaymentDueDate(): Date {
-    return this.computeDateDifference.getNextDueDate(
-      this.dialogConfig.data.transactions[this.dialogConfig.data.find_upper_payment_bracket_index].transaction_date,
-      this.dialogConfig.data.loan_mode_of_payment
-    );
+
   }
 
   removeDateRangeValidation() {
@@ -128,6 +121,14 @@ export class PaymentsComponent implements OnInit {
     startDate: Date;
     endDate: Date;
   } {
+    // Check the customer is delinquent
+    if (this.dialogConfig.data.isDelinquent) {
+      return {
+        startDate: new Date(this.dialogConfig.data.transactions[this.dialogConfig.data.selectedIndex].transaction_date),
+        endDate: new Date(),
+      }
+    }
+
     return {
       startDate: new Date(this.dialogConfig.data.transactions[this.dialogConfig.data.selectedIndex].transaction_date),
       endDate: this.computeDateDifference.getNextDueDate(
@@ -138,7 +139,7 @@ export class PaymentsComponent implements OnInit {
   }
 
   initializeForm(): void {
-    const { interest, loan_interest_rate } = this.dialogConfig.data;
+    const { interest } = this.dialogConfig.data;
 
     const computed_interest = (interest?.balanceInterest || 0) + (interest || 0);
 
@@ -154,7 +155,6 @@ export class PaymentsComponent implements OnInit {
       change: new FormControl(null, [Validators.required]),
       collection: new FormControl(null, [Validators.required]),
       is_interest_applied: new FormControl(true, [Validators.required]),
-      custom_interest_rate: new FormControl(loan_interest_rate),
       transaction_remarks: new FormControl(''),
     };
 

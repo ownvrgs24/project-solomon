@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CustomersService } from '../../../../../../../shared/services/customers.service';
 import { Customer } from '../../../../customer-list/customer-list.component';
 import { StatusTagService } from '../../../../../../../shared/services/status-tag.service';
@@ -39,7 +39,9 @@ import { HttpService } from '../../../../../../../shared/services/http.service';
   templateUrl: './customer-list.component.html',
   styleUrl: './customer-list.component.scss',
 })
-export class CustomerListComponent {
+export class CustomerListComponent implements OnInit {
+
+
   @Input({ required: false }) isEditMode: boolean = false;
   @Input({ required: false }) customerData!: any;
   @Input({ required: true }) customerId!: string | null;
@@ -53,11 +55,13 @@ export class CustomerListComponent {
 
   loading: boolean = true;
   customers: Customer[] = [];
-  searchValue!: string;
+  searchValue: string = "";
 
   ngOnInit(): void {
     this.fetchActiveCustomers();
+    this.searchValue = window.localStorage.getItem('searchValue') || '';
   }
+
 
   fetchActiveCustomers(): void {
     this.customerService.fetchCustomerByStatus('ACTIVE').subscribe({

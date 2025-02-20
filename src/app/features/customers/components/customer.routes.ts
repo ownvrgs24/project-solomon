@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { accessControlGuard } from '../../../shared/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,10 @@ export const routes: Routes = [
     async loadComponent() {
       const m = await import('./customer-loans/edit-amortization-table/edit-amortization-table.component');
       return m.EditAmortizationTableComponent;
+    },
+    canActivate: [accessControlGuard],
+    data: {
+      allowedRoles: ["ADMINISTRATOR"]
     },
   },
   {

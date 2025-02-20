@@ -14,4 +14,8 @@ export class TransactionService {
   updateTransaction(data: any) {
     return this.http.putRequest('transactions', data);
   }
+
+  deleteTransaction(transaction_id: string) {
+    return this.http.deleteRequest(`transactions/${transaction_id}`);
+  }
 }

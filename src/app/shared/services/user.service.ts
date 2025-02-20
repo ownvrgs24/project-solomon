@@ -41,7 +41,7 @@ export class UserService {
     return this.getSession() !== null;
   }
 
-  getRole() {
+  getUserRole() {
     return this.getSession()?.role;
   }
 
