@@ -8,7 +8,7 @@ export class DelinquentReportService {
 
   readonly http = inject(HttpService);
 
-  getDelinquentReport() {
-    return this.http.getRequest('reports/delinquent');
+  getDelinquentReport(data: any) {
+    return this.http.postRequest('reports/delinquent', data);
   }
 }

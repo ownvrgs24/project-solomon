@@ -1,17 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeolocationService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private httpService: HttpService) { }
 
   getRegions(): Observable<{ code: string; regionName: string }[]> {
     return this.http.get<{ code: string; regionName: string }[]>(
-      "https://psgc.gitlab.io/api/regions"
+      `${this.httpService.geolocationURL}regions`
     );
   }
 
@@ -19,7 +20,7 @@ export class GeolocationService {
     regionCode: string
   ): Observable<{ name: string; code: string }[]> {
     return this.http.get<{ name: string; code: string }[]>(
-      `https://psgc.gitlab.io/api/regions/${regionCode}/provinces`
+      `${this.httpService.geolocationURL}regions/${regionCode}/provinces`
     );
   }
 
@@ -27,14 +28,14 @@ export class GeolocationService {
     provinceCode: string
   ): Observable<{ name: string; code: string }[]> {
     return this.http.get<{ name: string; code: string }[]>(
-      `https://psgc.gitlab.io/api/provinces/${provinceCode}/cities-municipalities`
+      `${this.httpService.geolocationURL}provinces/${provinceCode}/cities-municipalities`
     );
   }
 
   // This is for NCR only
   getNationalCapitalRegionCities(): Observable<{ name: string; code: string }[]> {
     return this.http.get<{ name: string; code: string }[]>(
-      `https://psgc.gitlab.io/api/regions/130000000/cities-municipalities`
+      `${this.httpService.geolocationURL}regions/130000000/cities-municipalities`
     );
   }
 
@@ -42,7 +43,33 @@ export class GeolocationService {
     cityCode: string
   ): Observable<{ name: string; code: string }[]> {
     return this.http.get<{ name: string; code: string }[]>(
-      `https://psgc.gitlab.io/api/cities-municipalities/${cityCode}/barangays`
+      `${this.httpService.geolocationURL}cities-municipalities/${cityCode}/barangays`
+    );
+  }
+
+  // Static data for the dropdowns in the form
+
+  getRegionsStatic(): Observable<{ code: string; regionName: string }[]> {
+    return this.http.get<{ code: string; regionName: string }[]>(
+      `${this.httpService.geolocationURL}regions`
+    );
+  }
+
+  getProvincesStatic(): Observable<{ name: string; code: string }[]> {
+    return this.http.get<{ name: string; code: string }[]>(
+      `${this.httpService.geolocationURL}provinces`
+    );
+  }
+
+  getCitiesStatic(): Observable<{ name: string; code: string }[]> {
+    return this.http.get<{ name: string; code: string }[]>(
+      `${this.httpService.geolocationURL}cities-municipalities`
+    );
+  }
+
+  getBarangaysStatic(): Observable<{ name: string; code: string }[]> {
+    return this.http.get<{ name: string; code: string }[]>(
+      `${this.httpService.geolocationURL}barangays`
     );
   }
 }

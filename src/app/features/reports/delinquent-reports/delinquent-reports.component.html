@@ -1,6 +1,56 @@
-<p-fieldset legend="Delinquent Report Form" [toggleable]="false">
+<p-fieldset
+  legend="Generate Address by:"
+  [toggleable]="false"
+  styleClass="py-5"
+>
+  <div class="grid grid-cols-7 gap-6">
+    <div class="col-span-2">
+      <form [formGroup]="criteriaForm">
+        <div class="grid grid-flow-row gap-2 w-full">
+          <label for="criteria">Reports Criteria</label>
+          <p-dropdown
+            [options]="delinquentReportCriteria"
+            [checkmark]="true"
+            name="criteria"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select a City"
+            styleClass="w-full"
+            formControlName="address"
+            (onChange)="handleCriteriaChange($event)"
+          />
+        </div>
+      </form>
+    </div>
+
+    <div class="col-span-2">
+      <form [formGroup]="reportsFilterForm">
+        <div class="grid grid-flow-row gap-2 w-full">
+          <label for="address">Address</label>
+          <p-autoComplete
+            formControlName="selected_item"
+            optionLabel="name"
+            optionValue="code"
+            name="address"
+            placeholder="Select a Item"
+            [disabled]="isDataLoading"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            [forceSelection]="true"
+            [suggestions]="filteredItems"
+            (completeMethod)="filterItemsByDropdown($event)"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p-divider />
+
   <p-button
+    styleClass="mt-8"
     label="Generate Report"
     (onClick)="getDelinquentReport()"
+    icon="pi pi-file"
   ></p-button>
 </p-fieldset>

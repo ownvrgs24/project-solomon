@@ -8,6 +8,7 @@ import { UserService } from './user.service';
 })
 export class HttpService {
   protected BASE_URL: string = 'http://localhost:8000';
+  protected GEOLOCATION_URL: string = 'https://psgc.gitlab.io/api/';
 
   protected API_URL: string = `${this.BASE_URL}/api/`;
 
@@ -74,5 +75,9 @@ export class HttpService {
 
   get rootURL(): string {
     return this.BASE_URL;
+  }
+
+  get geolocationURL(): string {
+    return this.GEOLOCATION_URL;
   }
 }

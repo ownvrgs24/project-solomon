@@ -69,7 +69,6 @@ interface AddressData {
     KeyFilterModule,
     TooltipModule,
     InputNumberModule,
-    AsyncPipe,
     CommonModule,
     ButtonModule,
     DividerModule,
