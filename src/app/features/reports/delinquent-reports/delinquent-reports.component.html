@@ -33,7 +33,6 @@
           <div class="grid grid-flow-row gap-2">
             <label for="region">REGION</label>
             <p-dropdown
-              required
               styleClass="w-full"
               [options]="regionList"
               optionLabel="regionName"
@@ -51,16 +50,11 @@
               (onChange)="onRegionChange($event)"
             >
             </p-dropdown>
-            @if ( reportsFilterForm.get('region')?.hasError('required') &&
-            reportsFilterForm.get('region')?.touched) {
-            <small class="p-error block"> Region is required! </small>
-            }
           </div>
 
           <div class="grid grid-flow-row gap-2">
             <label for="province">PROVINCE</label>
             <p-dropdown
-              required
               styleClass="w-full"
               [options]="provinceList"
               optionLabel="name"
@@ -73,16 +67,11 @@
               (onChange)="onProvinceChange($event)"
             >
             </p-dropdown>
-            @if ( reportsFilterForm.get('province')?.hasError('required') &&
-            reportsFilterForm.get('province')?.touched) {
-            <small class="p-error block"> Province is required! </small>
-            }
           </div>
 
           <div class="grid grid-flow-row gap-2">
             <label for="city">CITY</label>
             <p-dropdown
-              required
               styleClass="w-full"
               [options]="cityList"
               optionLabel="name"
@@ -95,16 +84,11 @@
               formControlName="city"
             >
             </p-dropdown>
-            @if ( reportsFilterForm.get('city')?.hasError('required') &&
-            reportsFilterForm.get('city')?.touched) {
-            <small class="p-error block"> City is required! </small>
-            }
           </div>
 
           <div class="grid grid-flow-row gap-2">
             <label for="barangay">BARANGAY</label>
             <p-dropdown
-              required
               styleClass="w-full"
               [options]="barangayList"
               optionLabel="name"
@@ -116,10 +100,6 @@
               formControlName="barangay"
             >
             </p-dropdown>
-            @if ( reportsFilterForm.get('barangay')?.hasError('required') &&
-            reportsFilterForm.get('barangay')?.touched) {
-            <small class="p-error block"> Barangay is required </small>
-            }
           </div>
         </div>
       </form>
@@ -133,6 +113,5 @@
     label="Generate Report"
     (onClick)="getDelinquentReport()"
     icon="pi pi-file"
-    [disabled]="isValidAddressCriteria && isValidAddressFilter"
   ></p-button>
 </p-fieldset>

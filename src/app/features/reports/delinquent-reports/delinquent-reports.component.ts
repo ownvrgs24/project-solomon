@@ -81,14 +81,14 @@ export class DelinquentReportsComponent {
   barangayList: { name: string; code: string }[] = [];
 
   reportsFilterForm: FormGroup<FilterAddressForm> = new FormGroup({
-    region: new FormControl<string | null>(null, [Validators.required]),
-    province: new FormControl<string | null>(null, [Validators.required]),
-    city: new FormControl<string | null>(null, [Validators.required]),
-    barangay: new FormControl<string | null>(null, [Validators.required]),
+    region: new FormControl<string | null>(null),
+    province: new FormControl<string | null>(null),
+    city: new FormControl<string | null>(null),
+    barangay: new FormControl<string | null>(null),
   });
 
   criteriaForm: FormGroup<CriteriaForm> = new FormGroup({
-    selectedCriteria: new FormControl("all", [Validators.required]),
+    selectedCriteria: new FormControl("all"),
   });
 
   delinquentReportCriteria: { value: string, label: string }[] = [
@@ -99,12 +99,19 @@ export class DelinquentReportsComponent {
   isDataLoading: boolean = false;
   filterTimeout: any;
 
+  ngOnInit(): void {
+    this.handleCriteriaChange({ value: this.enums.ALL } as DropdownChangeEvent);
+  }
+
   getDelinquentReport() {
 
     const { region, barangay, city, province } = this.reportsFilterForm.value;
 
     this.service.getDelinquentReport({
-      code: null,
+      region,
+      barangay,
+      city,
+      province
     }).subscribe({
       next: (response: any) => {
         this.userService.generateDelinquentReport(response.data as AccountDelinquencyData[]);
@@ -115,9 +122,7 @@ export class DelinquentReportsComponent {
     });
   }
 
-  ngOnInit(): void {
-    this.handleCriteriaChange({ value: this.enums.ALL } as DropdownChangeEvent);
-  }
+
 
   handleCriteriaChange(event: DropdownChangeEvent) {
     switch (event.value) {
@@ -133,6 +138,8 @@ export class DelinquentReportsComponent {
         });
         break;
       default:
+        this.reportsFilterForm.reset();
+        this.reportsFilterForm.disable();
         break;
     }
   }
@@ -146,9 +153,7 @@ export class DelinquentReportsComponent {
     };
     this.geolocationService.getProvinces(event.value).subscribe({
       next: (provinces) => {
-
         this.provinceList = provinces;
-
         this.reportsFilterForm.get('province')?.enable();
         this.reportsFilterForm.get('province')?.reset();
         this.reportsFilterForm.get('city')?.reset();
@@ -195,13 +200,4 @@ export class DelinquentReportsComponent {
       }
     });
   }
-
-  public get isValidAddressCriteria() {
-    return this.criteriaForm.valid;
-  }
-
-  public get isValidAddressFilter() {
-    return this.reportsFilterForm.valid;
-  }
-
 }
