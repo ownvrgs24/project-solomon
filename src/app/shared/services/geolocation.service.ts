@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from './http.service';
+import { GeographicLocationMapping } from '../../features/reports/delinquent-reports/delinquent-reports.component';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +71,31 @@ export class GeolocationService {
   getBarangaysStatic(): Observable<{ name: string; code: string }[]> {
     return this.http.get<{ name: string; code: string }[]>(
       `${this.httpService.geolocationURL}barangays`
+    );
+  }
+
+
+  getRegionByCode(code: string): Observable<{ code: string; regionName: string }> {
+    return this.http.get<{ code: string; regionName: string }>(
+      `${this.httpService.geolocationURL}regions/${code}`
+    );
+  }
+
+  getProvinceByCode(code: string): Observable<GeographicLocationMapping> {
+    return this.http.get<GeographicLocationMapping>(
+      `${this.httpService.geolocationURL}provinces/${code}`
+    );
+  }
+
+  getCityAndMunicipalityByCode(code: string): Observable<GeographicLocationMapping> {
+    return this.http.get<GeographicLocationMapping>(
+      `${this.httpService.geolocationURL}cities-municipalities/${code}`
+    );
+  }
+
+  getBarangayByCode(code: string): Observable<GeographicLocationMapping> {
+    return this.http.get<GeographicLocationMapping>(
+      `${this.httpService.geolocationURL}barangays/${code}`
     );
   }
 }

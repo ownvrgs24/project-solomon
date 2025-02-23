@@ -3,11 +3,13 @@
   [toggleable]="false"
   styleClass="py-5"
 >
-  <div class="grid grid-cols-7 gap-6">
-    <div class="col-span-2">
+  <div class="grid grid-cols-4 gap-6">
+    <div class="col-span-1">
       <form [formGroup]="criteriaForm">
         <div class="grid grid-flow-row gap-2 w-full">
-          <label for="criteria">Reports Criteria</label>
+          <label for="criteria">
+            <strong>CRITERIA</strong>
+          </label>
           <p-dropdown
             [options]="delinquentReportCriteria"
             [checkmark]="true"
@@ -16,30 +18,109 @@
             optionValue="value"
             placeholder="Select a City"
             styleClass="w-full"
-            formControlName="address"
+            formControlName="selectedCriteria"
+            [showClear]="true"
             (onChange)="handleCriteriaChange($event)"
+            oninput="this.value = this.value.toUpperCase();"
           />
         </div>
       </form>
     </div>
 
-    <div class="col-span-2">
+    <div class="col-span-3">
       <form [formGroup]="reportsFilterForm">
-        <div class="grid grid-flow-row gap-2 w-full">
-          <label for="address">Address</label>
-          <p-autoComplete
-            formControlName="selected_item"
-            optionLabel="name"
-            optionValue="code"
-            name="address"
-            placeholder="Select a Item"
-            [disabled]="isDataLoading"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-            [forceSelection]="true"
-            [suggestions]="filteredItems"
-            (completeMethod)="filterItemsByDropdown($event)"
-          />
+        <div class="grid grid-cols-4 gap-4 items-start">
+          <div class="grid grid-flow-row gap-2">
+            <label for="region">REGION</label>
+            <p-dropdown
+              required
+              styleClass="w-full"
+              [options]="regionList"
+              optionLabel="regionName"
+              optionValue="code"
+              [filter]="true"
+              filterBy="regionName"
+              [showClear]="true"
+              checkmark="true"
+              styleClass="w-full !uppercase"
+              class="w-full !uppercase"
+              placeholder="Select Region"
+              formControlName="region"
+              [lazy]="true"
+              panelStyleClass="uppercase"
+              (onChange)="onRegionChange($event)"
+            >
+            </p-dropdown>
+            @if ( reportsFilterForm.get('region')?.hasError('required') &&
+            reportsFilterForm.get('region')?.touched) {
+            <small class="p-error block"> Region is required! </small>
+            }
+          </div>
+
+          <div class="grid grid-flow-row gap-2">
+            <label for="province">PROVINCE</label>
+            <p-dropdown
+              required
+              styleClass="w-full"
+              [options]="provinceList"
+              optionLabel="name"
+              optionValue="code"
+              [filter]="true"
+              filterBy="name"
+              formControlName="province"
+              [showClear]="true"
+              placeholder="Select Province"
+              (onChange)="onProvinceChange($event)"
+            >
+            </p-dropdown>
+            @if ( reportsFilterForm.get('province')?.hasError('required') &&
+            reportsFilterForm.get('province')?.touched) {
+            <small class="p-error block"> Province is required! </small>
+            }
+          </div>
+
+          <div class="grid grid-flow-row gap-2">
+            <label for="city">CITY</label>
+            <p-dropdown
+              required
+              styleClass="w-full"
+              [options]="cityList"
+              optionLabel="name"
+              optionValue="code"
+              [filter]="true"
+              filterBy="name"
+              [showClear]="true"
+              placeholder="Select City"
+              (onChange)="onCityChange($event)"
+              formControlName="city"
+            >
+            </p-dropdown>
+            @if ( reportsFilterForm.get('city')?.hasError('required') &&
+            reportsFilterForm.get('city')?.touched) {
+            <small class="p-error block"> City is required! </small>
+            }
+          </div>
+
+          <div class="grid grid-flow-row gap-2">
+            <label for="barangay">BARANGAY</label>
+            <p-dropdown
+              required
+              styleClass="w-full"
+              [options]="barangayList"
+              optionLabel="name"
+              optionValue="code"
+              [filter]="true"
+              filterBy="name"
+              [showClear]="true"
+              placeholder="Select Barangay"
+              formControlName="barangay"
+            >
+            </p-dropdown>
+            @if ( reportsFilterForm.get('barangay')?.hasError('required') &&
+            reportsFilterForm.get('barangay')?.touched) {
+            <small class="p-error block"> Barangay is required </small>
+            }
+          </div>
         </div>
       </form>
     </div>
@@ -52,5 +133,6 @@
     label="Generate Report"
     (onClick)="getDelinquentReport()"
     icon="pi pi-file"
+    [disabled]="isValidAddressCriteria && isValidAddressFilter"
   ></p-button>
 </p-fieldset>

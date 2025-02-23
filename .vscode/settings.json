@@ -23,6 +23,7 @@
         "fileupload",
         "inputnumber",
         "pdfmake",
-        "primeicons"
+        "primeicons",
+        "psgc"
     ]
 }

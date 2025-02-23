@@ -20,6 +20,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "primeng/primeng",
+              "pdfmake/build/pdfmake",
+              "pdfmake/build/vfs_fonts"
+            ],
             "outputPath": "dist/project-solomon",
             "index": "src/index.html",
             "browser": "src/main.ts",

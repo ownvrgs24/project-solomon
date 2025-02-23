@@ -9,8 +9,7 @@ import { DividerModule } from 'primeng/divider';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { GeolocationService } from '../../../shared/services/geolocation.service';
 import { CommonModule } from '@angular/common';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
-import { finalize, Observable } from 'rxjs';
+import { AutoCompleteModule } from 'primeng/autocomplete';
 
 export interface Items {
   code: string
@@ -18,19 +17,33 @@ export interface Items {
 }
 
 interface FilterAddressForm {
-  selected_item: FormControl<string | null>;
+  region: FormControl<string | null>;
+  province: FormControl<string | null>;
+  city: FormControl<string | null>;
+  barangay: FormControl<string | null>;
 }
 
 interface CriteriaForm {
-  address: FormControl<string | null>;
+  selectedCriteria: FormControl<string | null>;
 }
 
 export enum DelinquentReportCriteria {
   ALL = 'all',
-  REGION = 'region',
-  PROVINCE = 'province',
-  CITY = 'city',
-  BARANGAY = 'barangay'
+  BY_LOCATION = 'by_location',
+}
+
+export interface GeographicLocationMapping {
+  code: string
+  name: string
+  oldName: string
+  subMunicipalityCode: boolean
+  cityCode: string
+  municipalityCode: boolean
+  districtCode: boolean
+  provinceCode: string
+  regionCode: string
+  islandGroupCode: string
+  psgc10DigitCode: string
 }
 
 @Component({
@@ -59,26 +72,28 @@ export class DelinquentReportsComponent {
 
   private readonly enums = DelinquentReportCriteria;
 
-  itemList: Items[] = [];
-  filteredItems: any[] = [];
 
   addressFilter: string | null = 'all';
 
+  regionList: { code: string; regionName: string }[] = [];
+  provinceList: { name: string; code: string }[] = [];
+  cityList: { name: string; code: string }[] = [];
+  barangayList: { name: string; code: string }[] = [];
 
   reportsFilterForm: FormGroup<FilterAddressForm> = new FormGroup({
-    selected_item: new FormControl<string | null>(null),
+    region: new FormControl<string | null>(null, [Validators.required]),
+    province: new FormControl<string | null>(null, [Validators.required]),
+    city: new FormControl<string | null>(null, [Validators.required]),
+    barangay: new FormControl<string | null>(null, [Validators.required]),
   });
 
   criteriaForm: FormGroup<CriteriaForm> = new FormGroup({
-    address: new FormControl("all", [Validators.required]),
+    selectedCriteria: new FormControl("all", [Validators.required]),
   });
 
   delinquentReportCriteria: { value: string, label: string }[] = [
     { value: 'all', label: 'ALL DELINQUENT ACCOUNTS' },
-    { value: 'region', label: 'REGION' },
-    { value: 'province', label: 'PROVINCE' },
-    { value: 'city', label: 'CITY' },
-    { value: 'barangay', label: 'BARANGAY' },
+    { value: 'by_location', label: 'BY LOCATION' },
   ];
 
   isDataLoading: boolean = false;
@@ -86,10 +101,10 @@ export class DelinquentReportsComponent {
 
   getDelinquentReport() {
 
-    const { selected_item } = this.reportsFilterForm.value;
+    const { region, barangay, city, province } = this.reportsFilterForm.value;
 
     this.service.getDelinquentReport({
-      code: selected_item,
+      code: null,
     }).subscribe({
       next: (response: any) => {
         this.userService.generateDelinquentReport(response.data as AccountDelinquencyData[]);
@@ -105,63 +120,88 @@ export class DelinquentReportsComponent {
   }
 
   handleCriteriaChange(event: DropdownChangeEvent) {
-    // Clear previous items
-    this.itemList = [];
-
-    // Reset autocomplete field
-    const autoCompleteControl = this.reportsFilterForm.get('selected_item');
-    if (autoCompleteControl) {
-      autoCompleteControl.setValue(null);
-    }
-
     switch (event.value) {
-      case this.enums.REGION:
-        this.loadData(this.geolocationService.getRegionsStatic());
-        break;
-      case this.enums.PROVINCE:
-        this.loadData(this.geolocationService.getProvincesStatic());
-        break;
-      case this.enums.CITY:
-        this.loadData(this.geolocationService.getCitiesStatic());
-        break;
-      case this.enums.BARANGAY:
-        this.loadData(this.geolocationService.getBarangaysStatic());
-        break;
-      default:
+      case this.enums.ALL:
         this.reportsFilterForm.reset();
         this.reportsFilterForm.disable();
+        break;
+      case this.enums.BY_LOCATION:
+        this.reportsFilterForm.enable();
+        this.geolocationService.getRegions().subscribe({
+          next: (regions) => this.regionList = regions,
+          error: (error) => console.error('Error loading regions:', error)
+        });
+        break;
+      default:
+        break;
     }
   }
 
-  private loadData(service: Observable<any>) {
-    this.isDataLoading = true;
-    service.pipe(
-      finalize(() => this.isDataLoading = false)
-    ).subscribe({
-      next: (response) => this.itemList = response,
+
+  onRegionChange(event: DropdownChangeEvent) {
+    if (event.value === '130000000') {
+      this.getNCRCities();
+      this.reportsFilterForm.get('province')?.disable();
+      return;
+    };
+    this.geolocationService.getProvinces(event.value).subscribe({
+      next: (provinces) => {
+
+        this.provinceList = provinces;
+
+        this.reportsFilterForm.get('province')?.enable();
+        this.reportsFilterForm.get('province')?.reset();
+        this.reportsFilterForm.get('city')?.reset();
+        this.reportsFilterForm.get('barangay')?.reset();
+      },
       error: (error) => {
-        console.error('Error loading data:', error);
+        console.error('Error loading provinces:', error);
       }
     });
   }
 
-  filterItemsByDropdown(event: AutoCompleteCompleteEvent) {
-    const query = event.query.toLowerCase().trim();
+  onProvinceChange(event: DropdownChangeEvent) {
+    this.geolocationService.getCities(event.value).subscribe({
+      next: (cities) => {
+        this.cityList = cities;
+        this.reportsFilterForm.get('city')?.reset();
+        this.reportsFilterForm.get('barangay')?.reset();
+      },
+      error: (error) => {
+        console.error('Error loading cities:', error);
+      }
+    });
+  }
 
-    // Debounce for large datasets
-    if (this.filterTimeout) {
-      clearTimeout(this.filterTimeout);
-    }
+  onCityChange(event: DropdownChangeEvent) {
+    this.geolocationService.getBarangays(event.value).subscribe({
+      next: (barangays) => {
+        this.barangayList = barangays;
+        this.reportsFilterForm.get('barangay')?.reset();
+      },
+      error: (error) => {
+        console.error('Error loading barangays:', error);
+      }
+    });
+  }
 
-    this.filterTimeout = setTimeout(() => {
-      this.filteredItems = this.itemList?.filter(item => {
-        const itemName = item.name.toLowerCase();
-        // Check if any word in item name starts with query
-        return itemName.split(' ').some(word =>
-          word.startsWith(query)
-        );
-      }).slice(0, 100) || []; // Limit results
-    }, 300);
+  getNCRCities() {
+    this.geolocationService.getNationalCapitalRegionCities().subscribe({
+      next: (cities) => {
+        this.cityList = cities;
+      },
+      error: (error) => {
+        console.error('Error loading cities:', error);
+      }
+    });
+  }
+
+  public get isValidAddressCriteria() {
+    return this.criteriaForm.valid;
+  }
+
+  public get isValidAddressFilter() {
+    return this.reportsFilterForm.valid;
   }
 
 }

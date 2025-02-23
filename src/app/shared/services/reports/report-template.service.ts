@@ -1,7 +1,7 @@
-import { inject, Injectable } from "@angular/core";
-import { DatePipe } from "@angular/common";
-import { UserService } from "../user.service";
+import { Injectable } from "@angular/core";
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
+import * as pdfMake from 'pdfmake/build/pdfmake';
+import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 
 
 export interface Reports {
@@ -21,25 +21,17 @@ type PDFMake = typeof import('pdfmake/build/pdfmake');
 })
 
 export class ReportTemplateService {
-
   private pdfMake!: PDFMake;
   private fonts!: { [file: string]: string };
 
-  async loadPDFMaker() {
-    if (!this.pdfMake) {
-      this.pdfMake = await import('pdfmake/build/pdfmake');
-      this.fonts = (await import('pdfmake/build/vfs_fonts')).pdfMake.vfs;
-    }
-  }
-
   async open(def: TDocumentDefinitions) {
+
     if (!this.pdfMake) {
-      try {
-        await this.loadPDFMaker()
-      } catch (error) {
-        console.error("Failed to load pdf maker lib");
-      }
+      this.pdfMake = pdfMake;
+      this.fonts = pdfFonts?.pdfMake?.vfs;
+      this.pdfMake.vfs = pdfFonts?.pdfMake?.vfs;
     }
+
     this.pdfMake.createPdf(def, undefined, undefined, this.fonts).open();
   }
 

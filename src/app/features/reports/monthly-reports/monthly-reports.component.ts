@@ -6,6 +6,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { FieldsetModule } from 'primeng/fieldset';
 import { MonthlyReportService } from './services/monthly-report.service';
 import { PrintingExportService } from './services/printing-export.service';
+import { UpperCaseInputDirective } from '../../../shared/directives/to-uppercase.directive';
 
 
 interface MonthlyReportsForm {
