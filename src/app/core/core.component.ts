@@ -93,9 +93,4 @@ export class CoreComponent {
       }
     });
   }
-
-  ngOnInit(): void {
-    console.log(this.userService.getUserRole());
-
-  }
 }

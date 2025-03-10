@@ -1,31 +1,15 @@
 <form [formGroup]="paymentsForm" (ngSubmit)="payDueObligation()">
   <p-fieldset legend="Options" [toggleable]="false" [collapsed]="false">
     <div class="flex flex-row gap-2 items-center">
-      <p-checkbox
-        formControlName="is_interest_applied"
-        inputId="is_interest_applied"
-        [binary]="true"
-        (onChange)="handleInterestChange($event)"
-        [required]="true"
-      />
+      <p-checkbox formControlName="is_interest_applied" inputId="is_interest_applied" [binary]="true"
+        (onChange)="handleInterestChange($event)" [required]="true" />
       <label for="is_interest_applied" class="me-3"> Apply Interest </label>
 
-      <p-button
-        icon="pi pi-trash"
-        severity="danger"
-        size="small"
-        [outlined]="true"
-        label="Remove Date Range Validation"
-        (onClick)="removeDateRangeValidation()"
-      ></p-button>
+      <p-button icon="pi pi-trash" severity="danger" size="small" [outlined]="true" label="Remove Date Range Validation"
+        (onClick)="removeDateRangeValidation()"></p-button>
 
-      <p-button
-        icon="pi pi-refresh"
-        label="Refresh Date Range Validation"
-        size="small"
-        [outlined]="true"
-        (onClick)="refreshDateRangeValidation()"
-      ></p-button>
+      <p-button icon="pi pi-refresh" label="Refresh Date Range Validation" size="small" [outlined]="true"
+        (onClick)="refreshDateRangeValidation()"></p-button>
     </div>
   </p-fieldset>
 
@@ -33,24 +17,12 @@
     <p-fieldset legend="Computation" [toggleable]="false" [collapsed]="false">
       <div class="col-span-1 flex flex-col gap-4">
         <div class="grid grid-flow-row gap-2 w-full">
-          <label
-            for="collection"
-            pTooltip="Tendered Amount"
-            tooltipPosition="left"
-          >
+          <label for="collection" pTooltip="Tendered Amount" tooltipPosition="left">
             Collection
           </label>
-          <p-inputNumber
-            formControlName="collection"
-            id="collection"
-            mode="currency"
-            currency="PHP"
-            placeholder="0"
-            (keyup)="validateCollection()"
-            [autofocus]="true"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-          ></p-inputNumber>
+          <p-inputNumber formControlName="collection" id="collection" mode="currency" currency="PHP" placeholder="0"
+            (keyup)="validateCollection()" [autofocus]="true" inputStyleClass="text-lg font-mono"
+            styleClass="w-full"></p-inputNumber>
 
           @if ( paymentsForm.get('collection')?.hasError('required') &&
           paymentsForm.get('collection')?.touched ) {
@@ -62,15 +34,8 @@
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="interest">Interest</label>
-          <p-inputNumber
-            formControlName="interest"
-            id="interest"
-            mode="currency"
-            currency="PHP"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-            placeholder="0"
-          ></p-inputNumber>
+          <p-inputNumber formControlName="interest" id="interest" mode="currency" currency="PHP"
+            inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"></p-inputNumber>
           @if ( paymentsForm.get('interest')?.hasError('required') &&
           paymentsForm.get('interest')?.touched ) {
           <small class="p-error block text-sm font-semibold text-red-600">
@@ -81,31 +46,16 @@
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="interest" class="text-red-400">Balance Interest</label>
-          <p-inputNumber
-            formControlName="balance_interest"
-            id="interest"
-            mode="currency"
-            currency="PHP"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-            placeholder="0"
-            [readonly]="true"
-            inputStyleClass="text-red-500"
-          ></p-inputNumber>
+          <p-inputNumber formControlName="balance_interest" id="interest" mode="currency" currency="PHP"
+            inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0" [readonly]="true"
+            inputStyleClass="text-red-500"></p-inputNumber>
         </div>
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="payment">Payment Amount</label>
-          <p-inputNumber
-            formControlName="payment"
-            id="payment"
-            mode="currency"
-            currency="PHP"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-            placeholder="0"
-            (keyup)="computeChange()"
-          ></p-inputNumber>
+          <p-inputNumber formControlName="payment" id="payment" mode="currency" currency="PHP"
+            inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"
+            (keyup)="computeChange()"></p-inputNumber>
           @if ( paymentsForm.get('payment')?.hasError('required') &&
           paymentsForm.get('payment')?.touched ) {
           <small class="p-error block text-sm font-semibold text-red-600">
@@ -116,16 +66,8 @@
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="change">Change</label>
-          <p-inputNumber
-            formControlName="change"
-            id="change"
-            mode="currency"
-            currency="PHP"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-            placeholder="0"
-            [readonly]="true"
-          ></p-inputNumber>
+          <p-inputNumber formControlName="change" id="change" mode="currency" currency="PHP"
+            inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0" [readonly]="true"></p-inputNumber>
         </div>
       </div>
     </p-fieldset>
@@ -134,19 +76,9 @@
       <div class="col-span-1 flex flex-col gap-4">
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="date-of-birth">Transaction Date</label>
-          <p-calendar
-            [minDate]="minDate"
-            [maxDate]="maxDate"
-            placeholder="mm/dd/yyyy"
-            formControlName="transaction_date"
-            iconDisplay="input"
-            [showIcon]="true"
-            inputId="icondisplay"
-            mask="99/99/9999"
-            slotChar="mm/dd/yyyy"
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-          />
+          <p-calendar [minDate]="minDate" [maxDate]="maxDate" placeholder="mm/dd/yyyy"
+            formControlName="transaction_date" iconDisplay="input" [showIcon]="true" inputId="icondisplay"
+            mask="99/99/9999" slotChar="mm/dd/yyyy" inputStyleClass="text-lg font-mono" styleClass="w-full" />
           @if ( paymentsForm.get('transaction_date')?.hasError('required') &&
           paymentsForm.get('transaction_date')?.touched ) {
           <small class="p-error block text-sm font-semibold text-red-600">
@@ -157,16 +89,8 @@
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="transaction_or_number">OR No.</label>
-          <p-inputNumber
-            inputStyleClass="text-lg font-mono"
-            styleClass="w-full"
-            formControlName="transaction_or_number"
-            id="transaction_or_number"
-            type="number"
-            placeholder="0"
-            pKeyFilter="num"
-            min="0"
-          />
+          <p-inputNumber inputStyleClass="text-lg font-mono" styleClass="w-full" formControlName="transaction_or_number"
+            id="transaction_or_number" type="number" placeholder="0" pKeyFilter="num" min="0" />
           <small id="transaction_or_number_help">
             Leave this field blank if the OR No. is not available.
           </small>
@@ -174,28 +98,15 @@
 
         <div class="grid grid-flow-row gap-2 w-full">
           <label for="transaction_remarks">Transaction Remarks</label>
-          <textarea
-            formControlName="transaction_remarks"
-            pInputTextarea
-            id="transaction_remarks"
-            placeholder="Transaction Remarks"
-            styleClass="w-full"
-            rows="3"
-            toUppercase
-          ></textarea>
+          <textarea formControlName="transaction_remarks" pInputTextarea id="transaction_remarks"
+            placeholder="Transaction Remarks" styleClass="w-full" rows="3" toUppercase></textarea>
         </div>
       </div>
     </p-fieldset>
   </div>
 
   <div class="flex justify-end gap-4">
-    <p-button
-      severity="success"
-      [size]="'large'"
-      label="PAY NOW"
-      icon="pi pi-arrow-right"
-      [disabled]="paymentsForm.invalid"
-      type="submit"
-    ></p-button>
+    <p-button severity="success" [size]="'large'" label="PAY NOW" icon="pi pi-arrow-right"
+      [disabled]="paymentsForm.invalid" type="submit"></p-button>
   </div>
 </form>

@@ -71,8 +71,6 @@ export class PaymentsComponent implements OnInit {
   minDate: Date | undefined;
   maxDate: Date | undefined;
 
-
-
   ngOnInit(): void {
     this.initializeForm();
 

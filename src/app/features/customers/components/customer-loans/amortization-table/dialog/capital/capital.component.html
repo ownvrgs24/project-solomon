@@ -1,84 +1,33 @@
-<p-toast position="bottom-center" />
+<p-confirmDialog />
 
-<form [formGroup]="capitalForm" (ngSubmit)="submitCapitalForm()">
-  <p-fieldset legend="Form Options" [toggleable]="true" [collapsed]="false">
-    <div class="flex flex-row gap-2 items-center">
-      <p-button
-        icon="pi pi-trash"
-        severity="danger"
-        size="small"
-        [outlined]="true"
-        label="Remove Date Range Validation"
-        (onClick)="removeDateRangeValidation()"
-      ></p-button>
-
-      <p-button
-        icon="pi pi-refresh"
-        label="Refresh Date Range Validation"
-        size="small"
-        [outlined]="true"
-        (onClick)="refreshDateRangeValidation()"
-      ></p-button>
+<form [formGroup]="capitalEntryForm" (ngSubmit)="submitCapitalEntry()">
+  <div class="flex flex-col gap-4 items-start my-4">
+    <div class="grid grid-flow-row gap-2 w-full">
+      <label for="date-of-birth">Transaction Date</label>
+      <p-calendar [maxDate]="maxDate" placeholder="mm/dd/yyyy" formControlName="transaction_date" styleClass="w-full"
+        iconDisplay="input" mask="99/99/9999" slotChar="mm/dd/yyyy" />
+      @if ( capitalEntryForm.get('transaction_date')?.hasError('required') &&
+      capitalEntryForm.get('transaction_date')?.touched ) {
+      <small class="p-error block"> Transaction Date is required! </small>
+      }
     </div>
-  </p-fieldset>
-  <p-fieldset legend="Form">
-    <div class="flex flex-col gap-4 items-start my-4">
-      <div class="grid grid-flow-row gap-2 w-full">
-        <label for="date-of-birth">Transaction Date</label>
-        <p-calendar
-          [minDate]="minDate"
-          [maxDate]="maxDate"
-          placeholder="mm/dd/yyyy"
-          formControlName="transaction_date"
-          styleClass="w-full"
-          iconDisplay="input"
-          mask="99/99/9999"
-          slotChar="mm/dd/yyyy"
-        />
-        @if ( capitalForm.get('transaction_date')?.hasError('required') &&
-        capitalForm.get('transaction_date')?.touched ) {
-        <small class="p-error block"> Transaction Date is required! </small>
-        }
-      </div>
 
-      <div class="grid grid-flow-row gap-2 w-full">
-        <label for="capital">Capital</label>
-        <p-inputNumber
-          [autofocus]="true"
-          formControlName="capital"
-          id="capital"
-          mode="currency"
-          currency="PHP"
-          styleClass="w-full text-end text-mono"
-          placeholder="0"
-        ></p-inputNumber>
-        @if ( capitalForm.get('capital')?.hasError('required') &&
-        capitalForm.get('capital')?.touched ) {
-        <small class="p-error block"> Capital is required! </small>
-        }
-      </div>
-
-      <div class="grid grid-flow-row gap-2 w-full">
-        <label for="remarks">Remarks</label>
-        <textarea
-          formControlName="transaction_remarks"
-          pInputTextarea
-          id="remarks"
-          styleClass="w-full"
-          placeholder="Enter remarks here..."
-          rows="5"
-          toUppercase
-        ></textarea>
-      </div>
+    <div class="grid grid-flow-row gap-2 w-full">
+      <label for="capital">Capital Amount</label>
+      <p-inputNumber [autofocus]="true" formControlName="capital" id="capital" mode="currency" currency="PHP"
+        styleClass="w-full text-end text-mono" placeholder="0"></p-inputNumber>
+      @if ( capitalEntryForm.get('capital')?.hasError('required') &&
+      capitalEntryForm.get('capital')?.touched ) {
+      <small class="p-error block"> Capital amount is required! </small>
+      }
     </div>
-  </p-fieldset>
-  <p-button
-    styleClass="w-full mt-4 font-bold"
-    outlined="true"
-    severity="contrast"
-    [size]="'large'"
-    label="SUBMIT"
-    [disabled]="capitalForm.invalid"
-    type="submit"
-  ></p-button>
+
+    <div class="grid grid-flow-row gap-2 w-full">
+      <label for="remarks">Remarks</label>
+      <textarea formControlName="transaction_remarks" pInputTextarea id="remarks" styleClass="w-full"
+        placeholder="Enter remarks here..." rows="2" [autoResize]="true" toUppercase></textarea>
+    </div>
+  </div>
+
+  <p-button [disabled]="capitalEntryForm.invalid" icon="pi pi-save" type="submit" label="SAVE ENTRY"></p-button>
 </form>

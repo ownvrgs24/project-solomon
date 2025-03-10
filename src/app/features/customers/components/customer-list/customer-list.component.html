@@ -4,24 +4,12 @@
       <p-inputIcon>
         <i class="pi pi-search"></i>
       </p-inputIcon>
-      <input
-        pInputText
-        [(ngModel)]="searchValue"
-        type="text"
-        (input)="dt.filterGlobal(searchValue, 'contains')"
-        placeholder="Search keyword"
-        toUppercase
-        (ngModelChange)="handleModelChange()"
-      />
+      <input pInputText [(ngModel)]="searchValue" type="text" (input)="dt.filterGlobal(searchValue, 'contains')"
+        placeholder="Search keyword" toUppercase (ngModelChange)="handleModelChange()" />
     </p-iconField>
   </div>
 
-  <p-table
-    [paginator]="true"
-    paginatorPosition="top"
-    [value]="customers"
-    [filterDelay]="500"
-    [globalFilterFields]="[
+  <p-table [paginator]="true" paginatorPosition="top" [value]="customers" [filterDelay]="500" [globalFilterFields]="[
       'last_name',
       'first_name',
       'middle_name',
@@ -29,17 +17,9 @@
       'address',
       'mobile_number',
       'fixed_co_maker'
-    ]"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rows]="currentRows"
-    [first]="currentPage * currentRows"
-    (onPage)="onPageChange($event)"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[25, 50, 100]"
-    #dt
-    [showCurrentPageReport]="true"
-    [loading]="loading"
-  >
+    ]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="currentRows"
+    [first]="currentPage * currentRows" (onPage)="onPageChange($event)" [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[25, 50, 100]" #dt [showCurrentPageReport]="true" [loading]="loading">
     <ng-template pTemplate="header">
       <tr>
         <th>Status</th>
@@ -55,18 +35,12 @@
     <ng-template pTemplate="body" let-customer>
       <tr>
         <td>
-          <p-tag
-            [value]="customer.client_status"
-            [severity]="statusTagService.getSeverity(customer.client_status)"
-          />
+          <p-tag [value]="(customer.client_status).replaceAll('_', ' ')"
+            [severity]="statusTagService.getSeverity(customer.client_status)" />
         </td>
         <td>
-          <p-avatar
-            [image]="customer.client_picture"
-            size="xlarge"
-            shape="circle"
-            (onImageError)="customer.client_picture = 'placeholder.png'"
-          />
+          <p-avatar [image]="customer.client_picture" size="xlarge" shape="square" alt="Profile Picture"
+            (onImageError)="customer.client_picture = 'placeholder.png'" />
         </td>
         <td>
           {{ customer.last_name }}, {{ customer.first_name }}
@@ -81,36 +55,19 @@
         <td>{{ customer.mobile_number || "-" }}</td>
         <td>
           {{
-            customer.created_at
-              ? (customer.created_at | date : "MMM dd, yyyy hh:mm a")
-              : "-"
+          customer.created_at
+          ? (customer.created_at | date : "MMM dd, yyyy hh:mm a")
+          : "-"
           }}
         </td>
         <td>
           <div class="flex gap-2">
-            <p-button
-              label="Loan Record"
-              severity="primary"
-              tooltipPosition="top"
-              pTooltip="View loan record"
-              [routerLink]="['../loans-records', customer.customer_id]"
-            ></p-button>
-            <p-button
-              [routerLink]="['../update', customer.customer_id]"
-              icon="pi pi-user-edit"
-              [rounded]="true"
-              severity="info"
-              pTooltip="Edit"
-              tooltipPosition="top"
-            />
-            <p-button
-              tooltipPosition="top"
-              icon="pi pi-print"
-              [rounded]="true"
-              severity="success"
-              pTooltip="Print client information"
-              (onClick)="printClientInformation(customer)"
-            />
+            <p-button label="Loan Record" severity="primary" tooltipPosition="top" pTooltip="View loan record"
+              [routerLink]="['../loans-records', customer.customer_id]"></p-button>
+            <p-button [routerLink]="['../update', customer.customer_id]" icon="pi pi-user-edit" [rounded]="true"
+              severity="info" pTooltip="Edit" tooltipPosition="top" />
+            <p-button tooltipPosition="top" icon="pi pi-print" [rounded]="true" severity="success"
+              pTooltip="Print client information" (onClick)="printClientInformation(customer)" />
           </div>
         </td>
       </tr>

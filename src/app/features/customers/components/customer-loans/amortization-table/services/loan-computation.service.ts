@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { PrincipalLoan, Transaction } from '../amortization-table.component';
-import { LoanComputationDateDifferenceService, MODE_OF_PAYMENT } from './loan-computation-date-difference.service';
+import { MODE_OF_PAYMENT } from './loan-computation-date-difference.service';
 
 export enum TRANSACTION_STATUS {
   FOR_REVIEW = 'FOR_REVIEW',
@@ -26,151 +26,77 @@ export interface LoanRepaymentAnalysis {
   providedIn: 'root'
 })
 export class LoanComputationService {
+  protected interestMultiplier: number = 0.005;
+  protected projectedInterest: number = 0;
 
-  /* 
-    TODO: Capital with interest computation on Bi-monthly 
-    1. Get the upper or parent bracket of the transaction | Disregard the date and compute the interest based on the balance and capital [interest = [ capital x 3% + [ balance x 3% ] ] ].
-    2. Compute the interest based on the balance of the upper bracket. 
-    3. It must be compounded even theres is a lot of capital {pa dag dag}.
-    4. Display the interest & other necessary information on the UI.
-    ========================================================================================================================
-    Make your life simple and easy to understand. Owen you are the best.
-  */
+  evaluateInterestAmount(transactionData: Transaction[], loanData: PrincipalLoan): number {
 
-  private computeDateDifference = inject(LoanComputationDateDifferenceService);
-  /**
-   * Calculates the interest accumulation for a given loan based on transaction data and loan details.
-   *
-   * @param {Transaction[]} transactionData - An array of transaction objects related to the loan.
-   * @param {PrincipalLoan} loanData - An object containing details about the principal loan.
-   * @returns {void}
-   */
-  calculateInterestAccumulation(transactionData: Transaction[], loanData: PrincipalLoan): LoanRepaymentAnalysis {
-    const selectedIndex = this.findMostRecentApprovedIndex(transactionData);
-    const { transaction_date } = transactionData[selectedIndex];
-    const { loan_mode_of_payment, loan_interest_rate } = loanData;
-
-    const latestBalance = selectedIndex !== -1 ? transactionData[selectedIndex].balance : 0;
-
-    let interest = 0;
-    let upperBracketIndex = 0;
-
-    const { days, months, paid_in_advance } = this.computeDateDifference.determineDateInterval(transaction_date, new Date());
-    const isDelinquent = this.checkDelinquencyStatus(days, months, loan_mode_of_payment as MODE_OF_PAYMENT);
-
-    if (isDelinquent) {
-      // If the loan is delinquent, calculate the delinquent interest based on the balance, interest rate, mode of payment, days, and months.
-      interest = this.calculateDelinquentInterest(latestBalance, loan_interest_rate, loan_mode_of_payment as MODE_OF_PAYMENT, days, months);
+    // If bi-monthly mode of payment
+    if (loanData.loan_mode_of_payment === MODE_OF_PAYMENT.BI_MONTHLY) {
+      return this.computeBiMonthlyInterestAmount(transactionData, loanData);
     }
 
-    upperBracketIndex = this.findUpperPaymentBracketIndex(transactionData);
+    // Monthly mode of payment
+    return this.computeMonthlyInterestAmount(transactionData, loanData);
+  }
 
-    if (!isDelinquent) {
-      if (loan_mode_of_payment === MODE_OF_PAYMENT.BI_MONTHLY) {
-        if (this.isPaymentBracketIncomplete(transactionData)) {
-          interest = this.computePartialBracketInterest(transactionData, loan_interest_rate, upperBracketIndex);
-        } else {
-          // Compute the interest based on the balance, interest rate, and mode of payment
-          interest = this.calculateInterest(latestBalance, loan_interest_rate, loan_mode_of_payment as MODE_OF_PAYMENT);
-
-          console.log('Interest: ', interest);
-
-        }
-      } else {
-        interest = this.calculateInterest(latestBalance, loan_interest_rate, loan_mode_of_payment as MODE_OF_PAYMENT);
-
-        console.log('Interest: ', interest);
+  computeBiMonthlyInterestAmount(transactionData: Transaction[], loanData: PrincipalLoan) {
+    // Find the last interest payment
+    let lastInterestIndex = -1;
+    for (let i = 0; i < transactionData.length; i++) {
+      if (transactionData[i].interest > 0) {
+        lastInterestIndex = i;
       }
     }
-    return {
-      interest: parseFloat(interest.toFixed(2)),
-      selectedIndex,
-      loan_interest_rate,
-      days,
-      months,
-      isDelinquent,
-      loan_mode_of_payment: loan_mode_of_payment as MODE_OF_PAYMENT,
-      find_upper_payment_bracket_index: upperBracketIndex,
-      paid_in_advance,
+
+    // If no previous interest payments, use initial balance
+    if (lastInterestIndex === -1) {
+      return this.computeBiMonthlyInterest(transactionData[0].balance, loanData.loan_interest_rate);
     }
-  }
 
-  /**
-   * Calculates the interest based on the balance, interest rate, and mode of payment.
-   *
-   * @param {number} balance - The current balance of the loan.
-   * @param {number} interestRate - The annual interest rate of the loan.
-   * @param {MODE_OF_PAYMENT} modeOfPayment - The mode of payment, which determines the frequency of interest computation.
-   * @returns {number} The computed interest based on the mode of payment.
-   */
-  private calculateInterest(balance: number, interestRate: number, modeOfPayment: MODE_OF_PAYMENT): number {
-    switch (modeOfPayment) {
-      case MODE_OF_PAYMENT.BI_MONTHLY:
-        return this.computeBiMonthlyInterest(balance, interestRate);
-      case MODE_OF_PAYMENT.MONTHLY:
-        return this.computeMonthlyInterest(balance, interestRate);
-      default:
-        return 0;
+    // Count the number of interest payments
+    let interestPaymentCount = 0;
+    for (let i = 0; i < transactionData.length; i++) {
+      if (transactionData[i].interest > 0) {
+        interestPaymentCount++;
+      }
     }
-  }
 
-  /**
-   * Calculates the delinquent interest based on the balance, interest rate, mode of payment, 
-   * number of days, and number of months.
-   * 
-   * @param balance - The outstanding balance on which interest is to be calculated.
-   * @param interestRate - The annual interest rate as a decimal (e.g., 0.05 for 5%).
-   * @param modeOfPayment - The mode of payment, which determines the interest calculation method.
-   * @param days - The number of days for which the interest is to be calculated.
-   * @param months - The number of months for which the interest is to be calculated.
-   * @returns The calculated delinquent interest.
-   */
-  private calculateDelinquentInterest(balance: number, interestRate: number, modeOfPayment: MODE_OF_PAYMENT, days: number, months: number): number {
-    switch (modeOfPayment) {
-      case MODE_OF_PAYMENT.BI_MONTHLY:
-        const fifteenDaySegments = this.computeFifteenDaySegments(days, months);
-        return fifteenDaySegments * this.computeBiMonthlyInterest(balance, interestRate);
-      case MODE_OF_PAYMENT.MONTHLY:
-        return this.computeMonthlyInterest(balance, interestRate) * months;
-      default:
-        return 0;
+    // If we're calculating the second payment in a pair
+    if (interestPaymentCount % 2 !== 0) {
+      // Check if there's a capital addition after the last interest payment
+      let additionalInterest = 0;
+      for (let i = lastInterestIndex + 1; i < transactionData.length; i++) {
+        if (transactionData[i].capital > 0) {
+          additionalInterest += this.computeBiMonthlyInterest(
+            transactionData[i].capital,
+            loanData.loan_interest_rate
+          );
+        }
+      }
+
+      // Return the same interest as the first payment plus any additional interest from capital
+      return transactionData[lastInterestIndex].interest + additionalInterest;
     }
-  }
 
-  /**
-   * Computes the partial bracket interest for a given set of transactions and loan interest rate.
-   *
-   * This function calculates the sum of all accumulated capital from approved transactions,
-   * computes the bi-monthly interest on that sum, and then adds the interest from the most
-   * recent approved payment transaction.
-   *
-   * @param {Transaction[]} transactionData - An array of transaction objects.
-   * @param {number} loanInterestRate - The interest rate of the loan.
-   * @returns {number} - The computed partial bracket interest.
-   */
-  computePartialBracketInterest(transactionData: Transaction[], loanInterestRate: number, upperBracketIndex: number = 0): number {
-    const capitalInterest = this.computeBiMonthlyInterest(this.computeAccumulatedCapital(transactionData), loanInterestRate);
+    // We're calculating the first payment of a new pair
+    // Find the balance to use as the base
+    let baseBalance = 0;
 
-    const upperBracketValue = transactionData[upperBracketIndex].balance + transactionData[upperBracketIndex].payment;
-    const currentTransactionInterest = this.computeBiMonthlyInterest(upperBracketValue, loanInterestRate);
+    // If we completed at least one pair
+    if (interestPaymentCount > 0) {
+      // Get the balance after the last interest payment
+      if (lastInterestIndex + 1 < transactionData.length) {
+        baseBalance = transactionData[lastInterestIndex + 1].balance;
+      } else {
+        baseBalance = transactionData[lastInterestIndex].balance;
+      }
+    } else {
+      // Use the initial balance
+      baseBalance = transactionData[0].balance;
+    }
 
-    return currentTransactionInterest + capitalInterest;
-  }
-
-  /**
-   * Checks if the payment bracket is incomplete based on the transaction data.
-   * A payment bracket is considered incomplete if the number of transactions with a payment greater than 0 is odd.
-   *
-   * @param {Transaction[]} transactionData - The array of transaction objects to be evaluated.
-   * @returns {boolean} - Returns `true` if the payment bracket is incomplete (odd number of payments), otherwise `false`.
-   */
-  isPaymentBracketIncomplete(transactionData: Transaction[]): boolean {
-    const paymentCount = transactionData.filter(transaction => transaction.payment > 0).length;
-    return paymentCount % 2 !== 0;
-  }
-
-  computeFifteenDaySegments(days: number, months: number): number {
-    return Math.floor((months * 30 + days) / 15);
+    return this.computeBiMonthlyInterest(baseBalance, loanData.loan_interest_rate);
   }
 
   /**
@@ -181,81 +107,54 @@ export class LoanComputationService {
    * @returns The bi-monthly interest amount.
    */
   private computeBiMonthlyInterest(balance: number, interestRate: number): number {
+    // Bi-monthly interest calculation based on the provided balance and interest rate
     return balance * (interestRate / 2 / 100);
   }
 
   /**
-   * Computes the monthly interest for a given loan balance and interest rate.
-   *
-   * @param balance - The current balance of the loan.
-   * @param interestRate - The annual interest rate of the loan as a percentage.
-   * @returns The monthly interest amount.
-   */
+ * Computes the monthly interest amount based on the current balance.
+ * For monthly calculations, interest is always calculated on the current balance.
+ * 
+ * @param transactionData - Array of transaction data
+ * @param loanData - Principal loan data containing interest rate
+ * @returns The calculated monthly interest amount
+ */
+  computeMonthlyInterestAmount(transactionData: Transaction[], loanData: PrincipalLoan) {
+    // If no transactions, return 0
+    if (transactionData.length === 0) {
+      return 0;
+    }
+
+    // Get the current balance (last row in the transaction data)
+    const currentBalance = transactionData[transactionData.length - 1].balance;
+
+    // Calculate monthly interest (annual rate / 12)
+    // Note: We're assuming loan_interest_rate is annual percentage
+    return this.computeMonthlyInterest(currentBalance, loanData.loan_interest_rate);
+  }
+
+  /**
+ * Helper method to calculate monthly interest
+ * 
+ * @param balance - The current balance
+ * @param interestRate - Annual interest rate as a percentage
+ * @returns The monthly interest amount
+ */
   private computeMonthlyInterest(balance: number, interestRate: number): number {
+    // Monthly interest calculation (annual rate / 12)
+    // Your data suggests a rate of 6% per month, so adjust the formula if needed
     return balance * (interestRate / 100);
   }
 
-  /**
-   * Checks if a loan is delinquent based on the number of days and months past due.
-   *
-   * @param days - The number of days past the due date.
-   * @param month - The number of months past the due date.
-   * @returns `true` if the loan is delinquent (more than 15 days and more than 1 month past due), otherwise `false`.
-   */
-  checkDelinquencyStatus(days: number, month: number, modeOfPayment: MODE_OF_PAYMENT): boolean {
-    if (modeOfPayment === MODE_OF_PAYMENT.BI_MONTHLY) {
-      return days > 15 || month >= 1;
-    }
-
-    if (modeOfPayment === MODE_OF_PAYMENT.MONTHLY) {
-      return month > 1;
-    }
-
-    return false;
-  }
-
-  /**
-   * Finds the index of the most recent transaction with an 'APPROVED' status.
-   *
-   * @param transactionData - An array of transactions to search through.
-   * @returns The index of the most recent transaction with an 'APPROVED' status, or -1 if no such transaction is found.
-   */
-  private findMostRecentApprovedIndex(transactionData: Transaction[]): number {
-    return transactionData.findLastIndex(({ transaction_status }) => transaction_status === TRANSACTION_STATUS.APPROVED);
-  }
-
-  /**
-   * Finds the index of the upper payment bracket in the transaction data.
-   * Iterates through the transaction data array in reverse order to find the
-   * first transaction that is both approved and a payment.
-   *
-   * @param {Transaction[]} transactionData - The array of transaction data to search through.
-   * @returns {number} The index of the upper payment bracket if found, otherwise -1.
-   */
-  private findUpperPaymentBracketIndex(transactionData: Transaction[]): number {
-    for (let i = transactionData.length - 1; i >= 0; i--) {
-      const { transaction_status, is_payment } = transactionData[i];
-      if (transaction_status === TRANSACTION_STATUS.APPROVED && is_payment) {
-        return i;
+  oddCheckerHelper(data: Transaction[]) {
+    let indexCounter = 0;
+    for (let index = 0; index < data.length; index++) {
+      /* If the interest is greater than 0, increment the indexCounter
+      This will indicate that customer is paid for the month */
+      if (data[index].payment > 0) {
+        indexCounter++;
       }
     }
-    return 0;
-  }
-
-  computeAccumulatedCapital(transactionData: Transaction[]): number {
-    let totalAccumulatedCapital = 0;
-
-    for (let index = transactionData.length - 1; index >= 0; index--) {
-      const { transaction_status, capital, is_payment } = transactionData[index];
-      if (transaction_status === TRANSACTION_STATUS.APPROVED && capital > 0) {
-        totalAccumulatedCapital += capital;
-      }
-
-      if (capital === 0 && is_payment) {
-        break;
-      }
-    }
-
-    return totalAccumulatedCapital;
+    return indexCounter % 2 != 0;
   }
 }

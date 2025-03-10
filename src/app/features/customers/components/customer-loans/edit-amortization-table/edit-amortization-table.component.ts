@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoanService } from '../../../../../shared/services/loan.service';
-import { AmortizationTable, Customer, PrincipalLoan, Transaction } from '../amortization-table/amortization-table.component';
+import { CustomerLoanOverview, Customer, PrincipalLoan, Transaction } from '../amortization-table/amortization-table.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
@@ -57,8 +57,8 @@ export class EditAmortizationTableComponent implements OnInit {
   private readonly confirmService = inject(ConfirmationService);
   public readonly statusTagService = inject(StatusTagService);
 
-  amortizationTable!: AmortizationTable[];
-  clonedAmortizationTable!: AmortizationTable[];
+  amortizationTable!: CustomerLoanOverview[];
+  clonedAmortizationTable!: CustomerLoanOverview[];
   customerData!: Customer;
   loanData!: PrincipalLoan;
 
@@ -131,7 +131,7 @@ export class EditAmortizationTableComponent implements OnInit {
       });
   }
 
-  mapTransactionDates(transactions: any): AmortizationTable[] {
+  mapTransactionDates(transactions: any): CustomerLoanOverview[] {
     return transactions.map((item: any) => ({
       ...item,
       transaction_date: new Date(item.transaction_date) || null

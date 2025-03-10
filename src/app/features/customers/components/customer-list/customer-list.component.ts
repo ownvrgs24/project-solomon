@@ -122,15 +122,12 @@ export class CustomerListComponent implements OnInit {
       this.customers = this.customers.map((customer) => {
         return {
           ...customer,
-          client_picture: `${this.http.rootURL}/${customer.client_picture}`,
+          client_picture: `${this.http.rootURL}/${customer.client_picture}` || null,
           address: customer.cx_address
             .map((address) => address.complete_address)
             .join(', '), // join the address array
           fixed_co_maker: customer.co_makers?.map((comaker) => {
-            return `${comaker.cx_detail.last_name ?? ''}, 
-              ${comaker.cx_detail.first_name ?? ''} 
-              ${comaker.cx_detail.middle_name ?? ''} 
-              ${comaker.cx_detail.extension_name ?? ''}`.trim();
+            return `${comaker.cx_detail.last_name ?? ''}, ${comaker.cx_detail.first_name ?? ''} ${comaker.cx_detail.middle_name ?? ''} ${comaker.cx_detail.extension_name ?? ''}`.trim();
           }),
         };
       });

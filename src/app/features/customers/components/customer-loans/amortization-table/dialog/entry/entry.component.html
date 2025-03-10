@@ -1,0 +1,115 @@
+<form [formGroup]="entryForm" (ngSubmit)="handleEntrySubmit()">
+    <div class="grid grid-cols-1 gap-4">
+        <div class="flex justify-between items-baseline gap-2">
+            <div class="grid grid-flow-row gap-2 w-full">
+                <label for="transaction_or_number">OR No.</label>
+                <p-inputNumber [useGrouping]="false" inputStyleClass="text-lg font-mono" styleClass="w-full"
+                    formControlName="transaction_or_number" id="transaction_or_number" placeholder="0" pKeyFilter="num"
+                    min="0" />
+                <small id="transaction_or_number_help">
+                    Leave blank if OR No. is unavailable.
+                </small>
+            </div>
+
+            <div class="grid grid-flow-row gap-2 w-full">
+                <label for="date-of-birth">Transaction Date</label>
+                <p-calendar [maxDate]="maxDate" placeholder="mm/dd/yyyy" formControlName="transaction_date"
+                    iconDisplay="input" [showIcon]="true" inputId="icondisplay" mask="99/99/9999" slotChar="mm/dd/yyyy"
+                    inputStyleClass="text-lg font-mono" styleClass="w-full" />
+                @if ( entryForm.get('transaction_date')?.hasError('required') &&
+                entryForm.get('transaction_date')?.touched ) {
+                <small class="p-error block text-sm font-normal text-red-600">
+                    Please enter transaction date!
+                </small>
+                }
+            </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="payment">Payment Amount</label>
+            <p-inputNumber min="0" [autofocus]="true" formControlName="payment" id="payment" mode="currency"
+                currency="PHP" inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"></p-inputNumber>
+            @if ( entryForm.get('payment')?.hasError('required') &&
+            entryForm.get('payment')?.touched ) {
+            <small class="p-error block text-sm font-normal text-red-600">
+                Please enter payment amount!
+            </small>
+            }
+        </div>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="interest">Computed Fixed Interest</label>
+            <p-inputNumber min="0" [readonly]="false" formControlName="interest" id="interest" mode="currency"
+                currency="PHP" inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"></p-inputNumber>
+            @if ( entryForm.get('interest')?.hasError('required') &&
+            entryForm.get('interest')?.touched ) {
+            <small class="p-error block text-sm font-normal text-red-600">
+                Please enter interest amount!
+            </small>
+            }
+        </div>
+
+        <div class="flex justify-between items-center gap-2">
+            <p-checkbox formControlName="is_interest_applied" label="Apply Interest" [binary]="true" />
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="required_collection">Required Collection Amount</label>
+            <p-inputNumber min="0" [readonly]="false" formControlName="required_collection" id="required_collection"
+                mode="currency" currency="PHP" inputStyleClass="text-lg font-mono" styleClass="w-full"
+                placeholder="0"></p-inputNumber>
+            @if ( entryForm.get('required_collection')?.hasError('required') &&
+            entryForm.get('required_collection')?.touched ) {
+            <small class="p-error block text-sm font-normal text-red-600">
+                Please enter required collection amount!
+            </small>
+            }
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="collection">Collected Amount</label>
+            <p-inputNumber min="0" formControlName="collection" id="collection" mode="currency" currency="PHP"
+                inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"></p-inputNumber>
+
+            @if ( entryForm.get('collection')?.hasError('required') &&
+            entryForm.get('collection')?.touched ) {
+            <small class="p-error block text-sm font-normal text-red-600">
+                Please enter collected amount!
+            </small>
+            }
+
+            @if ( entryForm.get('collection')?.hasError('insufficientCollection') &&
+            entryForm.get('collection')?.touched ) {
+            <small class="p-error block text-sm font-normal text-red-600">
+                Insufficient collection amount!
+            </small>
+            }
+        </div>
+
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="change">Customer Change</label>
+            <p-inputNumber formControlName="change" id="change" mode="currency" currency="PHP"
+                inputStyleClass="text-lg font-mono" styleClass="w-full" placeholder="0"
+                [readonly]="true"></p-inputNumber>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="grid grid-flow-row gap-2 w-full">
+            <label for="transaction_remarks">Remarks</label>
+            <textarea formControlName="transaction_remarks" [autoResize]="true" pInputTextarea id="transaction_remarks"
+                placeholder="Remarks" styleClass="w-full" rows="3" toUppercase></textarea>
+        </div>
+    </div>
+
+    <p-divider></p-divider>
+
+    <p-button [disabled]="entryForm.invalid" icon="pi pi-save" type="submit" label="SAVE ENTRY"></p-button>
+</form>
